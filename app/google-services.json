@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "637249420251",
+    "firebase_url": "https://coinnect-bf1b3-default-rtdb.firebaseio.com",
+    "project_id": "coinnect-bf1b3",
+    "storage_bucket": "coinnect-bf1b3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637249420251:android:eeb123a7511ca10ad245fe",
+        "android_client_info": {
+          "package_name": "edu.northeastern.coinnect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "637249420251-j9u92ejb46g6u2mggmiqm74dmnln1gs7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.northeastern.coinnect",
+            "certificate_hash": "d4eb466760870520d7db30a0b2724bf7c5852ce3"
+          }
+        },
+        {
+          "client_id": "637249420251-cvhffgcvj9ug9p7qtfn15aulfhu1571l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAR5pTklSoQzWhqdrbpYmZ0em4Ad9-yF6Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "637249420251-cvhffgcvj9ug9p7qtfn15aulfhu1571l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
