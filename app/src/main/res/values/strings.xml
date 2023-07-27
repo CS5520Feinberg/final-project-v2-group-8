@@ -1,4 +1,9 @@
 <resources>
-  <string name="app_name">Coinnect</string>
-  <string name="web_client_id">637249420251-i8t14jh5sd3v49pukfp24l04c4c7j82j.apps.googleusercontent.com</string>
+    <string name="app_name">Coinnect</string>
+    <string name="web_client_id">637249420251-i8t14jh5sd3v49pukfp24l04c4c7j82j.apps.googleusercontent.com</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="coinnect">Coinnect</string>
+    <string name="group_expenses_simplified">Group expenses, simplified.</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="hello">Hello</string>
 </resources>
