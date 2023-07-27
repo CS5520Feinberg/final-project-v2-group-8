@@ -6,4 +6,10 @@
     <string name="group_expenses_simplified">Group expenses, simplified.</string>
     <string name="create_an_account">Create an account</string>
     <string name="hello">Hello</string>
+    <string name="sign_up">Sign up</string>
+    <string name="enter_email">Enter email</string>
+    <string name="enter_password">Enter password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
 </resources>

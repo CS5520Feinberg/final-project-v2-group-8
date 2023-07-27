@@ -18,6 +18,7 @@
       android:textStyle="bold" />
 
   <TextView
+      android:id="@+id/slogan"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:textSize="24sp"
@@ -39,12 +40,14 @@
       android:textColor="@color/white"
       android:textSize="20sp"
       tools:ignore="RtlHardcoded" />
+
   <Button
       android:id="@+id/registerButton"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:drawableLeft="@drawable/user_single_white"
       android:layout_gravity="center"
+      android:onClick="launchRegisterAction"
       android:layout_marginHorizontal="16dp"
       android:text="@string/create_an_account"
       android:textColor="@color/white"

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="230dp"
-        android:text="success!"
+        android:text="@string/hello"
         android:textAlignment="center"
         android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
