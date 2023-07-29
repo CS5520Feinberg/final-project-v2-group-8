@@ -87,4 +87,6 @@ dependencies {
     // For example, declare the dependencies for Firebase Authentication and Cloud Firestore
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-firestore'
+
+    implementation 'com.google.googlejavaformat:google-java-format:1.8'
 }

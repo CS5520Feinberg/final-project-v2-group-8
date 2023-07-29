@@ -1,7 +1,5 @@
 package edu.northeastern.coinnect.screens;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +7,7 @@ import android.os.Handler;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-
+import androidx.appcompat.app.AppCompatActivity;
 import edu.northeastern.coinnect.R;
 
 public class WelcomeScreen extends AppCompatActivity {

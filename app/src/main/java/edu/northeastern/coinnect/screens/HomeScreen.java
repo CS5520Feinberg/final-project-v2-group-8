@@ -1,9 +1,7 @@
 package edu.northeastern.coinnect.screens;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-
+import androidx.appcompat.app.AppCompatActivity;
 import edu.northeastern.coinnect.R;
 
 public class HomeScreen extends AppCompatActivity {
