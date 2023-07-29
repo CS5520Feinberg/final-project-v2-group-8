@@ -3,6 +3,7 @@ package edu.northeastern.coinnect.persistence;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class FirebaseDBHandler {
+
   private static final String TAG = "_FirebaseDBHandler";
   private static FirebaseDatabase dbInstance;
 
@@ -19,7 +20,7 @@ public class FirebaseDBHandler {
   }
 
   public static FirebaseDBHandler getInstance() {
-    if(INSTANCE == null) {
+    if (INSTANCE == null) {
       INSTANCE = new FirebaseDBHandler();
     }
 
