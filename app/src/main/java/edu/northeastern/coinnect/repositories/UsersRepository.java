@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.persistence.repositories;
+package edu.northeastern.coinnect.repositories;
 
 import android.content.Context;
 import android.content.Intent;
