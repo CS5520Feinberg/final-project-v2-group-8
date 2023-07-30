@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.northeastern.coinnect.R;
 
-public class WelcomeScreen extends AppCompatActivity {
+public class WelcomeActivity extends AppCompatActivity {
 
   @SuppressLint("SetTextI18n")
   @Override
@@ -30,7 +30,7 @@ public class WelcomeScreen extends AppCompatActivity {
 
     // Delaying to show loading screen.
     new Handler().postDelayed(() -> {
-      Intent intent = new Intent(WelcomeScreen.this, HomeScreen.class);
+      Intent intent = new Intent(WelcomeActivity.this, HomeActivity.class);
       startActivity(intent);
       finish();
     }, 3000); // have this showing for 3 sec as of now, but maybe we can make shorter?

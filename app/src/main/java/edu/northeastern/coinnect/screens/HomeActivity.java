@@ -4,7 +4,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.northeastern.coinnect.R;
 
-public class HomeScreen extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

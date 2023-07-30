@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.screens;
+package edu.northeastern.coinnect.screens.login;
 
 import static android.content.ContentValues.TAG;
 
@@ -17,8 +17,9 @@ import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
 import edu.northeastern.coinnect.R;
+import edu.northeastern.coinnect.screens.WelcomeActivity;
 
-public class LoginScreen extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
 
   // setting up OAUTH2 authentication for 1-tap sign in.
   SignInClient oneTapClient;
@@ -60,7 +61,7 @@ public class LoginScreen extends AppCompatActivity {
               if (idToken != null) {
                 String name = credential.getDisplayName();
 
-                Intent intent = new Intent(LoginScreen.this, WelcomeScreen.class);
+                Intent intent = new Intent(LoginActivity.this, WelcomeActivity.class);
                 intent.putExtra("USER_NAME", name);
 
                 startActivity(intent);
@@ -74,12 +75,12 @@ public class LoginScreen extends AppCompatActivity {
         });
 
     signUpButton.setOnClickListener(v -> oneTapClient.beginSignIn(signUpRequest)
-        .addOnSuccessListener(LoginScreen.this, result -> {
+        .addOnSuccessListener(LoginActivity.this, result -> {
           IntentSenderRequest intentSenderRequest =
               new IntentSenderRequest.Builder(result.getPendingIntent().getIntentSender()).build();
           activityResultLauncher.launch(intentSenderRequest);
         })
-        .addOnFailureListener(LoginScreen.this, e -> {
+        .addOnFailureListener(LoginActivity.this, e -> {
           // No Google Accounts found. Just continue presenting the signed-out UI.
           Log.d(TAG, e.getLocalizedMessage());
         }));
