@@ -18,7 +18,6 @@ import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
 import edu.northeastern.coinnect.R;
-import edu.northeastern.coinnect.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.screens.WelcomeActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -105,7 +104,5 @@ public class LoginActivity extends AppCompatActivity {
                               LoginActivity.this, "No google account found!", Toast.LENGTH_SHORT)
                           .show();
                     }));
-
-    registerButton.setOnClickListener(view -> FirebaseDBHandler.getInstance().addUser("test User"));
   }
 }
