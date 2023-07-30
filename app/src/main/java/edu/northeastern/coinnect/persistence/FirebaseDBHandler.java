@@ -1,5 +1,6 @@
 package edu.northeastern.coinnect.persistence;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.FirebaseDatabase;
 import edu.northeastern.coinnect.persistence.entities.Transaction;
@@ -15,12 +16,12 @@ public class FirebaseDBHandler {
 
   private static String currentUserName = null;
 
-  private static final String USERS_BUCKET_NAME = "USERS";
-  private static final String TRANSACTIONS_BUCKET_NAME = "TRANSACTIONS";
-  private static final String GROUP_TRANSACTIONS_BUCKET_NAME = "GROUP_TRANSACTIONS";
+  public static final String USERS_BUCKET_NAME = "USERS";
+  public static final String TRANSACTIONS_BUCKET_NAME = "TRANSACTIONS";
+  public static final String GROUP_TRANSACTIONS_BUCKET_NAME = "GROUP_TRANSACTIONS";
 
-  private static final String TRANSACTION_ID_COUNTER = "GLOBAL_TRANSACTION_ID_COUNTER";
-  private static final String GROUP_TRANSACTION_ID_COUNTER = "GLOBAL_GROUP_TRANSACTION_ID_COUNTER";
+  public static final String TRANSACTION_ID_COUNTER = "GLOBAL_TRANSACTION_ID_COUNTER";
+  public static final String GROUP_TRANSACTION_ID_COUNTER = "GLOBAL_GROUP_TRANSACTION_ID_COUNTER";
 
   private static void initDbReference() {
     if (dbInstance == null) {
@@ -45,6 +46,10 @@ public class FirebaseDBHandler {
   }
 
   // <editor-fold desc="Users">
+
+  public String getCurrentUserName() {
+    return currentUserName;
+  }
 
   public void setCurrentUserName(String userName) {
     currentUserName = userName;
@@ -111,7 +116,7 @@ public class FirebaseDBHandler {
     return result;
   }
 
-  public void addTransaction(
+  public Task addTransaction(
       Integer year, Integer month, Integer dayOfMonth, BigDecimal amount, String description) {
     this.validate_currentUserIsSet();
 
@@ -121,7 +126,7 @@ public class FirebaseDBHandler {
     /*
      * "USERS_BUCKET_NAME" -> "User 1" -> "TRANSACTIONS_BUCKET_NAME" -> year -> month -> dayOfMonth -> transactionId -> transactionObj
      */
-    dbInstance
+    return dbInstance
         .getReference()
         .child(USERS_BUCKET_NAME)
         .child(currentUserName)
@@ -176,16 +181,16 @@ public class FirebaseDBHandler {
     // TODO: Create pending transactions for all other users
   }
 
-  public void getTransactionForMonth(Integer year, Integer month) {
+  public void getTransactionForMonth(Integer year, Integer month, ChildEventListener monthTransactionsChildEventListener) {
     // TODO: validate whether current user is set
-    // TODO: get currentUser's transactions for year/month (no need of listener - nobody else is
-    // listening)
+    // TODO: get currentUser's transactions for year/month
+    // TODO: set MonthTransactionsChildEventListener
   }
 
-  public void getTransactionForDay(Integer year, Integer month, Integer dayOfMonth) {
+  public void getTransactionForDay(Integer year, Integer month, Integer dayOfMonth, ChildEventListener dayTransactionsChildEventListener) {
     // TODO: validate whether current user is set
-    // TODO: get currentUser's transactions for year/month/dayOfMonth (no need of listener - nobody
-    // else is listening)
+    // TODO: get currentUser's transactions for year/month/dayOfMonth
+    // TODO: set DayTransactionsChildEventListener
   }
 
   public void getPendingTransactions() {
