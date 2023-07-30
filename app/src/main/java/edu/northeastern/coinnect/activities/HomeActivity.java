@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.screens;
+package edu.northeastern.coinnect.activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;

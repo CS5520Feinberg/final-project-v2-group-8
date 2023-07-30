@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.screens.login;
+package edu.northeastern.coinnect.activities.login;
 
 import static android.content.ContentValues.TAG;
 
@@ -18,7 +18,7 @@ import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
 import edu.northeastern.coinnect.R;
-import edu.northeastern.coinnect.screens.WelcomeActivity;
+import edu.northeastern.coinnect.activities.WelcomeActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
