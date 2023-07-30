@@ -73,18 +73,18 @@ public class TransactionsRepository {
               if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
               } else {
-                List<String> userList = new ArrayList<>();
+                List<String> transactionsList = new ArrayList<>();
                 HashMap value = (HashMap) task.getResult().getValue();
 
                 for (Object key : value.keySet()) {
-                  userList.add(key.toString());
+                  transactionsList.add(key.toString());
                 }
 
-                Log.i(TAG, String.format("Users being added to the Recycler View"));
+                Log.i(TAG, String.format("Transactions being added to the Recycler View"));
                 handler.post(
                     () -> {
                       // TODO: use TransactionRecyclerViewAdapter
-                      // adapter.setupList(userList);
+                      // adapter.setupList(transactionsList);
                       progressBar.setVisibility(View.INVISIBLE);
                     });
               }
@@ -113,18 +113,18 @@ public class TransactionsRepository {
               if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
               } else {
-                List<String> userList = new ArrayList<>();
+                List<String> transactionsList = new ArrayList<>();
                 HashMap value = (HashMap) task.getResult().getValue();
 
                 for (Object key : value.keySet()) {
-                  userList.add(key.toString());
+                  transactionsList.add(key.toString());
                 }
 
-                Log.i(TAG, String.format("Users being added to the Recycler View"));
+                Log.i(TAG, String.format("Transactions being added to the Recycler View"));
                 handler.post(
                     () -> {
                       // TODO: use TransactionRecyclerViewAdapter
-                      // adapter.setupList(userList);
+                      // adapter.setupList(transactionsList);
                       progressBar.setVisibility(View.INVISIBLE);
                     });
               }
