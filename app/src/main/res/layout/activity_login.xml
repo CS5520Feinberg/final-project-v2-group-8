@@ -51,5 +51,12 @@
       android:textSize="20sp"
       tools:ignore="RtlHardcoded" />
 
+  <Button
+      android:id="@+id/freePassBtn"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Freepass"
+      tools:layout_margin="48px" />
+
 
 </LinearLayout>

@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.northeastern.coinnect.R;
+import edu.northeastern.coinnect.activities.home.HomeActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
