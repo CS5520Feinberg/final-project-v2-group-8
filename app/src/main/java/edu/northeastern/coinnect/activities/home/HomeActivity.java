@@ -1,15 +1,20 @@
 package edu.northeastern.coinnect.activities.home;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +44,24 @@ public class HomeActivity extends AppCompatActivity {
             getLayoutInflater());
     setContentView(R.layout.activity_home_screen);
 
+    BottomNavigationView navView = findViewById(R.id.bottomNavigationView2);
+    navView.setSelectedItemId(R.id.homeActivity);
+
+    navView.setOnItemSelectedListener(item ->  {
+        if(item.getItemId() == R.id.friends) {
+          startActivity(new Intent(getApplicationContext(),FriendsActivity.class));
+          overridePendingTransition(0,0);
+
+        } else if(item.getItemId() == R.id.homeActivity) {
+          return true;
+        } else {
+          startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
+          overridePendingTransition(0,0);
+          return true;
+        }
+        return false;
+    });
+
     homeScreenProgressBar = findViewById(R.id.homeScreenProgressBar);
     List<Transaction> transactionList = new ArrayList<>();
 
@@ -48,6 +71,7 @@ public class HomeActivity extends AppCompatActivity {
     this.recentTransactionAdapter = new RecentTransactionAdapter(transactionList);
     transactionsRepository = TransactionsRepository.getInstance();
 //    homeScreenProgressBar.setVisibility(View.VISIBLE);
+
 
   }
 
