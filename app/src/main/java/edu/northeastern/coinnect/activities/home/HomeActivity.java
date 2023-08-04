@@ -1,14 +1,11 @@
 package edu.northeastern.coinnect.activities.home;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.widget.ProgressBar;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -21,6 +18,8 @@ import java.util.List;
 
 import edu.northeastern.coinnect.R;
 
+import edu.northeastern.coinnect.activities.FriendsActivity;
+import edu.northeastern.coinnect.activities.SettingsActivity;
 import edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding;
 import edu.northeastern.coinnect.persistence.entities.Transaction;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
@@ -49,13 +48,13 @@ public class HomeActivity extends AppCompatActivity {
 
     navView.setOnItemSelectedListener(item ->  {
         if(item.getItemId() == R.id.friends) {
-          startActivity(new Intent(getApplicationContext(),FriendsActivity.class));
+          startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
           overridePendingTransition(0,0);
 
         } else if(item.getItemId() == R.id.homeActivity) {
           return true;
         } else {
-          startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
+          startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
           overridePendingTransition(0,0);
           return true;
         }

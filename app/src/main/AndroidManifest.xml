@@ -15,10 +15,10 @@
         android:theme="@style/Theme.Coinnect"
         tools:targetApi="31">
         <activity
-            android:name=".activities.home.SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.home.FriendsActivity"
+            android:name=".activities.FriendsActivity"
             android:exported="false" />
         <activity
             android:name=".activities.WelcomeActivity"

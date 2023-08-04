@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.activities.home;
+package edu.northeastern.coinnect.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,26 +8,28 @@ import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import edu.northeastern.coinnect.R;
+import edu.northeastern.coinnect.activities.FriendsActivity;
+import edu.northeastern.coinnect.activities.home.HomeActivity;
 
-public class FriendsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friends);
+        setContentView(R.layout.activity_settings);
 
         BottomNavigationView navView = findViewById(R.id.bottomNavigationView2);
-        navView.setSelectedItemId(R.id.friends);
+        navView.setSelectedItemId(R.id.settings);
 
         navView.setOnItemSelectedListener(item ->  {
-            if(item.getItemId() == R.id.homeActivity) {
-                startActivity(new Intent(getApplicationContext(),HomeActivity.class));
+            if(item.getItemId() == R.id.friends) {
+                startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
                 overridePendingTransition(0,0);
 
-            } else if(item.getItemId() == R.id.friends) {
+            } else if(item.getItemId() == R.id.settings) {
                 return true;
             } else {
-                startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
+                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                 overridePendingTransition(0,0);
                 return true;
             }
