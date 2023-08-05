@@ -8,8 +8,8 @@ public class GroupTransactionModel extends AbstractTransactionModel {
 
   private List<GroupTransactionShareModel> shares;
 
-  public GroupTransactionModel(int id, String description, BigDecimal amount, List<GroupTransactionShareModel> shares) {
-    super(id, description, amount);
+  public GroupTransactionModel(int id, String description, BigDecimal amount, int year, int month, int dayOfMonth, List<GroupTransactionShareModel> shares) {
+    super(id, description, amount, year, month, dayOfMonth);
     this.shares = shares;
   }
 
