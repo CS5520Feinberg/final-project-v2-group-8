@@ -10,6 +10,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
+import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
 
 public class FriendsActivity extends AppCompatActivity {
 
@@ -28,9 +29,12 @@ public class FriendsActivity extends AppCompatActivity {
 
             } else if(item.getItemId() == R.id.friends) {
                 return true;
+            } else if (item.getItemId() == R.id.transactionActivity) {
+                startActivity(new Intent(getApplicationContext(), TransactionsActivity.class));
+                overridePendingTransition(0,0);
             } else {
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-                overridePendingTransition(0,0);
+                overridePendingTransition(0, 0);
                 return true;
             }
             return false;
