@@ -2,9 +2,11 @@ package edu.northeastern.coinnect.persistence;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
-import edu.northeastern.coinnect.persistence.entities.Transaction;
-import edu.northeastern.coinnect.persistence.entities.User;
+import edu.northeastern.coinnect.persistence.entities.GroupTransactionEntity;
+import edu.northeastern.coinnect.persistence.entities.TransactionEntity;
+import edu.northeastern.coinnect.persistence.entities.UserEntity;
 import java.math.BigDecimal;
 import java.util.Map;
 
@@ -60,9 +62,9 @@ public class FirebaseDBHandler {
   }
 
   public void addUser(String username) {
-    User user = new User(username);
+    UserEntity userEntity = new UserEntity(username);
 
-    dbInstance.getReference().child("users").child(user.username).setValue(user);
+    dbInstance.getReference().child("users").child(userEntity.username).setValue(userEntity);
   }
 
   public void validate_currentUserIsSet() {
@@ -121,7 +123,7 @@ public class FirebaseDBHandler {
     this.validate_currentUserIsSet();
 
     Integer transactionId = this.getNewTransactionId();
-    Transaction transactionObj = new Transaction(transactionId, description, amount);
+    TransactionEntity transactionEntityObj = new TransactionEntity(transactionId, description, amount);
 
     /*
      * "USERS_BUCKET_NAME" -> "User 1" -> "TRANSACTIONS_BUCKET_NAME" -> year -> month -> dayOfMonth -> transactionId -> transactionObj
@@ -135,7 +137,37 @@ public class FirebaseDBHandler {
         .child(month.toString())
         .child(dayOfMonth.toString())
         .child(transactionId.toString())
-        .setValue(transactionObj);
+        .setValue(transactionEntityObj);
+  }
+
+  public TransactionEntity getTransaction(
+      Integer year,
+      Integer month,
+      Integer dayOfMonth,
+      Integer transactionId
+  ) {
+    DataSnapshot snapshot = dbInstance
+        .getReference()
+        .child(USERS_BUCKET_NAME)
+        .child(currentUserName)
+        .child(TRANSACTIONS_BUCKET_NAME)
+        .child(year.toString())
+        .child(month.toString())
+        .child(dayOfMonth.toString())
+        .child(transactionId.toString()).get().getResult();
+
+    return (TransactionEntity)snapshot.getValue();
+  }
+
+  public GroupTransactionEntity getGroupTransaction(
+      Integer groupTransactionId
+  ) {
+    DataSnapshot snapshot = dbInstance
+        .getReference()
+        .child(GROUP_TRANSACTIONS_BUCKET_NAME)
+        .child(groupTransactionId.toString()).get().getResult();
+
+    return (GroupTransactionEntity) snapshot.getValue();
   }
 
   public void addGroupTransaction(

@@ -22,7 +22,7 @@ import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
 import edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding;
-import edu.northeastern.coinnect.persistence.entities.Transaction;
+import edu.northeastern.coinnect.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
 
 public class HomeActivity extends AppCompatActivity {
@@ -82,12 +82,12 @@ public class HomeActivity extends AppCompatActivity {
     });
 
     homeScreenProgressBar = findViewById(R.id.homeScreenProgressBar);
-    List<Transaction> transactionList = new ArrayList<>();
+    List<TransactionEntity> transactionEntityList = new ArrayList<>();
 
 //    this.setupToolbar(binding);
     this.setupRecyclerView(binding);
 
-    this.recentTransactionAdapter = new RecentTransactionAdapter(transactionList);
+    this.recentTransactionAdapter = new RecentTransactionAdapter(transactionEntityList);
     transactionsRepository = TransactionsRepository.getInstance();
 //    homeScreenProgressBar.setVisibility(View.VISIBLE);
 

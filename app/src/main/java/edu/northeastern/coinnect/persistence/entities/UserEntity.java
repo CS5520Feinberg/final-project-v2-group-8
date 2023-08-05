@@ -1,9 +1,9 @@
 package edu.northeastern.coinnect.persistence.entities;
 
-public class User {
+public class UserEntity {
   public String username;
 
-  public User(String username) {
+  public UserEntity(String username) {
     this.username = username;
   }
 }

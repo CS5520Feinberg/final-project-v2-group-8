@@ -2,7 +2,7 @@ package edu.northeastern.coinnect.persistence.entities;
 
 import java.math.BigDecimal;
 
-public class Transaction {
+public class TransactionEntity {
   // this cannot be null as it is a native type
   public int id;
   public String description;
@@ -17,7 +17,7 @@ public class Transaction {
    * @param description the description entered by the user for this transaction.
    * @param amount the amount entered by the user for this transaction.
    */
-  public Transaction(int id, String description, BigDecimal amount) {
+  public TransactionEntity(int id, String description, BigDecimal amount) {
     this.id = id;
     this.description = description;
     this.amount = amount;
@@ -32,7 +32,7 @@ public class Transaction {
    * @param amount the amount entered by the user for this transaction.
    * @param groupTransactionId the group Transaction entry's id.
    */
-  public Transaction(int id, String description, BigDecimal amount, int groupTransactionId) {
+  public TransactionEntity(int id, String description, BigDecimal amount, int groupTransactionId) {
     this(id, description, amount);
     this.isGroupTransaction = true;
     this.groupTransactionId = groupTransactionId;

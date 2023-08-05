@@ -11,15 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.northeastern.coinnect.R;
-import edu.northeastern.coinnect.persistence.entities.Transaction;
+import edu.northeastern.coinnect.persistence.entities.TransactionEntity;
 
 public class RecentTransactionAdapter extends RecyclerView.Adapter<RecentTransactionViewHolder> {
 
     private Context context;
-    private List<Transaction> transactionList;
+    private List<TransactionEntity> transactionEntityList;
 
-    public RecentTransactionAdapter(List<Transaction> transactionList) {
-        this.transactionList = transactionList;
+    public RecentTransactionAdapter(List<TransactionEntity> transactionEntityList) {
+        this.transactionEntityList = transactionEntityList;
     }
 
     @NonNull
@@ -38,6 +38,6 @@ public class RecentTransactionAdapter extends RecyclerView.Adapter<RecentTransac
 
     @Override
     public int getItemCount() {
-        return this.transactionList.size();
+        return this.transactionEntityList.size();
     }
 }
