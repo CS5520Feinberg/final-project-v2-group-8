@@ -13,4 +13,15 @@
     <string name="friends">Friends</string>
     <string name="transactions">Transactions</string>
     <string name="home">Home</string>
+    <string name="recent_transactions">Recent Transactions</string>
+    <string name="register">Register</string>
+    <string name="_0_10000">$0 - $10000</string>
+    <string name="set_monthly_budget">Set Monthly Budget</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="password">Password</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="first_name">First Name</string>
+    <string name="username">Username</string>
+    <string name="monthly_budget">Monthly budget</string>
 </resources>

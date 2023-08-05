@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Recent Transactions"
+        android:text="@string/recent_transactions"
         app:layout_constraintBottom_toTopOf="@+id/transactionRecyclerView"
         app:layout_constraintStart_toStartOf="parent" />
 

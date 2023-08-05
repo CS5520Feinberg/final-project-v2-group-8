@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Coinnect"
         tools:targetApi="31">
         <activity
+            android:name=".activities.login.RegisterActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.transactions.TransactionsActivity"
             android:exported="false" />
         <activity
