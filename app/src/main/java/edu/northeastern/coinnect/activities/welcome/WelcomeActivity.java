@@ -26,7 +26,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     // setting user's name & kicking off welcome message.
     String userName = getIntent().getStringExtra("USER_NAME");
-    welcomeMsg.setText("Hello,\n " + userName);
+    welcomeMsg.setText("Hello " + userName);
     welcomeMsg.startAnimation(fadeIn);
 
     // Delaying to show loading screen.
