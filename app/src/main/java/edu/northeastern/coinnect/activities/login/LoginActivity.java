@@ -19,7 +19,7 @@ import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
 import edu.northeastern.coinnect.R;
-import edu.northeastern.coinnect.activities.WelcomeActivity;
+import edu.northeastern.coinnect.activities.welcome.WelcomeActivity;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
 
     /*
      * Launching the Google sign in flow. If the user returns a token (meaning we find their google
-     * acct), we can launch a loading animation (?) and redirect to the home page.
+     * acct), we can launch a loading animation and redirect to the home page.
      */
     ActivityResultLauncher<IntentSenderRequest> activityResultLauncher =
         registerForActivityResult(

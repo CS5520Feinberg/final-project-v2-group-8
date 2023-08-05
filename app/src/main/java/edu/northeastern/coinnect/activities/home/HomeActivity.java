@@ -1,14 +1,13 @@
 package edu.northeastern.coinnect.activities.home;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,8 +18,9 @@ import java.util.List;
 
 import edu.northeastern.coinnect.R;
 
-import edu.northeastern.coinnect.activities.FriendsActivity;
-import edu.northeastern.coinnect.activities.SettingsActivity;
+import edu.northeastern.coinnect.activities.friends.FriendsActivity;
+import edu.northeastern.coinnect.activities.settings.SettingsActivity;
+import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
 import edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding;
 import edu.northeastern.coinnect.persistence.entities.Transaction;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
@@ -40,6 +40,7 @@ public class HomeActivity extends AppCompatActivity {
 
   private String username;
 
+  @SuppressLint("SetTextI18n")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -49,14 +50,11 @@ public class HomeActivity extends AppCompatActivity {
 
     // getting username to display greeting
     String userName = getIntent().getStringExtra("USER_NAME");
-
-    if (userName == null) {
-      userName = "";
-    }
     greeting = findViewById(R.id.greeting);
 
-    greeting.setText("Hello " + userName);
-
+    if (userName != null) {
+      greeting.setText("Hello " + userName);
+    }
 
     BottomNavigationView navView = findViewById(R.id.bottomNavigationView2);
     navView.setSelectedItemId(R.id.homeActivity);
@@ -66,11 +64,18 @@ public class HomeActivity extends AppCompatActivity {
           startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
           overridePendingTransition(0,0);
 
-        } else if(item.getItemId() == R.id.homeActivity) {
+        } else if (item.getItemId() == R.id.homeActivity) {
+          return true;
+        } else if (item.getItemId() == R.id.transactionActivity) {
+
+          startActivity(new Intent(getApplicationContext(), TransactionsActivity.class));
+          overridePendingTransition(0, 0);
+
           return true;
         } else {
+
           startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-          overridePendingTransition(0,0);
+          overridePendingTransition(0, 0);
           return true;
         }
         return false;

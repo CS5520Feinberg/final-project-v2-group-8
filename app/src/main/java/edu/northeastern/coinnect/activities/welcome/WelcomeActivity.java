@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.activities;
+package edu.northeastern.coinnect.activities.welcome;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

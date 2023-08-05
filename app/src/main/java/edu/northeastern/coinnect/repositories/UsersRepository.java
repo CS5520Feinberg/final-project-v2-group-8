@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 import edu.northeastern.coinnect.persistence.FirebaseDBHandler;
-import edu.northeastern.coinnect.activities.WelcomeActivity;
+import edu.northeastern.coinnect.activities.welcome.WelcomeActivity;
 import java.util.HashMap;
 
 public class UsersRepository {
