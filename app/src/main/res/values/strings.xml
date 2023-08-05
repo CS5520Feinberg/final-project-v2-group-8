@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Coinnect</string>
     <string name="web_client_id">637249420251-i8t14jh5sd3v49pukfp24l04c4c7j82j.apps.googleusercontent.com</string>
     <string name="sign_in_with_google">Sign in with Google</string>
@@ -6,4 +6,11 @@
     <string name="group_expenses_simplified">Group expenses, simplified.</string>
     <string name="create_an_account">Create an account</string>
     <string name="hello">Hello</string>
+    <string name="spent_so_far">Spent</string>
+    <string name="money_spent">$2500</string>
+    <string name="date">June, 25</string>
+    <string name="settings">Settings</string>
+    <string name="friends">Friends</string>
+    <string name="transactions">Transactions</string>
+    <string name="home">Home</string>
 </resources>

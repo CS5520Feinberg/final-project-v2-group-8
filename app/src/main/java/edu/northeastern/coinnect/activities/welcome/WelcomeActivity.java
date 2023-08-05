@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.activities;
+package edu.northeastern.coinnect.activities.welcome;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -32,6 +32,7 @@ public class WelcomeActivity extends AppCompatActivity {
     // Delaying to show loading screen.
     new Handler().postDelayed(() -> {
       Intent intent = new Intent(WelcomeActivity.this, HomeActivity.class);
+      intent.putExtra("USER_NAME", userName);
       startActivity(intent);
       finish();
     }, 3000); // have this showing for 3 sec as of now, but maybe we can make shorter?

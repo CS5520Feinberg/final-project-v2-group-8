@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.activities;
+package edu.northeastern.coinnect.activities.settings;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import edu.northeastern.coinnect.R;
-import edu.northeastern.coinnect.activities.FriendsActivity;
+import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
 
 public class SettingsActivity extends AppCompatActivity {
