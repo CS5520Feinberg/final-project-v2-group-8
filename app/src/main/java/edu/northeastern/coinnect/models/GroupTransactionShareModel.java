@@ -1,5 +1,6 @@
 package edu.northeastern.coinnect.models;
 
+import edu.northeastern.coinnect.persistence.entities.GroupTransactionShareEntity;
 import java.math.BigDecimal;
 
 public class GroupTransactionShareModel {
@@ -11,6 +12,12 @@ public class GroupTransactionShareModel {
     this.username = username;
     this.amountOwed = amountOwed;
     this.amountPaid = amountPaid;
+  }
+
+  public GroupTransactionShareModel(GroupTransactionShareEntity entity) {
+    this.username = entity.getUsername();
+    this.amountOwed = entity.getAmountOwed();
+    this.amountPaid = entity.getAmountPaid();
   }
 
   public String getUsername() {

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class TransactionEntity {
   // this cannot be null as it is a native type
-  public int id;
+  public int transactionId;
   public String description;
   public BigDecimal amount;
   public boolean isGroupTransaction;
@@ -13,12 +13,12 @@ public class TransactionEntity {
 
   /**
    * Creates a regular transaction.
-   * @param id the unique integer identifier of the transaction.
+   * @param transactionId the unique integer identifier of the transaction.
    * @param description the description entered by the user for this transaction.
    * @param amount the amount entered by the user for this transaction.
    */
-  public TransactionEntity(int id, String description, BigDecimal amount) {
-    this.id = id;
+  public TransactionEntity(int transactionId, String description, BigDecimal amount) {
+    this.transactionId = transactionId;
     this.description = description;
     this.amount = amount;
     this.isGroupTransaction = false;
@@ -27,19 +27,19 @@ public class TransactionEntity {
 
   /**
    * Creates a group transaction.
-   * @param id the unique integer identifier of the transaction.
+   * @param transactionId the unique integer identifier of the transaction.
    * @param description the description entered by the user for this transaction.
    * @param amount the amount entered by the user for this transaction.
    * @param groupTransactionId the group Transaction entry's id.
    */
-  public TransactionEntity(int id, String description, BigDecimal amount, int groupTransactionId) {
-    this(id, description, amount);
+  public TransactionEntity(int transactionId, String description, BigDecimal amount, int groupTransactionId) {
+    this(transactionId, description, amount);
     this.isGroupTransaction = true;
     this.groupTransactionId = groupTransactionId;
   }
 
-  public int getId() {
-    return this.id;
+  public int getTransactionId() {
+    return this.transactionId;
   }
 
   public String getDescription() {
