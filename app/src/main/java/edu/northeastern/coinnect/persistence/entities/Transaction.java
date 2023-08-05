@@ -3,10 +3,12 @@ package edu.northeastern.coinnect.persistence.entities;
 import java.math.BigDecimal;
 
 public class Transaction {
+  // this cannot be null as it is a native type
   public int id;
   public String description;
   public BigDecimal amount;
   public boolean isGroupTransaction;
+  // this can be null as it is an object
   public Integer groupTransactionId;
 
   /**
@@ -34,5 +36,25 @@ public class Transaction {
     this(id, description, amount);
     this.isGroupTransaction = true;
     this.groupTransactionId = groupTransactionId;
+  }
+
+  public int getId() {
+    return this.id;
+  }
+
+  public String getDescription() {
+    return this.description;
+  }
+
+  public BigDecimal getAmount() {
+    return this.amount;
+  }
+
+  public boolean getIsGroupTransaction() {
+    return this.isGroupTransaction;
+  }
+
+  public Integer getGroupTransactionId() {
+    return this.groupTransactionId;
   }
 }

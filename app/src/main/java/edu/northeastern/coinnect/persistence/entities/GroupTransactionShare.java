@@ -12,4 +12,16 @@ public class GroupTransactionShare {
     this.amountOwed = amountOwed;
     this.amountPaid = amountPaid;
   }
+  
+  public String getUsername() {
+    return this.username;
+  }
+  
+  public BigDecimal getAmountOwed() {
+    return this.amountOwed;
+  }
+
+  public BigDecimal getAmountPaid() {
+    return this.amountPaid;
+  }
 }
