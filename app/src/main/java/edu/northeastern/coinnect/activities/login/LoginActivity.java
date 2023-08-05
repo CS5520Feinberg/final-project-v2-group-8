@@ -47,7 +47,12 @@ public class LoginActivity extends AppCompatActivity {
     registerButton = findViewById(R.id.registerButton);
     oneTapClient = Identity.getSignInClient(this);
 
-    //test
+    registerButton.setOnClickListener(v -> {
+      Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+      startActivity(intent);
+    });
+
+    // TODO remove this when complete
     freepassBtn = findViewById(R.id.freePassBtn);
 
     freepassBtn.setOnClickListener(new View.OnClickListener() {
