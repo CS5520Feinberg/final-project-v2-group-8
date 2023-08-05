@@ -6,4 +6,7 @@
     <string name="group_expenses_simplified">Group expenses, simplified.</string>
     <string name="create_an_account">Create an account</string>
     <string name="hello">Hello</string>
+    <string name="spent_so_far">Spent</string>
+    <string name="money_spent">$2500</string>
+    <string name="date">June, 25</string>
 </resources>

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,6 +36,9 @@ public class HomeActivity extends AppCompatActivity {
   private TransactionsRepository transactionsRepository;
 
   private ProgressBar homeScreenProgressBar;
+  private TextView greeting;
+
+  private String username;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,17 @@ public class HomeActivity extends AppCompatActivity {
     edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding binding = ActivityHomeScreenBinding.inflate(
             getLayoutInflater());
     setContentView(R.layout.activity_home_screen);
+
+    // getting username to display greeting
+    String userName = getIntent().getStringExtra("USER_NAME");
+
+    if (userName == null) {
+      userName = "";
+    }
+    greeting = findViewById(R.id.greeting);
+
+    greeting.setText("Hello " + userName);
+
 
     BottomNavigationView navView = findViewById(R.id.bottomNavigationView2);
     navView.setSelectedItemId(R.id.homeActivity);
@@ -64,7 +79,7 @@ public class HomeActivity extends AppCompatActivity {
     homeScreenProgressBar = findViewById(R.id.homeScreenProgressBar);
     List<Transaction> transactionList = new ArrayList<>();
 
-    this.setupToolbar(binding);
+//    this.setupToolbar(binding);
     this.setupRecyclerView(binding);
 
     this.recentTransactionAdapter = new RecentTransactionAdapter(transactionList);
@@ -74,16 +89,16 @@ public class HomeActivity extends AppCompatActivity {
 
   }
 
-  private void setupToolbar(ActivityHomeScreenBinding binding) {
-    // setting toolbar with back button that navigates to the main page.
-    Toolbar toolbar = binding.homeScreenToolbar;
-
-    toolbar.setTitle("Home");
-    toolbar.setTitleTextColor(Color.WHITE);
-
-    setSupportActionBar(toolbar);
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-  }
+//  private void setupToolbar(ActivityHomeScreenBinding binding) {
+//      setting toolbar with back button that navigates to the main page.
+//    Toolbar toolbar = binding.homeScreenToolbar;
+//
+//    toolbar.setTitle("Home");
+//    toolbar.setTitleTextColor(Color.WHITE);
+//
+//    setSupportActionBar(toolbar);
+//    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//  }
 
   private void setupRecyclerView(ActivityHomeScreenBinding binding) {
     this.transactionRecyclerView = binding.transactionRecyclerView;
