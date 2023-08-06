@@ -12,10 +12,12 @@ import edu.northeastern.coinnect.models.MonthTransactionsModel;
 import edu.northeastern.coinnect.models.TransactionModel;
 import edu.northeastern.coinnect.persistence.entities.GroupTransactionEntity;
 import edu.northeastern.coinnect.persistence.entities.GroupTransactionShareEntity;
+import edu.northeastern.coinnect.persistence.entities.PendingTransactionEntity;
 import edu.northeastern.coinnect.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.persistence.entities.UserEntity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,6 +34,7 @@ public class FirebaseDBHandler {
   public static final String USERS_BUCKET_NAME = "USERS";
   public static final String TRANSACTIONS_BUCKET_NAME = "TRANSACTIONS";
   public static final String FRIENDS_BUCKET_NAME = "FRIENDS";
+  public static final String PENDING_TRANSACTIONS_BUCKET_NAME = "PENDING_TRANSACTIONS";
   public static final String GROUP_TRANSACTIONS_BUCKET_NAME = "GROUP_TRANSACTIONS";
 
   public static final String TRANSACTION_ID_COUNTER = "GLOBAL_TRANSACTION_ID_COUNTER";
@@ -265,6 +268,14 @@ public class FirebaseDBHandler {
         .child(TRANSACTIONS_BUCKET_NAME);
   }
 
+  private DatabaseReference getUserPendingTransactionsDatabaseReference(String userName) {
+    return dbInstance
+        .getReference()
+        .child(USERS_BUCKET_NAME)
+        .child(userName)
+        .child(PENDING_TRANSACTIONS_BUCKET_NAME);
+  }
+
   private DatabaseReference getGroupTransactionsDatabaseReference() {
     return dbInstance.getReference().child(GROUP_TRANSACTIONS_BUCKET_NAME);
   }
@@ -310,6 +321,16 @@ public class FirebaseDBHandler {
         .setValue(transactionEntity);
   }
 
+  private Task<Void> addPendingTransactionEntityToDatabase(
+      String userName, PendingTransactionEntity pendingTransactionEntity) {
+    /*
+     * "USERS_BUCKET_NAME" -> "User 1" -> "PENDING_TRANSACTIONS_BUCKET_NAME" -> groupTransactionId -> pendingTransactionObj
+     */
+    return this.getUserPendingTransactionsDatabaseReference(userName)
+        .child(pendingTransactionEntity.getGroupTransactionId().toString())
+        .setValue(pendingTransactionEntity);
+  }
+
   private Task<Void> addGroupTransactionEntityToDatabase(
       Integer groupTransactionId, GroupTransactionEntity groupTransactionEntity) {
     /*
@@ -345,15 +366,28 @@ public class FirebaseDBHandler {
 
     // Create group transaction at global level with currentUser as "creator"
     Integer groupTransactionId = this.getNewGroupTransactionId();
+    Integer transactionId = this.getNewTransactionId();
+
     List<GroupTransactionShareEntity> shareEntities = new ArrayList<>();
+    Map<String, PendingTransactionEntity> pendingTransactionEntitiesMap = new HashMap<>();
 
     for (Entry<String, BigDecimal> share : userShares.entrySet()) {
       String userName = share.getKey();
       BigDecimal amountOwed = share.getValue();
       if (userName.equals(this.getCurrentUserName())) {
-        shareEntities.add(new GroupTransactionShareEntity(userName, amountOwed, amountOwed));
+        shareEntities.add(
+            new GroupTransactionShareEntity(userName, amountOwed, amountOwed, transactionId));
       } else {
-        shareEntities.add(new GroupTransactionShareEntity(userName, amountOwed, new BigDecimal(0)));
+        BigDecimal amountPaid = new BigDecimal(0);
+        shareEntities.add(new GroupTransactionShareEntity(userName, amountOwed, amountPaid, null));
+        pendingTransactionEntitiesMap.put(
+            userName,
+            new PendingTransactionEntity(
+                groupTransactionId,
+                totalAmount,
+                amountOwed,
+                amountPaid,
+                this.getCurrentUserName()));
       }
     }
 
@@ -365,14 +399,17 @@ public class FirebaseDBHandler {
         .getResult();
 
     // Create transaction for currentUser
-    Integer transactionId = this.getNewTransactionId();
     TransactionEntity transactionEntityObj =
         new TransactionEntity(transactionId, description, totalAmount, groupTransactionId);
 
     this.addTransactionEntityToDatabase(
-        year, month, dayOfMonth, transactionId, transactionEntityObj).getResult();
+            year, month, dayOfMonth, transactionId, transactionEntityObj)
+        .getResult();
 
-    // TODO: Create pending transactions for all other users
+    // Create pending transactions for all other users
+    for (Entry<String, PendingTransactionEntity> entry : pendingTransactionEntitiesMap.entrySet()) {
+      this.addPendingTransactionEntityToDatabase(entry.getKey(), entry.getValue());
+    }
   }
 
   public void convertTransactionToGroupTransaction(
