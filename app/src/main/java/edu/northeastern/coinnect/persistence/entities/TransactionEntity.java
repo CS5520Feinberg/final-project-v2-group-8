@@ -57,4 +57,9 @@ public class TransactionEntity {
   public Integer getGroupTransactionId() {
     return this.groupTransactionId;
   }
+
+  public void setGroupTransactionId(Integer groupTransactionId) {
+    this.isGroupTransaction = true;
+    this.groupTransactionId = groupTransactionId;
+  }
 }

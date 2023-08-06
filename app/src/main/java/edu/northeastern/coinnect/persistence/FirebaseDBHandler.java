@@ -427,11 +427,63 @@ public class FirebaseDBHandler {
     this.validate_sharesAddUpToTotalAmount(transactionEntity.getAmount(), userShares);
     this.validate_usersAreFriends(userShares.keySet());
 
-    // TODO: create group transaction and update transaction with new amounts
-    // TODO: Create pending transactions for all other users
+    Integer groupTransactionId = this.getNewGroupTransactionId();
+
+    List<GroupTransactionShareEntity> shareEntities = new ArrayList<>();
+    Map<String, PendingTransactionEntity> pendingTransactionEntitiesMap = new HashMap<>();
+
+    for (Entry<String, BigDecimal> share : userShares.entrySet()) {
+      String userName = share.getKey();
+      BigDecimal amountOwed = share.getValue();
+      if (userName.equals(this.getCurrentUserName())) {
+        shareEntities.add(
+            new GroupTransactionShareEntity(userName, amountOwed, amountOwed, transactionId));
+      } else {
+        BigDecimal amountPaid = new BigDecimal(0);
+        shareEntities.add(new GroupTransactionShareEntity(userName, amountOwed, amountPaid, null));
+        pendingTransactionEntitiesMap.put(
+            userName,
+            new PendingTransactionEntity(
+                groupTransactionId,
+                transactionEntity.getAmount(),
+                amountOwed,
+                amountPaid,
+                this.getCurrentUserName()));
+      }
+    }
+
+    GroupTransactionEntity groupTransactionEntity =
+        new GroupTransactionEntity(
+            groupTransactionId,
+            transactionEntity.getAmount(),
+            this.getCurrentUserName(),
+            shareEntities);
+
+    this.addGroupTransactionEntityToDatabase(groupTransactionId, groupTransactionEntity)
+        .getResult();
+
+    // update transaction with new amounts
+    transactionEntity.setGroupTransactionId(groupTransactionId);
+    this.getUserTransactionsDatabaseReference()
+        .child(year.toString())
+        .child(month.toString())
+        .child(dayOfMonth.toString())
+        .child(transactionId.toString())
+        .setValue(transactionEntity);
+
+    // Create pending transactions for all other users
+    for (Entry<String, PendingTransactionEntity> entry : pendingTransactionEntitiesMap.entrySet()) {
+      this.addPendingTransactionEntityToDatabase(entry.getKey(), entry.getValue());
+    }
   }
 
-  public void updateGroupTransactionPaid(int groupTransactionId, BigDecimal amountPaid) {
+  public void updateGroupTransactionPaid(
+      Integer year,
+      Integer month,
+      Integer dayOfMonth,
+      Integer groupTransactionId,
+      String description,
+      BigDecimal amountPaid) {
     this.validate_currentUserIsSet();
     this.validate_amountPaid(amountPaid);
 
@@ -452,9 +504,28 @@ public class FirebaseDBHandler {
     }
 
     this.validate_sharesPaidAmountRespectsOwedAmount(currentUserShareEntity, amountPaid);
-    // TODO: create transaction for current user
-    // TODO: remove from pending transaction if amountPaid == amountOwed
-    // TODO: update group transaction
+
+    // create transaction for current user
+    // TODO: update existing transaction instead of creating new one if this is an update
+    Integer transactionId = this.getNewTransactionId();
+    TransactionEntity transactionEntityObj =
+        new TransactionEntity(transactionId, description, amountPaid, groupTransactionId);
+
+    this.addTransactionEntityToDatabase(
+            year, month, dayOfMonth, transactionId, transactionEntityObj)
+        .getResult();
+
+    // remove from pending transaction if amountPaid == amountOwed
+    if (currentUserShareEntity.getAmountOwed().equals(amountPaid)) {
+      this.getUserPendingTransactionsDatabaseReference(this.getCurrentUserName())
+          .child(groupTransactionId.toString())
+          .removeValue();
+    }
+    // update group transaction
+    currentUserShareEntity.setAmountPaid(amountPaid);
+    this.getGroupTransactionsDatabaseReference()
+        .child(groupTransactionId.toString())
+        .setValue(groupTransactionEntity);
   }
 
   public MonthTransactionsModel getTransactionForMonth(
@@ -508,6 +579,8 @@ public class FirebaseDBHandler {
 
   public void getPendingTransactions() {
     this.validate_currentUserIsSet();
+    DatabaseReference pendingTransactionsDR =
+        this.getUserPendingTransactionsDatabaseReference(this.getCurrentUserName());
     // TODO: get pending transactions for current user
     // TODO: get the linked group transactions and transactions for the pending transaction
   }

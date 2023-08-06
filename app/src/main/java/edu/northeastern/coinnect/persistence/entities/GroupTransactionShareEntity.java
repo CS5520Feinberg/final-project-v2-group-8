@@ -24,6 +24,10 @@ public class GroupTransactionShareEntity {
     return this.amountOwed;
   }
 
+  public void setAmountPaid(BigDecimal amountPaid) {
+    this.amountPaid = amountPaid;
+  }
+
   public BigDecimal getAmountPaid() {
     return this.amountPaid;
   }
