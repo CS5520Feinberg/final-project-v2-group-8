@@ -58,28 +58,7 @@ public class HomeActivity extends AppCompatActivity {
 
     BottomNavigationView navView = findViewById(R.id.bottomNavigationView2);
     navView.setSelectedItemId(R.id.homeActivity);
-
-    navView.setOnItemSelectedListener(item ->  {
-        if(item.getItemId() == R.id.friends) {
-          startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
-          overridePendingTransition(0,0);
-
-        } else if (item.getItemId() == R.id.homeActivity) {
-          return true;
-        } else if (item.getItemId() == R.id.transactionActivity) {
-
-          startActivity(new Intent(getApplicationContext(), TransactionsActivity.class));
-          overridePendingTransition(0, 0);
-
-          return true;
-        } else {
-
-          startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-          overridePendingTransition(0, 0);
-          return true;
-        }
-        return false;
-    });
+    menuBarActions(navView);
 
     homeScreenProgressBar = findViewById(R.id.homeScreenProgressBar);
     List<TransactionEntity> transactionEntityList = new ArrayList<>();
@@ -90,8 +69,31 @@ public class HomeActivity extends AppCompatActivity {
     this.recentTransactionAdapter = new RecentTransactionAdapter(transactionEntityList);
     transactionsRepository = TransactionsRepository.getInstance();
 //    homeScreenProgressBar.setVisibility(View.VISIBLE);
+  }
 
 
+  protected void menuBarActions(BottomNavigationView navView) {
+    navView.setOnItemSelectedListener(item ->  {
+      if(item.getItemId() == R.id.friends) {
+        startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
+        overridePendingTransition(0,0);
+
+      } else if (item.getItemId() == R.id.homeActivity) {
+        return true;
+      } else if (item.getItemId() == R.id.transactionActivity) {
+
+        startActivity(new Intent(getApplicationContext(), TransactionsActivity.class));
+        overridePendingTransition(0, 0);
+
+        return true;
+      } else {
+
+        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+        overridePendingTransition(0, 0);
+        return true;
+      }
+      return false;
+    });
   }
 
 //  private void setupToolbar(ActivityHomeScreenBinding binding) {
