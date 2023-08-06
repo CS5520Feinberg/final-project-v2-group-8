@@ -21,7 +21,10 @@ public class FriendsActivity extends AppCompatActivity {
 
         BottomNavigationView navView = findViewById(R.id.bottomNavigationView2);
         navView.setSelectedItemId(R.id.friends);
+        menuBarActions(navView);
+    }
 
+    protected void menuBarActions(BottomNavigationView navView) {
         navView.setOnItemSelectedListener(item ->  {
             if(item.getItemId() == R.id.homeActivity) {
                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));

@@ -20,7 +20,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         BottomNavigationView navView = findViewById(R.id.bottomNavigationView2);
         navView.setSelectedItemId(R.id.settings);
-
+        menuBarActions(navView);
+    }
+    protected void menuBarActions(BottomNavigationView navView) {
         navView.setOnItemSelectedListener(item ->  {
             if(item.getItemId() == R.id.friends) {
                 startActivity(new Intent(getApplicationContext(), FriendsActivity.class));

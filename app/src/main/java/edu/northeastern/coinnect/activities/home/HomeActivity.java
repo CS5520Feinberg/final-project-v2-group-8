@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,10 @@ import java.util.List;
 import edu.northeastern.coinnect.R;
 
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
+import edu.northeastern.coinnect.activities.login.RegisterActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
+import edu.northeastern.coinnect.activities.transactions.addTransaction.AddTransactionActivity;
 import edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding;
 import edu.northeastern.coinnect.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
@@ -48,6 +51,12 @@ public class HomeActivity extends AppCompatActivity {
             getLayoutInflater());
     setContentView(R.layout.activity_home_screen);
 
+    FloatingActionButton addTransaction = (FloatingActionButton) findViewById(R.id.addTransactionButton);
+    addTransaction.setOnClickListener( view -> {
+      Intent intent = new Intent(getApplicationContext(), AddTransactionActivity.class);
+      startActivity(intent);
+    });
+
     // getting username to display greeting
     String userName = getIntent().getStringExtra("USER_NAME");
     greeting = findViewById(R.id.greeting);
@@ -58,28 +67,7 @@ public class HomeActivity extends AppCompatActivity {
 
     BottomNavigationView navView = findViewById(R.id.bottomNavigationView2);
     navView.setSelectedItemId(R.id.homeActivity);
-
-    navView.setOnItemSelectedListener(item ->  {
-        if(item.getItemId() == R.id.friends) {
-          startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
-          overridePendingTransition(0,0);
-
-        } else if (item.getItemId() == R.id.homeActivity) {
-          return true;
-        } else if (item.getItemId() == R.id.transactionActivity) {
-
-          startActivity(new Intent(getApplicationContext(), TransactionsActivity.class));
-          overridePendingTransition(0, 0);
-
-          return true;
-        } else {
-
-          startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
-          overridePendingTransition(0, 0);
-          return true;
-        }
-        return false;
-    });
+    menuBarActions(navView);
 
     homeScreenProgressBar = findViewById(R.id.homeScreenProgressBar);
     List<TransactionEntity> transactionEntityList = new ArrayList<>();
@@ -90,8 +78,31 @@ public class HomeActivity extends AppCompatActivity {
     this.recentTransactionAdapter = new RecentTransactionAdapter(transactionEntityList);
     transactionsRepository = TransactionsRepository.getInstance();
 //    homeScreenProgressBar.setVisibility(View.VISIBLE);
+  }
 
 
+  protected void menuBarActions(BottomNavigationView navView) {
+    navView.setOnItemSelectedListener(item ->  {
+      if(item.getItemId() == R.id.friends) {
+        startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
+        overridePendingTransition(0,0);
+
+      } else if (item.getItemId() == R.id.homeActivity) {
+        return true;
+      } else if (item.getItemId() == R.id.transactionActivity) {
+
+        startActivity(new Intent(getApplicationContext(), TransactionsActivity.class));
+        overridePendingTransition(0, 0);
+
+        return true;
+      } else {
+
+        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+        overridePendingTransition(0, 0);
+        return true;
+      }
+      return false;
+    });
   }
 
 //  private void setupToolbar(ActivityHomeScreenBinding binding) {
