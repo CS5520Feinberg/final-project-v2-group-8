@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,10 @@ import java.util.List;
 import edu.northeastern.coinnect.R;
 
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
+import edu.northeastern.coinnect.activities.login.RegisterActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
+import edu.northeastern.coinnect.activities.transactions.addTransaction.AddTransactionActivity;
 import edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding;
 import edu.northeastern.coinnect.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
@@ -47,6 +50,12 @@ public class HomeActivity extends AppCompatActivity {
     edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding binding = ActivityHomeScreenBinding.inflate(
             getLayoutInflater());
     setContentView(R.layout.activity_home_screen);
+
+    FloatingActionButton addTransaction = (FloatingActionButton) findViewById(R.id.addTransactionButton);
+    addTransaction.setOnClickListener( view -> {
+      Intent intent = new Intent(getApplicationContext(), AddTransactionActivity.class);
+      startActivity(intent);
+    });
 
     // getting username to display greeting
     String userName = getIntent().getStringExtra("USER_NAME");
