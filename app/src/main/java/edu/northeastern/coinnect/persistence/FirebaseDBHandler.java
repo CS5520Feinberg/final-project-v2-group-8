@@ -9,6 +9,7 @@ import edu.northeastern.coinnect.models.AbstractTransactionModel;
 import edu.northeastern.coinnect.models.DayTransactionsModel;
 import edu.northeastern.coinnect.models.GroupTransactionModel;
 import edu.northeastern.coinnect.models.MonthTransactionsModel;
+import edu.northeastern.coinnect.models.PendingTransactionModel;
 import edu.northeastern.coinnect.models.TransactionModel;
 import edu.northeastern.coinnect.persistence.entities.GroupTransactionEntity;
 import edu.northeastern.coinnect.persistence.entities.GroupTransactionShareEntity;
@@ -577,12 +578,21 @@ public class FirebaseDBHandler {
     return dayTransactions;
   }
 
-  public void getPendingTransactions() {
+  public List<PendingTransactionModel> getPendingTransactions() {
     this.validate_currentUserIsSet();
     DatabaseReference pendingTransactionsDR =
         this.getUserPendingTransactionsDatabaseReference(this.getCurrentUserName());
-    // TODO: get pending transactions for current user
-    // TODO: get the linked group transactions and transactions for the pending transaction
+
+    List<PendingTransactionModel> pendingTransactionModels = new ArrayList<>();
+
+    for (DataSnapshot pendingTransactionSnapshot :
+        pendingTransactionsDR.get().getResult().getChildren()) {
+      PendingTransactionEntity entity =
+          pendingTransactionSnapshot.getValue(PendingTransactionEntity.class);
+      pendingTransactionModels.add(new PendingTransactionModel(entity));
+    }
+
+    return pendingTransactionModels;
   }
 
   public void addGroupTransactionChildEventListener(
