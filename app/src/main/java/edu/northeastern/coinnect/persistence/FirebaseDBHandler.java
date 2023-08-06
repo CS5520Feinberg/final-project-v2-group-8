@@ -157,59 +157,50 @@ public class FirebaseDBHandler {
 
   // <editor-fold desc="Transactions">
 
-  public int getNewTransactionId() {
+  private int getNewTransactionId() {
     // NOTE: We are not splitting this up because we need to ensure this happens in one transaction
     // with the Database, ensuring the transactionIds are always unique when set.
     this.validate_currentUserIsSet();
 
+    DatabaseReference userTransactionIdCounterReference =
+        dbInstance
+            .getReference()
+            .child(USERS_BUCKET_NAME)
+            .child(this.getCurrentUserName())
+            .child(TRANSACTION_ID_COUNTER);
+
     int result;
     try {
-      result =
-          (int)
-              dbInstance
-                  .getReference()
-                  .child("users")
-                  .child(this.getCurrentUserName())
-                  .child(TRANSACTION_ID_COUNTER)
-                  .get()
-                  .getResult()
-                  .getValue();
+      result = (int) userTransactionIdCounterReference.get().getResult().getValue();
+
     } catch (NullPointerException e) {
-      dbInstance.getReference().child(TRANSACTION_ID_COUNTER).setValue(1);
+      userTransactionIdCounterReference.setValue(1);
       return 0;
     }
 
-    dbInstance
-        .getReference()
-        .child("users")
-        .child(this.getCurrentUserName())
-        .child(TRANSACTION_ID_COUNTER)
-        .setValue(result + 1);
+    userTransactionIdCounterReference.setValue(result + 1);
 
     return result;
   }
 
-  public int getNewGroupTransactionId() {
+  private int getNewGroupTransactionId() {
     // NOTE: We are not splitting this up because we need to ensure this happens in one transaction
     // with the Database, ensuring the transactionIds are always unique when set.
     this.validate_currentUserIsSet();
 
+    DatabaseReference globalGroupTransactionIdCounterReference =
+        dbInstance.getReference().child(GROUP_TRANSACTION_ID_COUNTER);
+
     int result;
     try {
-      result =
-          (int)
-              dbInstance
-                  .getReference()
-                  .child(GROUP_TRANSACTION_ID_COUNTER)
-                  .get()
-                  .getResult()
-                  .getValue();
+      result = (int) globalGroupTransactionIdCounterReference.get().getResult().getValue();
+
     } catch (NullPointerException e) {
-      dbInstance.getReference().child(GROUP_TRANSACTION_ID_COUNTER).setValue(1);
+      globalGroupTransactionIdCounterReference.setValue(1);
       return 0;
     }
 
-    dbInstance.getReference().child(GROUP_TRANSACTION_ID_COUNTER).setValue(result + 1);
+    globalGroupTransactionIdCounterReference.setValue(result + 1);
 
     return result;
   }
