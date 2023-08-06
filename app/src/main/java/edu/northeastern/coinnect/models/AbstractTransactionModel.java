@@ -13,6 +13,8 @@ public abstract class AbstractTransactionModel {
   private int month;
   private int dayOfMonth;
 
+  boolean isGroupTransaction;
+
   public AbstractTransactionModel(int id, String description, BigDecimal amount, int year, int month, int dayOfMonth) {
     this.id = id;
     this.description = description;

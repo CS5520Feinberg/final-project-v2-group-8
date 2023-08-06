@@ -65,4 +65,31 @@ public class GroupTransactionModel extends AbstractTransactionModel {
   public List<GroupTransactionShareModel> getGroupTransactionShares() {
     return this.shares;
   }
+
+  /**
+   * Gets the net amount to display considering the amounts that have been paid to this user.
+   *
+   * @param currentUserName the user name of the current user.
+   * @return the net amount that the current user paid.
+   */
+  public BigDecimal getNetAmount(String currentUserName) {
+    if (currentUserName.equals(this.creatorUserName)) {
+      BigDecimal totalAmount = this.getAmount();
+
+      for (GroupTransactionShareModel share : this.getGroupTransactionShares()) {
+        totalAmount.subtract(share.getAmountPaid());
+      }
+
+      return totalAmount;
+    } else {
+      for (GroupTransactionShareModel share : this.getGroupTransactionShares()) {
+        if (share.getUsername().equals(currentUserName)) {
+          return share.getAmountPaid();
+        }
+      }
+
+      throw new IllegalArgumentException(
+          "provided user does not have a share in this group transaction!");
+    }
+  }
 }

@@ -6,7 +6,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import edu.northeastern.coinnect.models.AbstractTransactionModel;
+import edu.northeastern.coinnect.models.DayTransactionsModel;
 import edu.northeastern.coinnect.models.GroupTransactionModel;
+import edu.northeastern.coinnect.models.MonthTransactionsModel;
 import edu.northeastern.coinnect.models.TransactionModel;
 import edu.northeastern.coinnect.persistence.entities.GroupTransactionEntity;
 import edu.northeastern.coinnect.persistence.entities.GroupTransactionShareEntity;
@@ -16,6 +18,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class FirebaseDBHandler {
 
@@ -57,28 +61,50 @@ public class FirebaseDBHandler {
 
   // <editor-fold desc="Validators">
 
-  public void validate_notNullEntity(Object o, String entityName) {
+  private void validate_notNullEntity(Object o, String entityName) {
     if (o == null) {
       throw new UnsupportedOperationException(
           String.format("The entity %s was not found!", entityName));
     }
   }
 
-  public void validate_currentUserIsSet() {
+  private void validate_currentUserIsSet() {
     if (currentUserName == null) {
       throw new UnsupportedOperationException("User needs to be set to add transaction!");
     }
   }
 
-  public void validate_usersAreFriends(List<String> userNames) {}
+  private void validate_usersAreFriends(Set<String> userNames) {
+    this.validate_currentUserIsSet();
+    List<String> allFriendsUserNames = this.getCurrentUserFriends();
 
-  public void validate_amountPaid(BigDecimal amountPaid) {
+    for (String userName : userNames) {
+      if (!allFriendsUserNames.contains(userName)) {
+        throw new UnsupportedOperationException(
+            String.format("User %s is not a friend or doesn't exist!", userName));
+      }
+    }
+  }
+
+  private void validate_isRegularTransaction(TransactionEntity transactionEntity) {
+    if (transactionEntity.getIsGroupTransaction()) {
+      throw new IllegalArgumentException("This transaction is already a group transaction!");
+    }
+  }
+
+  private void validate_isGroupTransaction(TransactionEntity transactionEntity) {
+    if (!transactionEntity.getIsGroupTransaction()) {
+      throw new IllegalArgumentException("This transaction is not a group transaction!");
+    }
+  }
+
+  private void validate_amountPaid(BigDecimal amountPaid) {
     if (amountPaid == null || amountPaid.compareTo(new BigDecimal(0)) <= 0) {
       throw new IllegalArgumentException("Amount paid cannot be lesser than or equal to zero!");
     }
   }
 
-  public void validate_sharesAddUpToTotalAmount(
+  private void validate_sharesAddUpToTotalAmount(
       BigDecimal totalAmount, Map<String, BigDecimal> userShares) {
     BigDecimal calculatingTotal = new BigDecimal(0);
 
@@ -88,6 +114,17 @@ public class FirebaseDBHandler {
 
     if (!totalAmount.equals(calculatingTotal)) {
       throw new UnsupportedOperationException("User shares need to add up to total Amount!");
+    }
+  }
+
+  private void validate_sharesPaidAmountRespectsOwedAmount(
+      GroupTransactionShareEntity currentUserShareEntity, BigDecimal amountPaid) {
+    if (currentUserShareEntity
+            .getAmountPaid()
+            .add(amountPaid)
+            .compareTo(currentUserShareEntity.getAmountOwed())
+        > 0) {
+      throw new IllegalArgumentException("Amount paid cannot be greater than amount owed!");
     }
   }
 
@@ -219,14 +256,23 @@ public class FirebaseDBHandler {
     }
   }
 
+  private DatabaseReference getUserTransactionsDatabaseReference() {
+    this.validate_currentUserIsSet();
+    return dbInstance
+        .getReference()
+        .child(USERS_BUCKET_NAME)
+        .child(currentUserName)
+        .child(TRANSACTIONS_BUCKET_NAME);
+  }
+
+  private DatabaseReference getGroupTransactionsDatabaseReference() {
+    return dbInstance.getReference().child(GROUP_TRANSACTIONS_BUCKET_NAME);
+  }
+
   private TransactionEntity getTransactionEntity(
       Integer year, Integer month, Integer dayOfMonth, Integer transactionId) {
     DataSnapshot snapshot =
-        dbInstance
-            .getReference()
-            .child(USERS_BUCKET_NAME)
-            .child(currentUserName)
-            .child(TRANSACTIONS_BUCKET_NAME)
+        this.getUserTransactionsDatabaseReference()
             .child(year.toString())
             .child(month.toString())
             .child(dayOfMonth.toString())
@@ -239,9 +285,7 @@ public class FirebaseDBHandler {
 
   private GroupTransactionEntity getGroupTransactionEntity(Integer groupTransactionId) {
     DataSnapshot snapshot =
-        dbInstance
-            .getReference()
-            .child(GROUP_TRANSACTIONS_BUCKET_NAME)
+        getGroupTransactionsDatabaseReference()
             .child(groupTransactionId.toString())
             .get()
             .getResult();
@@ -249,7 +293,34 @@ public class FirebaseDBHandler {
     return snapshot.getValue(GroupTransactionEntity.class);
   }
 
-  public Task addTransaction(
+  private Task<Void> addTransactionEntityToDatabase(
+      Integer year,
+      Integer month,
+      Integer dayOfMonth,
+      Integer transactionId,
+      TransactionEntity transactionEntity) {
+    /*
+     * "USERS_BUCKET_NAME" -> "User 1" -> "TRANSACTIONS_BUCKET_NAME" -> year -> month -> dayOfMonth -> transactionId -> transactionObj
+     */
+    return this.getUserTransactionsDatabaseReference()
+        .child(year.toString())
+        .child(month.toString())
+        .child(dayOfMonth.toString())
+        .child(transactionId.toString())
+        .setValue(transactionEntity);
+  }
+
+  private Task<Void> addGroupTransactionEntityToDatabase(
+      Integer groupTransactionId, GroupTransactionEntity groupTransactionEntity) {
+    /*
+     * "GROUP_TRANSACTIONS_BUCKET_NAME" -> groupTransactionId -> groupTransactionObj
+     */
+    return this.getGroupTransactionsDatabaseReference()
+        .child(groupTransactionId.toString())
+        .setValue(groupTransactionEntity);
+  }
+
+  public Task<Void> addTransaction(
       Integer year, Integer month, Integer dayOfMonth, BigDecimal amount, String description) {
     this.validate_currentUserIsSet();
 
@@ -257,19 +328,8 @@ public class FirebaseDBHandler {
     TransactionEntity transactionEntityObj =
         new TransactionEntity(transactionId, description, amount);
 
-    /*
-     * "USERS_BUCKET_NAME" -> "User 1" -> "TRANSACTIONS_BUCKET_NAME" -> year -> month -> dayOfMonth -> transactionId -> transactionObj
-     */
-    return dbInstance
-        .getReference()
-        .child(USERS_BUCKET_NAME)
-        .child(currentUserName)
-        .child(TRANSACTIONS_BUCKET_NAME)
-        .child(year.toString())
-        .child(month.toString())
-        .child(dayOfMonth.toString())
-        .child(transactionId.toString())
-        .setValue(transactionEntityObj);
+    return this.addTransactionEntityToDatabase(
+        year, month, dayOfMonth, transactionId, transactionEntityObj);
   }
 
   public void addGroupTransaction(
@@ -281,9 +341,37 @@ public class FirebaseDBHandler {
       Map<String, BigDecimal> userShares) {
     this.validate_currentUserIsSet();
     this.validate_sharesAddUpToTotalAmount(totalAmount, userShares);
-    // TODO: validate whether users are all friends
-    // TODO: Create group transaction at global level with currentUser as "creator"
-    // TODO: Create transaction for currentUser
+    this.validate_usersAreFriends(userShares.keySet());
+
+    // Create group transaction at global level with currentUser as "creator"
+    Integer groupTransactionId = this.getNewGroupTransactionId();
+    List<GroupTransactionShareEntity> shareEntities = new ArrayList<>();
+
+    for (Entry<String, BigDecimal> share : userShares.entrySet()) {
+      String userName = share.getKey();
+      BigDecimal amountOwed = share.getValue();
+      if (userName.equals(this.getCurrentUserName())) {
+        shareEntities.add(new GroupTransactionShareEntity(userName, amountOwed, amountOwed));
+      } else {
+        shareEntities.add(new GroupTransactionShareEntity(userName, amountOwed, new BigDecimal(0)));
+      }
+    }
+
+    GroupTransactionEntity groupTransactionEntity =
+        new GroupTransactionEntity(
+            groupTransactionId, totalAmount, this.getCurrentUserName(), shareEntities);
+
+    this.addGroupTransactionEntityToDatabase(groupTransactionId, groupTransactionEntity)
+        .getResult();
+
+    // Create transaction for currentUser
+    Integer transactionId = this.getNewTransactionId();
+    TransactionEntity transactionEntityObj =
+        new TransactionEntity(transactionId, description, totalAmount, groupTransactionId);
+
+    this.addTransactionEntityToDatabase(
+        year, month, dayOfMonth, transactionId, transactionEntityObj).getResult();
+
     // TODO: Create pending transactions for all other users
   }
 
@@ -298,10 +386,10 @@ public class FirebaseDBHandler {
     TransactionEntity transactionEntity =
         this.getTransactionEntity(year, month, dayOfMonth, transactionId);
 
+    this.validate_isRegularTransaction(transactionEntity);
     this.validate_sharesAddUpToTotalAmount(transactionEntity.getAmount(), userShares);
+    this.validate_usersAreFriends(userShares.keySet());
 
-    // TODO: validate whether users are all friends
-    // TODO: validate whether given transaction is a regular transaction
     // TODO: create group transaction and update transaction with new amounts
     // TODO: Create pending transactions for all other users
   }
@@ -326,34 +414,59 @@ public class FirebaseDBHandler {
       throw new IllegalArgumentException("Current user is not a part of this group transaction!");
     }
 
-    // validate whether amount paid is lesser than or equal to amount owed
-    if (currentUserShareEntity
-            .getAmountPaid()
-            .add(amountPaid)
-            .compareTo(currentUserShareEntity.getAmountOwed())
-        > 0) {
-      throw new IllegalArgumentException("Amount paid cannot be greater than amount owed!");
-    }
+    this.validate_sharesPaidAmountRespectsOwedAmount(currentUserShareEntity, amountPaid);
     // TODO: create transaction for current user
     // TODO: remove from pending transaction if amountPaid == amountOwed
     // TODO: update group transaction
   }
 
-  public void getTransactionForMonth(
+  public MonthTransactionsModel getTransactionForMonth(
       Integer year, Integer month, ChildEventListener monthTransactionsChildEventListener) {
     this.validate_currentUserIsSet();
-    // TODO: get currentUser's transactions for year/month
-    // TODO: set MonthTransactionsChildEventListener
+    DatabaseReference monthTransactionsDatabaseReference =
+        this.getUserTransactionsDatabaseReference().child(year.toString()).child(month.toString());
+
+    List<AbstractTransactionModel> transactionModels = new ArrayList<>();
+    for (DataSnapshot dayDataSnapshot :
+        monthTransactionsDatabaseReference.get().getResult().getChildren()) {
+      Integer day = Integer.getInteger(dayDataSnapshot.getKey());
+
+      for (DataSnapshot transactionSnapshot : dayDataSnapshot.getChildren()) {
+        TransactionEntity entity = transactionSnapshot.getValue(TransactionEntity.class);
+        transactionModels.add(new TransactionModel(entity, year, month, day));
+      }
+    }
+
+    MonthTransactionsModel monthTransactions = new MonthTransactionsModel(month, transactionModels);
+
+    monthTransactionsDatabaseReference.addChildEventListener(monthTransactionsChildEventListener);
+    return monthTransactions;
   }
 
-  public void getTransactionForDay(
+  public DayTransactionsModel getTransactionForDay(
       Integer year,
       Integer month,
       Integer dayOfMonth,
       ChildEventListener dayTransactionsChildEventListener) {
     this.validate_currentUserIsSet();
-    // TODO: get currentUser's transactions for year/month/dayOfMonth
-    // TODO: set DayTransactionsChildEventListener
+    DatabaseReference dayTransactionsDatabaseReference =
+        this.getUserTransactionsDatabaseReference()
+            .child(year.toString())
+            .child(month.toString())
+            .child(dayOfMonth.toString());
+
+    List<AbstractTransactionModel> transactionModels = new ArrayList<>();
+
+    for (DataSnapshot transactionSnapshot :
+        dayTransactionsDatabaseReference.get().getResult().getChildren()) {
+      TransactionEntity entity = transactionSnapshot.getValue(TransactionEntity.class);
+      transactionModels.add(new TransactionModel(entity, year, month, dayOfMonth));
+    }
+
+    DayTransactionsModel dayTransactions = new DayTransactionsModel(dayOfMonth, transactionModels);
+
+    dayTransactionsDatabaseReference.addChildEventListener(dayTransactionsChildEventListener);
+    return dayTransactions;
   }
 
   public void getPendingTransactions() {
@@ -365,7 +478,9 @@ public class FirebaseDBHandler {
   public void addGroupTransactionChildEventListener(
       ChildEventListener childEventListener, Integer groupTransactionId) {
     this.validate_currentUserIsSet();
-    // TODO: connect listener to currentUser's friend list
+    getGroupTransactionsDatabaseReference()
+        .child(groupTransactionId.toString())
+        .addChildEventListener(childEventListener);
   }
 
   // </editor-fold>
