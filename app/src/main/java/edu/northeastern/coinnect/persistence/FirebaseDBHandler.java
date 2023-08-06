@@ -26,20 +26,13 @@ import java.util.Set;
 
 public class FirebaseDBHandler {
 
+  // <editor-fold desc="Firebase Db Handler Attributes">
+
   private static final String TAG = "_FirebaseDBHandler";
   private static FirebaseDatabase dbInstance;
   private static FirebaseDBHandler INSTANCE;
 
   private static String currentUserName = null;
-
-  public static final String USERS_BUCKET_NAME = "USERS";
-  public static final String TRANSACTIONS_BUCKET_NAME = "TRANSACTIONS";
-  public static final String FRIENDS_BUCKET_NAME = "FRIENDS";
-  public static final String PENDING_TRANSACTIONS_BUCKET_NAME = "PENDING_TRANSACTIONS";
-  public static final String GROUP_TRANSACTIONS_BUCKET_NAME = "GROUP_TRANSACTIONS";
-
-  public static final String TRANSACTION_ID_COUNTER = "GLOBAL_TRANSACTION_ID_COUNTER";
-  public static final String GROUP_TRANSACTION_ID_COUNTER = "GLOBAL_GROUP_TRANSACTION_ID_COUNTER";
 
   private static void initDbReference() {
     if (dbInstance == null) {
@@ -62,6 +55,21 @@ public class FirebaseDBHandler {
   public FirebaseDatabase getDbInstance() {
     return dbInstance;
   }
+
+  // </editor-fold>
+
+  // <editor-fold desc="Constants">
+
+  public static final String USERS_BUCKET_NAME = "USERS";
+  public static final String TRANSACTIONS_BUCKET_NAME = "TRANSACTIONS";
+  public static final String FRIENDS_BUCKET_NAME = "FRIENDS";
+  public static final String PENDING_TRANSACTIONS_BUCKET_NAME = "PENDING_TRANSACTIONS";
+  public static final String GROUP_TRANSACTIONS_BUCKET_NAME = "GROUP_TRANSACTIONS";
+
+  public static final String TRANSACTION_ID_COUNTER = "GLOBAL_TRANSACTION_ID_COUNTER";
+  public static final String GROUP_TRANSACTION_ID_COUNTER = "GLOBAL_GROUP_TRANSACTION_ID_COUNTER";
+
+  // </editor-fold>
 
   // <editor-fold desc="Validators">
 
@@ -344,7 +352,7 @@ public class FirebaseDBHandler {
 
     Integer transactionId = this.getNewTransactionId();
     TransactionEntity transactionEntityObj =
-        new TransactionEntity(transactionId, description, amount);
+        new TransactionEntity(transactionId, year, month, dayOfMonth, description, amount);
 
     return this.addTransactionEntityToDatabase(
         year, month, dayOfMonth, transactionId, transactionEntityObj);
@@ -397,7 +405,8 @@ public class FirebaseDBHandler {
 
     // Create transaction for currentUser
     TransactionEntity transactionEntityObj =
-        new TransactionEntity(transactionId, description, totalAmount, groupTransactionId);
+        new TransactionEntity(
+            transactionId, year, month, dayOfMonth, description, totalAmount, groupTransactionId);
 
     this.addTransactionEntityToDatabase(
             year, month, dayOfMonth, transactionId, transactionEntityObj)
@@ -522,7 +531,8 @@ public class FirebaseDBHandler {
       // create transaction for current user
       Integer transactionId = this.getNewTransactionId();
       transactionEntity =
-          new TransactionEntity(transactionId, description, amountPaid, groupTransactionId);
+          new TransactionEntity(
+              transactionId, year, month, dayOfMonth, description, amountPaid, groupTransactionId);
 
       this.addTransactionEntityToDatabase(year, month, dayOfMonth, transactionId, transactionEntity)
           .getResult();

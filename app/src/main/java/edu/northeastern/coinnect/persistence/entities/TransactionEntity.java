@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 public class TransactionEntity {
   // this cannot be null as it is a native type
   public int transactionId;
+  public Integer year;
+  public Integer month;
+  public Integer dayOfMonth;
   public String description;
   public BigDecimal amount;
   public boolean isGroupTransaction;
@@ -18,7 +21,13 @@ public class TransactionEntity {
    * @param description the description entered by the user for this transaction.
    * @param amount the amount entered by the user for this transaction.
    */
-  public TransactionEntity(int transactionId, String description, BigDecimal amount) {
+  public TransactionEntity(
+      int transactionId,
+      Integer year,
+      Integer month,
+      Integer dayOfMonth,
+      String description,
+      BigDecimal amount) {
     this.transactionId = transactionId;
     this.description = description;
     this.amount = amount;
@@ -35,8 +44,14 @@ public class TransactionEntity {
    * @param groupTransactionId the group Transaction entry's id.
    */
   public TransactionEntity(
-      int transactionId, String description, BigDecimal amount, int groupTransactionId) {
-    this(transactionId, description, amount);
+      int transactionId,
+      Integer year,
+      Integer month,
+      Integer dayOfMonth,
+      String description,
+      BigDecimal amount,
+      int groupTransactionId) {
+    this(transactionId, year, month, dayOfMonth, description, amount);
     this.isGroupTransaction = true;
     this.groupTransactionId = groupTransactionId;
   }
