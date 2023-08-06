@@ -13,6 +13,7 @@ public class TransactionEntity {
 
   /**
    * Creates a regular transaction.
+   *
    * @param transactionId the unique integer identifier of the transaction.
    * @param description the description entered by the user for this transaction.
    * @param amount the amount entered by the user for this transaction.
@@ -27,12 +28,14 @@ public class TransactionEntity {
 
   /**
    * Creates a group transaction.
+   *
    * @param transactionId the unique integer identifier of the transaction.
    * @param description the description entered by the user for this transaction.
    * @param amount the amount entered by the user for this transaction.
    * @param groupTransactionId the group Transaction entry's id.
    */
-  public TransactionEntity(int transactionId, String description, BigDecimal amount, int groupTransactionId) {
+  public TransactionEntity(
+      int transactionId, String description, BigDecimal amount, int groupTransactionId) {
     this(transactionId, description, amount);
     this.isGroupTransaction = true;
     this.groupTransactionId = groupTransactionId;
@@ -61,5 +64,9 @@ public class TransactionEntity {
   public void setGroupTransactionId(Integer groupTransactionId) {
     this.isGroupTransaction = true;
     this.groupTransactionId = groupTransactionId;
+  }
+
+  public void setAmount(BigDecimal amount) {
+    this.amount = amount;
   }
 }

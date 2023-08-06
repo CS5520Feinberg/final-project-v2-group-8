@@ -123,11 +123,7 @@ public class FirebaseDBHandler {
 
   private void validate_sharesPaidAmountRespectsOwedAmount(
       GroupTransactionShareEntity currentUserShareEntity, BigDecimal amountPaid) {
-    if (currentUserShareEntity
-            .getAmountPaid()
-            .add(amountPaid)
-            .compareTo(currentUserShareEntity.getAmountOwed())
-        > 0) {
+    if (amountPaid.compareTo(currentUserShareEntity.getAmountOwed()) > 0) {
       throw new IllegalArgumentException("Amount paid cannot be greater than amount owed!");
     }
   }
@@ -506,15 +502,31 @@ public class FirebaseDBHandler {
 
     this.validate_sharesPaidAmountRespectsOwedAmount(currentUserShareEntity, amountPaid);
 
-    // create transaction for current user
-    // TODO: update existing transaction instead of creating new one if this is an update
-    Integer transactionId = this.getNewTransactionId();
-    TransactionEntity transactionEntityObj =
-        new TransactionEntity(transactionId, description, amountPaid, groupTransactionId);
+    TransactionEntity transactionEntity;
 
-    this.addTransactionEntityToDatabase(
-            year, month, dayOfMonth, transactionId, transactionEntityObj)
-        .getResult();
+    if (currentUserShareEntity.getUserTransactionId() != null) {
+      // update existing transaction instead of creating new one if this is an update
+      transactionEntity =
+          getTransactionEntity(
+              year, month, dayOfMonth, currentUserShareEntity.getUserTransactionId());
+
+      transactionEntity.setAmount(amountPaid);
+
+      this.getUserTransactionsDatabaseReference()
+          .child(year.toString())
+          .child(month.toString())
+          .child(dayOfMonth.toString())
+          .child(Integer.toString(transactionEntity.getTransactionId()))
+          .setValue(transactionEntity);
+    } else {
+      // create transaction for current user
+      Integer transactionId = this.getNewTransactionId();
+      transactionEntity =
+          new TransactionEntity(transactionId, description, amountPaid, groupTransactionId);
+
+      this.addTransactionEntityToDatabase(year, month, dayOfMonth, transactionId, transactionEntity)
+          .getResult();
+    }
 
     // remove from pending transaction if amountPaid == amountOwed
     if (currentUserShareEntity.getAmountOwed().equals(amountPaid)) {
