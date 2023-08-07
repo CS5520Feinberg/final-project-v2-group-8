@@ -26,6 +26,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     // setting user's name & kicking off welcome message.
     String userName = getIntent().getStringExtra("USER_NAME");
+    String budget = getIntent().getStringExtra("BUDGET");
     welcomeMsg.setText("Hello " + userName);
     welcomeMsg.startAnimation(fadeIn);
 
@@ -33,6 +34,7 @@ public class WelcomeActivity extends AppCompatActivity {
     new Handler().postDelayed(() -> {
       Intent intent = new Intent(WelcomeActivity.this, HomeActivity.class);
       intent.putExtra("USER_NAME", userName);
+      intent.putExtra("BUDGET", budget);
       startActivity(intent);
       finish();
     }, 3000); // have this showing for 3 sec as of now, but maybe we can make shorter?

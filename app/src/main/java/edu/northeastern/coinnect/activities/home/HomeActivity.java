@@ -1,18 +1,24 @@
 package edu.northeastern.coinnect.activities.home;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.ktx.Firebase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +30,14 @@ import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
 import edu.northeastern.coinnect.activities.transactions.addTransaction.AddTransactionActivity;
 import edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding;
+import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
 
 public class HomeActivity extends AppCompatActivity {
 
   private final Handler handler = new Handler();
+  private final static FirebaseDBHandler firebaseDBHandler = FirebaseDBHandler.getInstance();
 
   private RecyclerView transactionRecyclerView;
 
@@ -39,8 +47,7 @@ public class HomeActivity extends AppCompatActivity {
 
   private ProgressBar homeScreenProgressBar;
   private TextView greeting;
-
-  private String username;
+  private TextView budget;
 
   @SuppressLint("SetTextI18n")
   @Override
@@ -56,15 +63,20 @@ public class HomeActivity extends AppCompatActivity {
       startActivity(intent);
     });
 
+
     // getting username to display greeting
     String userName = getIntent().getStringExtra("USER_NAME");
+    String userBudget = getIntent().getStringExtra("BUDGET");
     greeting = findViewById(R.id.greeting);
+    budget = findViewById(R.id.set_budget);
 
-    if (userName != null) {
+    if (userName != null && userBudget != null) {
       greeting.setText("Hello " + userName);
+      budget.setText("$" + userBudget);
     }
 
-    BottomNavigationView navView = findViewById(R.id.bottomNavigationView2);
+
+    BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
     navView.setSelectedItemId(R.id.homeActivity);
     menuBarActions(navView);
 
@@ -103,17 +115,6 @@ public class HomeActivity extends AppCompatActivity {
       return false;
     });
   }
-
-//  private void setupToolbar(ActivityHomeScreenBinding binding) {
-//      setting toolbar with back button that navigates to the main page.
-//    Toolbar toolbar = binding.homeScreenToolbar;
-//
-//    toolbar.setTitle("Home");
-//    toolbar.setTitleTextColor(Color.WHITE);
-//
-//    setSupportActionBar(toolbar);
-//    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//  }
 
   private void setupRecyclerView(ActivityHomeScreenBinding binding) {
     this.transactionRecyclerView = binding.transactionRecyclerView;
