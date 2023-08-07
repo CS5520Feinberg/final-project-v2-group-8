@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import edu.northeastern.coinnect.persistence.FirebaseDBHandler;
+import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;

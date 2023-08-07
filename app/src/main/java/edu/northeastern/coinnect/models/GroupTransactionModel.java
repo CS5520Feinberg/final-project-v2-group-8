@@ -1,7 +1,7 @@
 package edu.northeastern.coinnect.models;
 
-import edu.northeastern.coinnect.persistence.entities.GroupTransactionEntity;
-import edu.northeastern.coinnect.persistence.entities.TransactionEntity;
+import edu.northeastern.coinnect.models.persistence.entities.GroupTransactionEntity;
+import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;

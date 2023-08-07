@@ -18,7 +18,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        BottomNavigationView navView = findViewById(R.id.bottomNavigationView2);
+        BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
         navView.setSelectedItemId(R.id.settings);
         menuBarActions(navView);
     }

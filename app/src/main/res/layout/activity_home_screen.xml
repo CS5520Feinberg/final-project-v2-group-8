@@ -14,7 +14,7 @@
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:src="@android:drawable/ic_input_add"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView2"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav_home"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ProgressBar
@@ -33,14 +33,14 @@
         android:id="@+id/transactionRecyclerView"
         android:layout_width="0dp"
         android:layout_height="290dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView2"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/recent_transactions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -50,11 +50,11 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/recent_transactions_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@+id/recent_transactions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
     </androidx.cardview.widget.CardView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView2"
+        android:id="@+id/bottom_nav_home"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:itemIconSize="36dp"
@@ -94,7 +94,7 @@
             app:layout_constraintTop_toBottomOf="@+id/greeting" />
 
         <TextView
-            android:id="@+id/moneySpent"
+            android:id="@+id/set_budget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -106,13 +106,13 @@
             app:layout_constraintTop_toBottomOf="@+id/greeting" />
 
         <TextView
-            android:id="@+id/spent_so_far"
+            android:id="@+id/monthly_budget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
-            android:text="@string/spent_so_far"
+            android:text="@string/monthly_budget"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/moneySpent" />
+            app:layout_constraintTop_toBottomOf="@+id/set_budget" />
 
         <TextView
             android:id="@+id/greeting"

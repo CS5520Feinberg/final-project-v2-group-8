@@ -1,6 +1,6 @@
 package edu.northeastern.coinnect.models;
 
-import edu.northeastern.coinnect.persistence.entities.GroupTransactionShareEntity;
+import edu.northeastern.coinnect.models.persistence.entities.GroupTransactionShareEntity;
 import java.math.BigDecimal;
 
 public class GroupTransactionShareModel {

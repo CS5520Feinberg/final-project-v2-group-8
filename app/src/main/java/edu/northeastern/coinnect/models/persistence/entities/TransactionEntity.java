@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.persistence.entities;
+package edu.northeastern.coinnect.models.persistence.entities;
 
 import java.math.BigDecimal;
 
