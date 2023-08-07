@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import edu.northeastern.coinnect.R;
-import edu.northeastern.coinnect.persistence.entities.TransactionEntity;
+import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
 
 public class RecentTransactionAdapter extends RecyclerView.Adapter<RecentTransactionViewHolder> {
 

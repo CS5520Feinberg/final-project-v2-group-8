@@ -1,6 +1,6 @@
 package edu.northeastern.coinnect.models;
 
-import edu.northeastern.coinnect.persistence.entities.PendingTransactionEntity;
+import edu.northeastern.coinnect.models.persistence.entities.PendingTransactionEntity;
 import java.math.BigDecimal;
 
 public class PendingTransactionModel {

@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.persistence;
+package edu.northeastern.coinnect.models.persistence;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -6,16 +6,17 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import edu.northeastern.coinnect.models.AbstractTransactionModel;
+import edu.northeastern.coinnect.models.AbstractUserModel;
 import edu.northeastern.coinnect.models.DayTransactionsModel;
 import edu.northeastern.coinnect.models.GroupTransactionModel;
 import edu.northeastern.coinnect.models.MonthTransactionsModel;
 import edu.northeastern.coinnect.models.PendingTransactionModel;
 import edu.northeastern.coinnect.models.TransactionModel;
-import edu.northeastern.coinnect.persistence.entities.GroupTransactionEntity;
-import edu.northeastern.coinnect.persistence.entities.GroupTransactionShareEntity;
-import edu.northeastern.coinnect.persistence.entities.PendingTransactionEntity;
-import edu.northeastern.coinnect.persistence.entities.TransactionEntity;
-import edu.northeastern.coinnect.persistence.entities.UserEntity;
+import edu.northeastern.coinnect.models.persistence.entities.GroupTransactionEntity;
+import edu.northeastern.coinnect.models.persistence.entities.GroupTransactionShareEntity;
+import edu.northeastern.coinnect.models.persistence.entities.PendingTransactionEntity;
+import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
+import edu.northeastern.coinnect.models.persistence.entities.UserEntity;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -152,8 +153,12 @@ public class FirebaseDBHandler {
     currentUserName = null;
   }
 
-  public void addUser(String username) {
-    UserEntity userEntity = new UserEntity(username);
+  public void addUser(AbstractUserModel user) {
+    UserEntity userEntity = new UserEntity(user.getUsername(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getPassword(),
+            user.getMonthlyBudget());
 
     dbInstance.getReference().child("users").child(userEntity.username).setValue(userEntity);
   }

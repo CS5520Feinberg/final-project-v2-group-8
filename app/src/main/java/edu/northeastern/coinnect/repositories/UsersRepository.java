@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
-import edu.northeastern.coinnect.persistence.FirebaseDBHandler;
+
+import edu.northeastern.coinnect.models.AbstractUserModel;
+import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.activities.welcome.WelcomeActivity;
 import java.util.HashMap;
 
@@ -31,33 +33,35 @@ public class UsersRepository {
   }
 
   // TODO: use this method to register user
-  public void registerUser(Handler handler, Context activityContext, String userName) {
+  public void registerUser(Handler handler, Context activityContext, AbstractUserModel user) {
     firebaseDbHandler.getDbInstance().getReference().child("users").get()
         .addOnCompleteListener(task -> {
           if (!task.isSuccessful()) {
             Log.e("firebase", "Error getting data", task.getException());
           } else {
+            Log.e("firebase", "hey whats up you made it here");
             HashMap value = (HashMap) task.getResult().getValue();
             boolean flag = true;
             for (Object key : value.keySet()) {
-              if (key.toString().equals(userName)) {
+              Log.e("firebase", key.toString());
+              if (key.toString().equals(user.getUsername())) {
                 flag = false;
               }
             }
 
             if (flag) {
-              Log.i(TAG, String.format("User %s being added to database", userName));
-              firebaseDbHandler.addUser(userName);
+              Log.i(TAG, String.format("User %s being added to database", user.getUsername()));
+              firebaseDbHandler.addUser(user);
 
-              Log.i(TAG, String.format("User %s being logged in", userName));
+              Log.i(TAG, String.format("User %s being logged in", user.getUsername()));
 
-              firebaseDbHandler.setCurrentUserName(userName);
+              firebaseDbHandler.setCurrentUserName(user.getUsername());
               handler.post(() -> {
                 Intent intent = new Intent(activityContext, WelcomeActivity.class);
                 activityContext.startActivity(intent);
               });
             } else {
-              Log.i(TAG, String.format("User %s already exists", userName));
+              Log.i(TAG, String.format("User %s already exists", user.getUsername()));
               handler.post(
                   () -> Toast.makeText(activityContext, "User already exists! ",
                       Toast.LENGTH_SHORT).show());

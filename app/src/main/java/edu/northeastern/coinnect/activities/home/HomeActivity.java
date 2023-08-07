@@ -20,12 +20,11 @@ import java.util.List;
 import edu.northeastern.coinnect.R;
 
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
-import edu.northeastern.coinnect.activities.login.RegisterActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
 import edu.northeastern.coinnect.activities.transactions.addTransaction.AddTransactionActivity;
 import edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding;
-import edu.northeastern.coinnect.persistence.entities.TransactionEntity;
+import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
 
 public class HomeActivity extends AppCompatActivity {
