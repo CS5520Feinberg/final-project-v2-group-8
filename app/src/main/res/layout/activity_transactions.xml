@@ -16,6 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav"
         app:itemIconSize="36dp"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,8 +14,10 @@
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:src="@android:drawable/ic_input_add"
+        android:backgroundTint="@color/accentGreen"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav_home"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
     <ProgressBar
         android:id="@+id/homeScreenProgressBar"
@@ -67,12 +69,15 @@
         android:id="@+id/bottom_nav_home"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:itemTextColor="@color/darkgray"
         app:itemIconSize="36dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav" />
+        app:menu="@menu/bottom_nav"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
+        />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"

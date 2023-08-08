@@ -23,4 +23,6 @@
     <string name="first_name">First Name</string>
     <string name="username">Username</string>
     <string name="monthly_budget">Monthly budget</string>
+    <string name="sign_in_with_username">Sign in with username</string>
+    <string name="log_in">Log in</string>
 </resources>
