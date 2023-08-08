@@ -19,7 +19,7 @@ public class FriendsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
-        BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
+        BottomNavigationView navView = findViewById(R.id.bottom_nav_friends);
         navView.setSelectedItemId(R.id.friends);
         menuBarActions(navView);
     }

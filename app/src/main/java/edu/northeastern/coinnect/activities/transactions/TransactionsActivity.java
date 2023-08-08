@@ -34,6 +34,7 @@ public class TransactionsActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
                 overridePendingTransition(0,0);
             } else if (item.getItemId() == R.id.transactionActivity) {
+                item.setChecked(true);
                 return true;
             } else {
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));

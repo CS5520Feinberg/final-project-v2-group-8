@@ -47,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
     private UserModel newUser;
     private UsersRepository usersRepository = UsersRepository.getInstance();
     private FirebaseDBHandler firebaseDBHandler = usersRepository.getFirebaseDbHandler();
-    private String firstName, lastName, username, password, confirmPassword, monthlyBudget;
+    private String firstName, lastName, username, password, confirmPassword, monthlyBudget, datePass;
 
     private Handler handler = new Handler();
 
@@ -90,6 +90,8 @@ public class RegisterActivity extends AppCompatActivity {
                     // hashing password
                     password = encryptPass(password);
 
+                    datePass = getIntent().getStringExtra("DATE");
+
                     newUser = new UserModel(username,
                             firstName,
                             lastName,
@@ -99,6 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
                     intent.putExtra("USER_NAME", newUser.getFirstName());
+                    intent.putExtra("DATE", datePass);
                     intent.putExtra("BUDGET", monthlyBudget);
 
                     startActivity(intent);

@@ -1,8 +1,15 @@
 package edu.northeastern.coinnect.activities.home;
 
+import static android.graphics.Color.rgb;
+
+import static edu.northeastern.coinnect.R.color.accentGreen;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ProgressBar;
@@ -48,15 +55,15 @@ public class HomeActivity extends AppCompatActivity {
   private ProgressBar homeScreenProgressBar;
   private TextView greeting;
   private TextView budget;
+  private TextView date;
 
-  @SuppressLint("SetTextI18n")
+  @SuppressLint({"SetTextI18n", "ResourceAsColor"})
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding binding = ActivityHomeScreenBinding.inflate(
             getLayoutInflater());
     setContentView(R.layout.activity_home_screen);
-
     FloatingActionButton addTransaction = (FloatingActionButton) findViewById(R.id.addTransactionButton);
     addTransaction.setOnClickListener( view -> {
       Intent intent = new Intent(getApplicationContext(), AddTransactionActivity.class);
@@ -64,22 +71,27 @@ public class HomeActivity extends AppCompatActivity {
     });
 
 
-    // getting username to display greeting
+    // getting username, budget, date to display greeting
     String userName = getIntent().getStringExtra("USER_NAME");
     String userBudget = getIntent().getStringExtra("BUDGET");
+    String dateExtra = getIntent().getStringExtra("DATE");
     greeting = findViewById(R.id.greeting);
     budget = findViewById(R.id.set_budget);
+    date = findViewById(R.id.today_date);
 
-    if (userName != null && userBudget != null) {
+    if (userName != null) {
       greeting.setText("Hello " + userName);
       budget.setText("$" + userBudget);
+      date.setText(dateExtra);
+    } else {
+      greeting.setText("Free Pass");
+      budget.setText("$2500");
+      date.setText(dateExtra);
     }
 
 
     BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
-    navView.setSelectedItemId(R.id.homeActivity);
     menuBarActions(navView);
-
     homeScreenProgressBar = findViewById(R.id.homeScreenProgressBar);
     List<TransactionEntity> transactionEntityList = new ArrayList<>();
 
@@ -97,17 +109,13 @@ public class HomeActivity extends AppCompatActivity {
       if(item.getItemId() == R.id.friends) {
         startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
         overridePendingTransition(0,0);
-
       } else if (item.getItemId() == R.id.homeActivity) {
         return true;
       } else if (item.getItemId() == R.id.transactionActivity) {
-
         startActivity(new Intent(getApplicationContext(), TransactionsActivity.class));
         overridePendingTransition(0, 0);
-
         return true;
       } else {
-
         startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
         overridePendingTransition(0, 0);
         return true;

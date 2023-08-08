@@ -37,15 +37,31 @@
       android:layout_marginHorizontal="16dp"
       android:text="@string/sign_in_with_google"
       android:textColor="@color/white"
+      android:backgroundTint="@color/black"
+      android:textSize="20sp"
+      tools:ignore="RtlHardcoded" />
+<Button
+      android:id="@+id/signInUsernameButton"
+      android:backgroundTint="@color/black"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:drawableLeft="@drawable/baseline_key_24"
+      android:layout_gravity="center"
+      android:layout_marginTop="8dp"
+      android:layout_marginHorizontal="16dp"
+      android:text="@string/sign_in_with_username"
+      android:textColor="@color/white"
       android:textSize="20sp"
       tools:ignore="RtlHardcoded" />
   <Button
       android:id="@+id/registerButton"
+      android:backgroundTint="@color/black"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:drawableLeft="@drawable/user_single_white"
+      android:drawableLeft="@drawable/outline_person_add_24"
       android:layout_gravity="center"
       android:layout_marginHorizontal="16dp"
+      android:layout_marginTop="8dp"
       android:text="@string/create_an_account"
       android:textColor="@color/white"
       android:textSize="20sp"
@@ -53,9 +69,12 @@
 
   <Button
       android:id="@+id/freePassBtn"
+      android:backgroundTint="@color/black"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="Freepass"
+      android:layout_marginHorizontal="16dp"
+      android:layout_marginTop="16dp"
       tools:layout_margin="48px" />
 
 
