@@ -117,12 +117,10 @@ public class LoginActivity extends AppCompatActivity {
 
                     UserModel newUser = new UserModel(
                             name,
-                            name,
-                            credential.getFamilyName(),
                             credential.getPassword(),
                             defaultMonthlyBudget);
 
-                    registerUser(handler, getApplicationContext(), newUser, credential.getDisplayName());
+                    registerUser(handler, getApplicationContext(), newUser, name);
                     startActivity(intent);
                     finish();
                   }
