@@ -161,8 +161,8 @@ public class RegisterActivity extends AppCompatActivity {
             String hex = Integer.toHexString(0xff & hash[i]);
             if (hex.length() == 1) {
                 hexStr.append('0');
-                hexStr.append(hex);
             }
+                hexStr.append(hex);
         }
         return hexStr.toString();
     }

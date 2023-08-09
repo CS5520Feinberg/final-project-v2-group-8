@@ -6,6 +6,7 @@ public abstract class AbstractUserModel {
     private String firstName;
     private String lastName;
     private String password;
+    private String name;
     private int monthlyBudget;
 
     public AbstractUserModel(String username,
@@ -16,6 +17,14 @@ public abstract class AbstractUserModel {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.password = password;
+        this.monthlyBudget = monthlyBudget;
+    }
+
+
+    // for google sign in flow that only gets one display name.
+    public AbstractUserModel(String name, String password, int monthlyBudget) {
+        this.name = name;
         this.password = password;
         this.monthlyBudget = monthlyBudget;
     }
