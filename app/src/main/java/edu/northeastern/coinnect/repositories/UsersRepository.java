@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import edu.northeastern.coinnect.models.AbstractUserModel;
+import edu.northeastern.coinnect.models.userModels.AbstractUserModel;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.activities.welcome.WelcomeActivity;
 import java.util.HashMap;
