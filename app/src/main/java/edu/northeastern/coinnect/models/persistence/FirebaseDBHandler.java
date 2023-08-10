@@ -17,7 +17,6 @@ import edu.northeastern.coinnect.models.persistence.entities.GroupTransactionSha
 import edu.northeastern.coinnect.models.persistence.entities.PendingTransactionEntity;
 import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.models.persistence.entities.UserEntity;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -155,7 +154,9 @@ public class FirebaseDBHandler {
   }
 
   public void addUser(AbstractUserModel user) {
-    UserEntity userEntity = new UserEntity(user.getUsername(),
+    UserEntity userEntity =
+        new UserEntity(
+            user.getUsername(),
             user.getFirstName(),
             user.getLastName(),
             user.getPassword(),
@@ -223,9 +224,10 @@ public class FirebaseDBHandler {
     AtomicLong result = new AtomicLong();
     try {
       Task<DataSnapshot> getValueTask = userTransactionIdCounterReference.get();
-      getValueTask.addOnSuccessListener(res -> {
-        result.set((Long) res.getValue());
-      });
+      getValueTask.addOnSuccessListener(
+          res -> {
+            result.set((Long) res.getValue());
+          });
     } catch (NullPointerException e) {
       userTransactionIdCounterReference.setValue(1);
       return 0;
@@ -357,7 +359,6 @@ public class FirebaseDBHandler {
   public Task<Void> addTransaction(
       Integer year, Integer month, Integer dayOfMonth, Double amount, String description) {
     this.validate_currentUserIsSet();
-
 
     Integer transactionId = this.getNewTransactionId();
     TransactionEntity transactionEntityObj =

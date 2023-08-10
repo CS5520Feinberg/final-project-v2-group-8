@@ -1,7 +1,5 @@
 package edu.northeastern.coinnect.models;
 
-import java.math.BigDecimal;
-
 public abstract class AbstractTransactionModel {
 
   // this cannot be null as it is a native type

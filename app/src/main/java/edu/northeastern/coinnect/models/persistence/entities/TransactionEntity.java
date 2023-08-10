@@ -1,7 +1,5 @@
 package edu.northeastern.coinnect.models.persistence.entities;
 
-import java.math.BigDecimal;
-
 public class TransactionEntity {
   // this cannot be null as it is a native type
   public int transactionId;

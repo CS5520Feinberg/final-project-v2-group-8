@@ -1,7 +1,5 @@
 package edu.northeastern.coinnect.models.persistence.entities;
 
-import java.math.BigDecimal;
-
 public class PendingTransactionEntity {
   public Integer groupTransactionId;
   public Double totalAmount;
