@@ -7,7 +7,7 @@ public abstract class AbstractTransactionModel {
   // this cannot be null as it is a native type
   private int id;
   private String description;
-  private BigDecimal amount;
+  private Double amount;
 
   private int year;
   private int month;
@@ -15,7 +15,7 @@ public abstract class AbstractTransactionModel {
 
   boolean isGroupTransaction;
 
-  public AbstractTransactionModel(int id, String description, BigDecimal amount, int year, int month, int dayOfMonth) {
+  public AbstractTransactionModel(int id, String description, Double amount, int year, int month, int dayOfMonth) {
     this.id = id;
     this.description = description;
     this.amount = amount;
@@ -33,7 +33,7 @@ public abstract class AbstractTransactionModel {
     return this.description;
   }
 
-  public BigDecimal getAmount() {
+  public Double getAmount() {
     return this.amount;
   }
 

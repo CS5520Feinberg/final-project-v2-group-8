@@ -15,7 +15,7 @@ public class GroupTransactionModel extends AbstractTransactionModel {
   public GroupTransactionModel(
       int id,
       String description,
-      BigDecimal amount,
+      Double amount,
       int year,
       int month,
       int dayOfMonth,
@@ -72,12 +72,12 @@ public class GroupTransactionModel extends AbstractTransactionModel {
    * @param currentUserName the user name of the current user.
    * @return the net amount that the current user paid.
    */
-  public BigDecimal getNetAmount(String currentUserName) {
+  public Double getNetAmount(String currentUserName) {
     if (currentUserName.equals(this.creatorUserName)) {
-      BigDecimal totalAmount = this.getAmount();
+      Double totalAmount = this.getAmount();
 
       for (GroupTransactionShareModel share : this.getGroupTransactionShares()) {
-        totalAmount.subtract(share.getAmountPaid());
+        totalAmount = totalAmount - share.getAmountPaid();
       }
 
       return totalAmount;

@@ -5,9 +5,9 @@ import java.math.BigDecimal;
 
 public class PendingTransactionModel {
   private final Integer groupTransactionId;
-  private final BigDecimal totalAmount;
-  private final BigDecimal amountOwed;
-  private final BigDecimal amountPaid;
+  private final Double totalAmount;
+  private final Double amountOwed;
+  private final Double amountPaid;
   private final String creatorUser;
 
   public PendingTransactionModel(PendingTransactionEntity entity) {
@@ -22,15 +22,15 @@ public class PendingTransactionModel {
     return groupTransactionId;
   }
 
-  public BigDecimal getTotalAmount() {
+  public Double getTotalAmount() {
     return totalAmount;
   }
 
-  public BigDecimal getAmountOwed() {
+  public Double getAmountOwed() {
     return amountOwed;
   }
 
-  public BigDecimal getAmountPaid() {
+  public Double getAmountPaid() {
     return amountPaid;
   }
 

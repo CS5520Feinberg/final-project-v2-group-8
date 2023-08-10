@@ -1,15 +1,14 @@
 package edu.northeastern.coinnect.models.persistence.entities;
 
-import java.math.BigDecimal;
 
 public class GroupTransactionShareEntity {
   public String username;
-  public BigDecimal amountOwed;
-  public BigDecimal amountPaid;
+  public Double amountOwed;
+  public Double amountPaid;
   public Integer userTransactionId;
 
   public GroupTransactionShareEntity(
-      String username, BigDecimal amountOwed, BigDecimal amountPaid, Integer userTransactionId) {
+      String username, Double amountOwed, Double amountPaid, Integer userTransactionId) {
     this.username = username;
     this.amountOwed = amountOwed;
     this.amountPaid = amountPaid;
@@ -20,15 +19,15 @@ public class GroupTransactionShareEntity {
     return this.username;
   }
 
-  public BigDecimal getAmountOwed() {
+  public Double getAmountOwed() {
     return this.amountOwed;
   }
 
-  public void setAmountPaid(BigDecimal amountPaid) {
+  public void setAmountPaid(Double amountPaid) {
     this.amountPaid = amountPaid;
   }
 
-  public BigDecimal getAmountPaid() {
+  public Double getAmountPaid() {
     return this.amountPaid;
   }
 

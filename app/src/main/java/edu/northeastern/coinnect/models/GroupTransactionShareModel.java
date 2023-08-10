@@ -5,10 +5,10 @@ import java.math.BigDecimal;
 
 public class GroupTransactionShareModel {
   private final String username;
-  private final BigDecimal amountOwed;
-  private final BigDecimal amountPaid;
+  private final Double amountOwed;
+  private final Double amountPaid;
 
-  public GroupTransactionShareModel(String username, BigDecimal amountOwed, BigDecimal amountPaid) {
+  public GroupTransactionShareModel(String username, Double amountOwed, Double amountPaid) {
     this.username = username;
     this.amountOwed = amountOwed;
     this.amountPaid = amountPaid;
@@ -24,11 +24,11 @@ public class GroupTransactionShareModel {
     return this.username;
   }
 
-  public BigDecimal getAmountOwed() {
+  public Double getAmountOwed() {
     return this.amountOwed;
   }
 
-  public BigDecimal getAmountPaid() {
+  public Double getAmountPaid() {
     return this.amountPaid;
   }
 }

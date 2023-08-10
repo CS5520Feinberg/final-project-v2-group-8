@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 public class TransactionModel extends AbstractTransactionModel {
 
 
-  public TransactionModel(int id, String description, BigDecimal amount, int year, int month, int dayOfMonth) {
+  public TransactionModel(int id, String description, Double amount, int year, int month, int dayOfMonth) {
     super(id, description, amount, year, month, dayOfMonth);
   }
 

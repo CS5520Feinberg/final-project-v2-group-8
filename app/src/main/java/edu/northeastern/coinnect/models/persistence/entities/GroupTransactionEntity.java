@@ -5,13 +5,13 @@ import java.util.List;
 
 public class GroupTransactionEntity {
   public int groupTransactionId;
-  public BigDecimal totalAmount;
+  public Double totalAmount;
   public String creatorUserName;
   public List<GroupTransactionShareEntity> shares;
 
   public GroupTransactionEntity(
       int groupTransactionId,
-      BigDecimal totalAmount,
+      Double totalAmount,
       String creatorUserName,
       List<GroupTransactionShareEntity> shares) {
     this.groupTransactionId = groupTransactionId;
@@ -24,7 +24,7 @@ public class GroupTransactionEntity {
     return this.groupTransactionId;
   }
 
-  public BigDecimal getTotalAmount() {
+  public Double getTotalAmount() {
     return this.totalAmount;
   }
 

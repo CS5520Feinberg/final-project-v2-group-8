@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 
 public class PendingTransactionEntity {
   public Integer groupTransactionId;
-  public BigDecimal totalAmount;
-  public BigDecimal amountOwed;
-  public BigDecimal amountPaid;
+  public Double totalAmount;
+  public Double amountOwed;
+  public Double amountPaid;
   public String creatorUser;
 
-  public PendingTransactionEntity(Integer groupTransactionId, BigDecimal totalAmount, BigDecimal amountOwed, BigDecimal amountPaid, String creatorUser) {
+  public PendingTransactionEntity(Integer groupTransactionId, Double totalAmount, Double amountOwed, Double amountPaid, String creatorUser) {
     this.groupTransactionId = groupTransactionId;
     this.totalAmount = totalAmount;
     this.amountOwed = amountOwed;
@@ -21,15 +21,15 @@ public class PendingTransactionEntity {
     return groupTransactionId;
   }
 
-  public BigDecimal getTotalAmount() {
+  public Double getTotalAmount() {
     return totalAmount;
   }
 
-  public BigDecimal getAmountOwed() {
+  public Double getAmountOwed() {
     return amountOwed;
   }
 
-  public BigDecimal getAmountPaid() {
+  public Double getAmountPaid() {
     return amountPaid;
   }
 

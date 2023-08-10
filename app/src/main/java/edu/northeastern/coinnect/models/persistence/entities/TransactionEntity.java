@@ -9,7 +9,7 @@ public class TransactionEntity {
   public Integer month;
   public Integer dayOfMonth;
   public String description;
-  public BigDecimal amount;
+  public Double amount;
   public boolean isGroupTransaction;
   // this can be null as it is an object
   public Integer groupTransactionId;
@@ -27,7 +27,7 @@ public class TransactionEntity {
       Integer month,
       Integer dayOfMonth,
       String description,
-      BigDecimal amount) {
+      Double amount) {
     this.transactionId = transactionId;
     this.description = description;
     this.amount = amount;
@@ -49,7 +49,7 @@ public class TransactionEntity {
       Integer month,
       Integer dayOfMonth,
       String description,
-      BigDecimal amount,
+      Double amount,
       int groupTransactionId) {
     this(transactionId, year, month, dayOfMonth, description, amount);
     this.isGroupTransaction = true;
@@ -64,7 +64,7 @@ public class TransactionEntity {
     return this.description;
   }
 
-  public BigDecimal getAmount() {
+  public Double getAmount() {
     return this.amount;
   }
 
@@ -81,7 +81,7 @@ public class TransactionEntity {
     this.groupTransactionId = groupTransactionId;
   }
 
-  public void setAmount(BigDecimal amount) {
+  public void setAmount(Double amount) {
     this.amount = amount;
   }
 }
