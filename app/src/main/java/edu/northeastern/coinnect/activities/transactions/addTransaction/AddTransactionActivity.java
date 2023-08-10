@@ -78,7 +78,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             String desc = transactionDescTextView.getText().toString().trim();
             addTransactionProgressbar.setVisibility(View.VISIBLE);
 //            transaction = new TransactionEntity(123456, desc, BigDecimal.valueOf(Double.parseDouble(amount)));
-            transactionsRepository.addTransaction(handler,this,addTransactionProgressbar,year,month,day,BigDecimal.valueOf(Double.parseDouble(amount)),desc);
+            transactionsRepository.addTransaction(handler,this,addTransactionProgressbar,year,month,day,Double.parseDouble(amount),desc);
 
         });
 

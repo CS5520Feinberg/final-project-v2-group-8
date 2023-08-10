@@ -38,7 +38,7 @@ public class TransactionsRepository {
       Integer year,
       Integer month,
       Integer dayOfMonth,
-      BigDecimal amount,
+      Double amount,
       String description) {
     getFirebaseDbHandler()
         .addTransaction(year, month, dayOfMonth, amount, description)

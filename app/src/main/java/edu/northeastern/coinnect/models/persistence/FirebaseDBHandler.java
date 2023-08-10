@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class FirebaseDBHandler {
 
@@ -111,18 +112,18 @@ public class FirebaseDBHandler {
     }
   }
 
-  private void validate_amountPaid(BigDecimal amountPaid) {
-    if (amountPaid == null || amountPaid.compareTo(new BigDecimal(0)) <= 0) {
+  private void validate_amountPaid(Double amountPaid) {
+    if (amountPaid == null || amountPaid.compareTo(new Double(0)) <= 0) {
       throw new IllegalArgumentException("Amount paid cannot be lesser than or equal to zero!");
     }
   }
 
   private void validate_sharesAddUpToTotalAmount(
-      BigDecimal totalAmount, Map<String, BigDecimal> userShares) {
-    BigDecimal calculatingTotal = new BigDecimal(0);
+      Double totalAmount, Map<String, Double> userShares) {
+    Double calculatingTotal = new Double(0);
 
-    for (BigDecimal share : userShares.values()) {
-      calculatingTotal = calculatingTotal.add(share);
+    for (Double share : userShares.values()) {
+      calculatingTotal = calculatingTotal + share;
     }
 
     if (!totalAmount.equals(calculatingTotal)) {
@@ -131,7 +132,7 @@ public class FirebaseDBHandler {
   }
 
   private void validate_sharesPaidAmountRespectsOwedAmount(
-      GroupTransactionShareEntity currentUserShareEntity, BigDecimal amountPaid) {
+      GroupTransactionShareEntity currentUserShareEntity, Double amountPaid) {
     if (amountPaid.compareTo(currentUserShareEntity.getAmountOwed()) > 0) {
       throw new IllegalArgumentException("Amount paid cannot be greater than amount owed!");
     }
@@ -219,18 +220,20 @@ public class FirebaseDBHandler {
             .child(this.getCurrentUserName())
             .child(TRANSACTION_ID_COUNTER);
 
-    int result;
+    AtomicLong result = new AtomicLong();
     try {
-      result = (int) userTransactionIdCounterReference.get().getResult().getValue();
-
+      Task<DataSnapshot> getValueTask = userTransactionIdCounterReference.get();
+      getValueTask.addOnSuccessListener(res -> {
+        result.set((Long) res.getValue());
+      });
     } catch (NullPointerException e) {
       userTransactionIdCounterReference.setValue(1);
       return 0;
     }
 
-    userTransactionIdCounterReference.setValue(result + 1);
+    userTransactionIdCounterReference.setValue(result.get() + 1);
 
-    return result;
+    return (int) result.get();
   }
 
   private int getNewGroupTransactionId() {
@@ -352,8 +355,9 @@ public class FirebaseDBHandler {
   }
 
   public Task<Void> addTransaction(
-      Integer year, Integer month, Integer dayOfMonth, BigDecimal amount, String description) {
+      Integer year, Integer month, Integer dayOfMonth, Double amount, String description) {
     this.validate_currentUserIsSet();
+
 
     Integer transactionId = this.getNewTransactionId();
     TransactionEntity transactionEntityObj =
@@ -367,9 +371,9 @@ public class FirebaseDBHandler {
       Integer year,
       Integer month,
       Integer dayOfMonth,
-      BigDecimal totalAmount,
+      Double totalAmount,
       String description,
-      Map<String, BigDecimal> userShares) {
+      Map<String, Double> userShares) {
     this.validate_currentUserIsSet();
     this.validate_sharesAddUpToTotalAmount(totalAmount, userShares);
     this.validate_usersAreFriends(userShares.keySet());
@@ -381,14 +385,14 @@ public class FirebaseDBHandler {
     List<GroupTransactionShareEntity> shareEntities = new ArrayList<>();
     Map<String, PendingTransactionEntity> pendingTransactionEntitiesMap = new HashMap<>();
 
-    for (Entry<String, BigDecimal> share : userShares.entrySet()) {
+    for (Entry<String, Double> share : userShares.entrySet()) {
       String userName = share.getKey();
-      BigDecimal amountOwed = share.getValue();
+      Double amountOwed = share.getValue();
       if (userName.equals(this.getCurrentUserName())) {
         shareEntities.add(
             new GroupTransactionShareEntity(userName, amountOwed, amountOwed, transactionId));
       } else {
-        BigDecimal amountPaid = new BigDecimal(0);
+        Double amountPaid = new Double(0);
         shareEntities.add(new GroupTransactionShareEntity(userName, amountOwed, amountPaid, null));
         pendingTransactionEntitiesMap.put(
             userName,
@@ -428,7 +432,7 @@ public class FirebaseDBHandler {
       Integer month,
       Integer dayOfMonth,
       Integer transactionId,
-      Map<String, BigDecimal> userShares) {
+      Map<String, Double> userShares) {
     this.validate_currentUserIsSet();
 
     TransactionEntity transactionEntity =
@@ -443,14 +447,14 @@ public class FirebaseDBHandler {
     List<GroupTransactionShareEntity> shareEntities = new ArrayList<>();
     Map<String, PendingTransactionEntity> pendingTransactionEntitiesMap = new HashMap<>();
 
-    for (Entry<String, BigDecimal> share : userShares.entrySet()) {
+    for (Entry<String, Double> share : userShares.entrySet()) {
       String userName = share.getKey();
-      BigDecimal amountOwed = share.getValue();
+      Double amountOwed = share.getValue();
       if (userName.equals(this.getCurrentUserName())) {
         shareEntities.add(
             new GroupTransactionShareEntity(userName, amountOwed, amountOwed, transactionId));
       } else {
-        BigDecimal amountPaid = new BigDecimal(0);
+        Double amountPaid = new Double(0);
         shareEntities.add(new GroupTransactionShareEntity(userName, amountOwed, amountPaid, null));
         pendingTransactionEntitiesMap.put(
             userName,
@@ -494,7 +498,7 @@ public class FirebaseDBHandler {
       Integer dayOfMonth,
       Integer groupTransactionId,
       String description,
-      BigDecimal amountPaid) {
+      Double amountPaid) {
     this.validate_currentUserIsSet();
     this.validate_amountPaid(amountPaid);
 
