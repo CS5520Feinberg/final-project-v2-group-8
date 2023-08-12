@@ -6,30 +6,43 @@
     android:layout_height="match_parent"
     tools:context=".activities.home.HomeActivity">
 
-
     <TextView
-        android:id="@+id/recent_transactions"
-        android:layout_width="wrap_content"
+        android:id="@+id/friends_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Friends"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_marginTop="64dp"
+        android:layout_marginHorizontal="8dp"
+        android:text="@string/friends_list"
+        android:textAlignment="viewStart"
+        android:textSize="34sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/friends_recycler_view"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/friends_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="702dp"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toTopOf="@id/bottom_nav_friends"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/friends_title" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_friends"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:itemTextColor="@color/darkgray"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav"
         app:itemIconSize="36dp"
         app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
         />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
