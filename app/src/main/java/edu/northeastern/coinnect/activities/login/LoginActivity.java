@@ -157,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   public void registerUser(Handler handler, Context activityContext, UserModel user, String username) {
-    firebaseDBHandler.getDbInstance().getReference().child("USERS").get()
+    firebaseDBHandler.getDbInstance().getReference().child(FirebaseDBHandler.USERS_BUCKET_NAME).get()
             .addOnCompleteListener(task -> {
               Object resultValue = task.getResult().getValue();
 

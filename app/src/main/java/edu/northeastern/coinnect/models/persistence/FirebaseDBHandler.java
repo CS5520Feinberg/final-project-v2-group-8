@@ -162,7 +162,10 @@ public class FirebaseDBHandler {
             user.getPassword(),
             user.getMonthlyBudget());
 
-      dbInstance.getReference().child("USERS").child(userEntity.username).setValue(userEntity);
+
+
+    dbInstance.getReference().child(FirebaseDBHandler.USERS_BUCKET_NAME).child(userEntity.username).setValue(userEntity);
+
   }
 
   // </editor-fold>
