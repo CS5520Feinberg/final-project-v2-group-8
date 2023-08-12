@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.welcome.WelcomeActivity;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
@@ -73,7 +75,7 @@ public class UsernameSignInActivity extends AppCompatActivity {
   }
 
   private void logInFlow(String username, String password, Context activityContext) {
-    Object firebaseCall =
+    Task<DataSnapshot> firebaseCall =
         firebaseDBHandler
             .getDbInstance()
             .getReference()
@@ -81,57 +83,50 @@ public class UsernameSignInActivity extends AppCompatActivity {
             .child(username)
             .get();
 
-    if (firebaseCall != null) {
+    if (firebaseCall == null) {
       handler.post(
           () ->
               Toast.makeText(activityContext, "Incorrect login information!", Toast.LENGTH_SHORT)
                   .show());
     } else {
 
-      firebaseDBHandler
-          .getDbInstance()
-          .getReference()
-          .child(FirebaseDBHandler.USERS_BUCKET_NAME)
-          .child(username)
-          .get()
-          .addOnCompleteListener(
-              task -> {
-                Object resultValue = task.getResult().getValue();
+      firebaseCall.addOnCompleteListener(
+          task -> {
+            Object resultValue = task.getResult().getValue();
 
-                if (!task.isSuccessful()) {
-                  Log.e("firebase", "Error getting data", task.getException());
-                } else {
-                  HashMap value = (HashMap) task.getResult().getValue();
-                  boolean flag = true;
+            if (!task.isSuccessful()) {
+              Log.e("firebase", "Error getting data", task.getException());
+            } else {
+              HashMap value = (HashMap) task.getResult().getValue();
+              boolean flag = true;
 
-                  for (Object key : value.keySet()) {
-                    if (key.toString().equals("password")) {
-                      flag = false;
-                      String usersHashedPassword = String.valueOf(value.get("password"));
-                      try {
-                        if (comparePasswords(password, usersHashedPassword)) {
-                          Intent intent =
-                              new Intent(getApplicationContext(), WelcomeActivity.class);
-                          intent.putExtra("USER_NAME", username);
-                          intent.putExtra("BUDGET", value.get("monthlyBudget").toString());
-                          startActivity(intent);
-                          finish();
-                        } else {
-                          handler.post(
-                              () ->
-                                  Toast.makeText(
-                                          activityContext,
-                                          "Incorrect login information!",
-                                          Toast.LENGTH_SHORT)
-                                      .show());
-                        }
-                      } catch (Exception e) {
-                        throw new RuntimeException(e);
-                      }
+              for (Object key : value.keySet()) {
+                if (key.toString().equals("password")) {
+                  flag = false;
+                  String usersHashedPassword = String.valueOf(value.get("password"));
+                  try {
+                    if (comparePasswords(password, usersHashedPassword)) {
+                      Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                      intent.putExtra("USER_NAME", username);
+                      intent.putExtra("BUDGET", value.get("monthlyBudget").toString());
+                      startActivity(intent);
+                      finish();
+                    } else {
+                      handler.post(
+                          () ->
+                              Toast.makeText(
+                                      activityContext,
+                                      "Incorrect login information!",
+                                      Toast.LENGTH_SHORT)
+                                  .show());
                     }
+                  } catch (Exception e) {
+                    throw new RuntimeException(e);
                   }
                 }
-              });
+              }
+            }
+          });
     }
   }
 }
