@@ -32,6 +32,10 @@ public class UsersRepository {
     return firebaseDbHandler;
   }
 
+  public String getCurrentUserName() {
+    return this.getFirebaseDbHandler().getCurrentUserName();
+  }
+
   // TODO: use this method to register user
   public void registerUser(Handler handler, Context activityContext, AbstractUserModel user, String username) {
     firebaseDbHandler.getDbInstance().getReference().child(FirebaseDBHandler.USERS_BUCKET_NAME).get()

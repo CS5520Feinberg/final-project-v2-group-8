@@ -11,17 +11,21 @@ import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
+import edu.northeastern.coinnect.repositories.UsersRepository;
 
 public class TransactionsActivity extends AppCompatActivity {
 
     private BottomNavigationView navView;
     private String currentUser;
+
+    UsersRepository usersRepository = UsersRepository.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transactions);
 
-        currentUser = getIntent().getStringExtra("USER_NAME");
+        currentUser = this.usersRepository.getCurrentUserName();
+
         navView = findViewById(R.id.bottomNavigationViewTransactions);
         navView.setSelectedItemId(R.id.transactionActivity);
         menuBarActions(navView);
@@ -30,12 +34,12 @@ public class TransactionsActivity extends AppCompatActivity {
     protected void menuBarActions(BottomNavigationView navView) {
         navView.setOnItemSelectedListener(item ->  {
             if(item.getItemId() == R.id.homeActivity) {
-                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                Intent intent = new Intent(this, HomeActivity.class);
                 intent.putExtra("USER_NAME", currentUser);
                 startActivity(intent);
                 overridePendingTransition(0,0);
             } else if(item.getItemId() == R.id.friends) {
-                Intent intent = new Intent(getApplicationContext(), FriendsActivity.class);
+                Intent intent = new Intent(this, FriendsActivity.class);
                 intent.putExtra("USER_NAME", currentUser);
                 startActivity(intent);
                 overridePendingTransition(0,0);
@@ -43,7 +47,7 @@ public class TransactionsActivity extends AppCompatActivity {
                 item.setChecked(true);
                 return true;
             } else {
-                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                Intent intent = new Intent(this, SettingsActivity.class);
                 intent.putExtra("USER_NAME", currentUser);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
