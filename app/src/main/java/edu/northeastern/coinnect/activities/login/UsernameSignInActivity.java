@@ -2,11 +2,14 @@ package edu.northeastern.coinnect.activities.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -24,6 +27,7 @@ import edu.northeastern.coinnect.repositories.UsersRepository;
 public class UsernameSignInActivity extends AppCompatActivity {
 
     private Button logInButton;
+    private Handler handler = new Handler();
     private static UsersRepository usersRepository = UsersRepository.getInstance();
     private FirebaseDBHandler firebaseDBHandler = usersRepository.getFirebaseDbHandler();
     private static String attemptUsername;
@@ -41,12 +45,11 @@ public class UsernameSignInActivity extends AppCompatActivity {
         passwordEntry = findViewById(R.id.passwordLogIn);
 
         logInButton.setOnClickListener(v -> {
-            logInFlow(String.valueOf(userEntry.getText()), String.valueOf(passwordEntry.getText()));
+            logInFlow(String.valueOf(userEntry.getText()), String.valueOf(passwordEntry.getText()), getApplicationContext());
 
         });
 
     }
-
 
 
     private static String encryptPass(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
@@ -74,44 +77,53 @@ public class UsernameSignInActivity extends AppCompatActivity {
 
     }
 
-    private void logInFlow(String username, String password) {
-
-        firebaseDBHandler
+    private void logInFlow(String username, String password, Context activityContext) {
+        Object firebaseCall = firebaseDBHandler
                 .getDbInstance()
                 .getReference()
                 .child("USERS/" + username)
-                .get()
-                .addOnCompleteListener( task -> {
-                    Object resultValue = task.getResult().getValue();
+                .get();
 
-                    if (!task.isSuccessful()) {
-                        Log.e("firebase", "Error getting data", task.getException());
-                    } else {
-                        HashMap value = (HashMap) task.getResult().getValue();
-                        boolean flag = true;
+        if (firebaseCall != null) {
+            handler.post(() -> Toast.makeText(activityContext, "Incorrect login information!", Toast.LENGTH_SHORT).show());
+        } else {
 
-                        for (Object key : value.keySet()) {
-                            if (key.toString().equals("password")) {
-                                flag = false;
-                                String usersHashedPassword = String.valueOf(value.get("password"));
-                                try {
-                                    if (comparePasswords(password, usersHashedPassword)) {
-                                        Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
-                                        intent.putExtra("USER_NAME", username);
-                                        intent.putExtra("BUDGET", value.get("monthlyBudget").toString());
-                                        startActivity(intent);
-                                        finish();
+            firebaseDBHandler
+                    .getDbInstance()
+                    .getReference()
+                    .child("USERS/" + username)
+                    .get().addOnCompleteListener(task -> {
+                        Object resultValue = task.getResult().getValue();
+
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        } else {
+                            HashMap value = (HashMap) task.getResult().getValue();
+                            boolean flag = true;
+
+                            for (Object key : value.keySet()) {
+                                if (key.toString().equals("password")) {
+                                    flag = false;
+                                    String usersHashedPassword = String.valueOf(value.get("password"));
+                                    try {
+                                        if (comparePasswords(password, usersHashedPassword)) {
+                                            Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
+                                            intent.putExtra("USER_NAME", username);
+                                            intent.putExtra("BUDGET", value.get("monthlyBudget").toString());
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            handler.post(() -> Toast.makeText(activityContext, "Incorrect login information!", Toast.LENGTH_SHORT).show());
+                                        }
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
                                     }
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
-                                }
 
+                                }
                             }
                         }
 
-
-                    }
-
-                });
+                    });
+        }
     }
 }
