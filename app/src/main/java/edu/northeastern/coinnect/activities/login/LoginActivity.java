@@ -20,6 +20,10 @@ import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import edu.northeastern.coinnect.R;
@@ -81,75 +85,75 @@ public class LoginActivity extends AppCompatActivity {
     });
 
     signUpRequest =
-        BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    .setServerClientId(getString(R.string.web_client_id))
-                    .setFilterByAuthorizedAccounts(false)
-                    .build())
-            .build();
+            BeginSignInRequest.builder()
+                    .setGoogleIdTokenRequestOptions(
+                            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                                    .setSupported(true)
+                                    .setServerClientId(getString(R.string.web_client_id))
+                                    .setFilterByAuthorizedAccounts(false)
+                                    .build())
+                    .build();
 
     /*
      * Launching the Google sign in flow. If the user returns a token (meaning we find their google
      * acct), we can launch a loading animation and redirect to the home page.
      */
     ActivityResultLauncher<IntentSenderRequest> activityResultLauncher =
-        registerForActivityResult(
-            new ActivityResultContracts.StartIntentSenderForResult(),
-            result -> {
-              if (result.getResultCode() == Activity.RESULT_OK) {
-                try {
-                  SignInCredential credential =
-                      oneTapClient.getSignInCredentialFromIntent(result.getData());
-                  String idToken = credential.getGoogleIdToken();
-                  if (idToken != null) {
-                    String name = credential.getDisplayName();
+            registerForActivityResult(
+                    new ActivityResultContracts.StartIntentSenderForResult(),
+                    result -> {
+                      if (result.getResultCode() == Activity.RESULT_OK) {
+                        try {
+                          SignInCredential credential =
+                                  oneTapClient.getSignInCredentialFromIntent(result.getData());
+                          String idToken = credential.getGoogleIdToken();
+                          if (idToken != null) {
+                            String name = credential.getDisplayName();
 
 
-                    Intent intent = new Intent(LoginActivity.this, WelcomeActivity.class);
-                    intent.putExtra("USER_NAME", name);
-                    intent.putExtra("BUDGET", defaultMonthlyBudget);
+                            Intent intent = new Intent(LoginActivity.this, WelcomeActivity.class);
+                            intent.putExtra("USER_NAME", name);
+                            intent.putExtra("BUDGET", defaultMonthlyBudget);
 
-                    UserModel newUser = new UserModel(
-                            name,
-                            credential.getPassword(),
-                            defaultMonthlyBudget);
+                            UserModel newUser = new UserModel(
+                                    name,
+                                    credential.getPassword(),
+                                    defaultMonthlyBudget);
 
-                    registerUser(handler, getApplicationContext(), newUser, name);
-                    startActivity(intent);
-                    finish();
-                  }
-                } catch (ApiException e) {
-                  Toast.makeText(LoginActivity.this, "Exception encountered!", Toast.LENGTH_SHORT)
-                      .show();
-                  e.printStackTrace();
-                }
-              }
-            });
+                            registerUser(handler, getApplicationContext(), newUser, name);
+                            startActivity(intent);
+                            finish();
+                          }
+                        } catch (ApiException e) {
+                          Toast.makeText(LoginActivity.this, "Exception encountered!", Toast.LENGTH_SHORT)
+                                  .show();
+                          e.printStackTrace();
+                        }
+                      }
+                    });
 
     signInButton.setOnClickListener(
-        v ->
-            oneTapClient
-                .beginSignIn(signUpRequest)
-                .addOnSuccessListener(
-                    LoginActivity.this,
-                    result -> {
-                      IntentSenderRequest intentSenderRequest =
-                          new IntentSenderRequest.Builder(
-                                  result.getPendingIntent().getIntentSender())
-                              .build();
-                      activityResultLauncher.launch(intentSenderRequest);
-                    })
-                .addOnFailureListener(
-                    LoginActivity.this,
-                    e -> {
-                      // No Google Accounts found. Just continue presenting the signed-out UI.
-                      Log.d(TAG, e.getLocalizedMessage());
-                      Toast.makeText(
-                              LoginActivity.this, "No google account found!", Toast.LENGTH_SHORT)
-                          .show();
-                    }));
+            v ->
+                    oneTapClient
+                            .beginSignIn(signUpRequest)
+                            .addOnSuccessListener(
+                                    LoginActivity.this,
+                                    result -> {
+                                      IntentSenderRequest intentSenderRequest =
+                                              new IntentSenderRequest.Builder(
+                                                      result.getPendingIntent().getIntentSender())
+                                                      .build();
+                                      activityResultLauncher.launch(intentSenderRequest);
+                                    })
+                            .addOnFailureListener(
+                                    LoginActivity.this,
+                                    e -> {
+                                      // No Google Accounts found. Just continue presenting the signed-out UI.
+                                      Log.d(TAG, e.getLocalizedMessage());
+                                      Toast.makeText(
+                                                      LoginActivity.this, "No google account found!", Toast.LENGTH_SHORT)
+                                              .show();
+                                    }));
   }
 
   public void registerUser(Handler handler, Context activityContext, UserModel user, String username) {
@@ -188,5 +192,3 @@ public class LoginActivity extends AppCompatActivity {
             });
   }
 }
-
-// TODO implement login flow for username / pass

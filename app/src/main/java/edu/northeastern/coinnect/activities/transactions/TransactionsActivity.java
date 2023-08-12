@@ -15,11 +15,13 @@ import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 public class TransactionsActivity extends AppCompatActivity {
 
     private BottomNavigationView navView;
+    private String currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transactions);
 
+        currentUser = getIntent().getStringExtra("USER_NAME");
         navView = findViewById(R.id.bottomNavigationViewTransactions);
         navView.setSelectedItemId(R.id.transactionActivity);
         menuBarActions(navView);
@@ -28,16 +30,22 @@ public class TransactionsActivity extends AppCompatActivity {
     protected void menuBarActions(BottomNavigationView navView) {
         navView.setOnItemSelectedListener(item ->  {
             if(item.getItemId() == R.id.homeActivity) {
-                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                intent.putExtra("USER_NAME", currentUser);
+                startActivity(intent);
                 overridePendingTransition(0,0);
             } else if(item.getItemId() == R.id.friends) {
-                startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
+                Intent intent = new Intent(getApplicationContext(), FriendsActivity.class);
+                intent.putExtra("USER_NAME", currentUser);
+                startActivity(intent);
                 overridePendingTransition(0,0);
             } else if (item.getItemId() == R.id.transactionActivity) {
                 item.setChecked(true);
                 return true;
             } else {
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                intent.putExtra("USER_NAME", currentUser);
+                startActivity(intent);
                 overridePendingTransition(0, 0);
                 return true;
             }

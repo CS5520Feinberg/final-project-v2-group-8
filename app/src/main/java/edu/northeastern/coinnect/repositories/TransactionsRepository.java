@@ -5,6 +5,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +34,7 @@ public class TransactionsRepository {
     return firebaseDbHandler;
   }
 
-  public void addTransaction(
+  public Task<DataSnapshot> addTransaction(
       Handler handler,
       Context activityContext,
       ProgressBar progressBar,
@@ -39,7 +43,7 @@ public class TransactionsRepository {
       Integer dayOfMonth,
       Double amount,
       String description) {
-    getFirebaseDbHandler()
+    return getFirebaseDbHandler()
         .addTransaction(year, month, dayOfMonth, amount, description)
         .addOnCompleteListener(
             task -> {

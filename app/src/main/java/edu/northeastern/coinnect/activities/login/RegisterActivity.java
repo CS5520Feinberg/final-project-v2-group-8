@@ -153,7 +153,7 @@ public class RegisterActivity extends AppCompatActivity {
             if (hex.length() == 1) {
                 hexStr.append('0');
             }
-                hexStr.append(hex);
+            hexStr.append(hex);
         }
         return hexStr.toString();
     }

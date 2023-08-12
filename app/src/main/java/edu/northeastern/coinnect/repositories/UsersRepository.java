@@ -70,6 +70,7 @@ public class UsersRepository {
 
   // TODO: use this method to login user
   public void loginUser(Handler handler, Context activityContext, String userName) {
+
     firebaseDbHandler.getDbInstance().getReference().child(FirebaseDBHandler.USERS_BUCKET_NAME).get()
         .addOnCompleteListener(task -> {
           if (!task.isSuccessful()) {
