@@ -229,8 +229,12 @@ public class FirebaseDBHandler {
       return getValueTask.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
         @Override
         public void onSuccess(DataSnapshot dataSnapshot) {
-          Long result = (Long) dataSnapshot.getValue();
-          userTransactionIdCounterReference.setValue(result + 1);
+          if(dataSnapshot.getValue() == null) {
+            userTransactionIdCounterReference.setValue(0);
+          } else {
+            Long result = (Long) dataSnapshot.getValue();
+            userTransactionIdCounterReference.setValue(result + 1);
+          }
         }
       });
     } catch (NullPointerException e) {
@@ -365,7 +369,10 @@ public class FirebaseDBHandler {
     return transactionId.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
       @Override
       public void onSuccess(DataSnapshot dataSnapshot) {
-        Long id = (Long) dataSnapshot.getValue();
+        Long id = Long.valueOf(0);
+        if(dataSnapshot.getValue() != null) {
+          id = (Long) dataSnapshot.getValue();
+        }
         TransactionEntity transactionEntityObj =
                 new TransactionEntity(id.intValue(), year, month, dayOfMonth, description, amount);
         addTransactionEntityToDatabase(
