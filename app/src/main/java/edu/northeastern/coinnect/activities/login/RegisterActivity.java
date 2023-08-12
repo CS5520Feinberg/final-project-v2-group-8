@@ -105,7 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
             public void registerUser(Handler handler, Context activityContext, UserModel user, String username) {
-                firebaseDBHandler.getDbInstance().getReference().child("users").get()
+                firebaseDBHandler.getDbInstance().getReference().child("USERS").get()
                         .addOnCompleteListener(task -> {
                             Object resultValue = task.getResult().getValue();
 
@@ -153,7 +153,7 @@ public class RegisterActivity extends AppCompatActivity {
             if (hex.length() == 1) {
                 hexStr.append('0');
             }
-                hexStr.append(hex);
+            hexStr.append(hex);
         }
         return hexStr.toString();
     }

@@ -22,7 +22,7 @@ public abstract class AbstractUserModel {
     }
 
 
-    // for sign in flow that only gets one display name (google).
+    // for google sign in flow that only gets one display name.
     public AbstractUserModel(String name, String password, int monthlyBudget) {
         this.name = name;
         this.password = password;

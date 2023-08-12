@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import edu.northeastern.coinnect.models.userModels.AbstractUserModel;
+import edu.northeastern.coinnect.models.userModels.User.AbstractUserModel;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.activities.welcome.WelcomeActivity;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class UsersRepository {
 
   // TODO: use this method to register user
   public void registerUser(Handler handler, Context activityContext, AbstractUserModel user, String username) {
-    firebaseDbHandler.getDbInstance().getReference().child("users").get()
+    firebaseDbHandler.getDbInstance().getReference().child("USERS").get()
             .addOnCompleteListener(task -> {
               if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
@@ -70,7 +70,7 @@ public class UsersRepository {
 
   // TODO: use this method to login user
   public void loginUser(Handler handler, Context activityContext, String userName) {
-    firebaseDbHandler.getDbInstance().getReference().child("users").get()
+    firebaseDbHandler.getDbInstance().getReference().child("USERS").get()
         .addOnCompleteListener(task -> {
           if (!task.isSuccessful()) {
             Log.e(TAG, "Error getting data", task.getException());

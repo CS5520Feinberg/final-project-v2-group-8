@@ -62,7 +62,7 @@ public class UsernameSignInActivity extends AppCompatActivity {
             if (hex.length() == 1) {
                 hexStr.append('0');
             }
-                hexStr.append(hex);
+            hexStr.append(hex);
         }
         return hexStr.toString();
     }
@@ -79,7 +79,7 @@ public class UsernameSignInActivity extends AppCompatActivity {
         firebaseDBHandler
                 .getDbInstance()
                 .getReference()
-                .child("users/" + username)
+                .child("USERS/" + username)
                 .get()
                 .addOnCompleteListener( task -> {
                     Object resultValue = task.getResult().getValue();
@@ -96,9 +96,8 @@ public class UsernameSignInActivity extends AppCompatActivity {
                                 String usersHashedPassword = String.valueOf(value.get("password"));
                                 try {
                                     if (comparePasswords(password, usersHashedPassword)) {
-                                        firebaseDBHandler.setCurrentUserName(username);
                                         Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
-                                        intent.putExtra("USER_NAME", value.get("firstName").toString());
+                                        intent.putExtra("USER_NAME", username);
                                         intent.putExtra("BUDGET", value.get("monthlyBudget").toString());
                                         startActivity(intent);
                                         finish();

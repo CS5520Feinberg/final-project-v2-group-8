@@ -14,10 +14,13 @@ import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private String currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        currentUser = getIntent().getStringExtra("USER_NAME");
 
         BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
         navView.setSelectedItemId(R.id.settings);
@@ -26,17 +29,23 @@ public class SettingsActivity extends AppCompatActivity {
     protected void menuBarActions(BottomNavigationView navView) {
         navView.setOnItemSelectedListener(item ->  {
             if(item.getItemId() == R.id.friends) {
-                startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
+                Intent intent = new Intent(getApplicationContext(), FriendsActivity.class);
+                intent.putExtra("USER_NAME", currentUser);
+                startActivity(intent);
                 overridePendingTransition(0,0);
 
             } else if(item.getItemId() == R.id.settings) {
                 item.setChecked(true);
                 return true;
             } else if(item.getItemId() == R.id.transactionActivity) {
-                startActivity(new Intent(getApplicationContext(), TransactionsActivity.class));
+                Intent intent = new Intent(getApplicationContext(), TransactionsActivity.class);
+                intent.putExtra("USER_NAME", currentUser);
+                startActivity(intent);
                 overridePendingTransition(0, 0);
             } else {
-                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                intent.putExtra("USER_NAME", currentUser);
+                startActivity(intent);
                 overridePendingTransition(0,0);
                 return true;
             }
