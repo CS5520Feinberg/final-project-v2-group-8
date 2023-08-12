@@ -19,7 +19,6 @@ import com.google.firebase.database.DataSnapshot;
 
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
-import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
 import java.util.Calendar;
 
@@ -35,7 +34,6 @@ public class AddTransactionActivity extends AppCompatActivity {
   private TransactionsRepository transactionsRepository;
 
   public ProgressBar addTransactionProgressbar;
-  private TransactionEntity transaction;
   int day;
   int month;
   int year;
@@ -83,7 +81,7 @@ public class AddTransactionActivity extends AppCompatActivity {
               this,
               addTransactionProgressbar,
               year,
-              month,
+              month+1,
               day,
               Double.parseDouble(amount),
               desc).addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
