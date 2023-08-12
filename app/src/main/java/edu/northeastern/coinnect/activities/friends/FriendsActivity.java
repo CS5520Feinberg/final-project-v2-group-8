@@ -9,64 +9,65 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashMap;
 
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
 import edu.northeastern.coinnect.databinding.ActivityFriendsBinding;
-import edu.northeastern.coinnect.models.userModels.Friends.FriendRecyclerView.FriendModel;
+import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
+import edu.northeastern.coinnect.models.userModels.Friends.FriendRecyclerView.FriendListCallback;
 import edu.northeastern.coinnect.models.userModels.Friends.FriendRecyclerView.FriendRecyclerViewAdapter;
 
 public class FriendsActivity extends AppCompatActivity {
 
     private final Handler handler = new Handler();
+    private final static FirebaseDBHandler firebaseDBHandler = FirebaseDBHandler.getInstance();
 
     private FriendRecyclerViewAdapter friendRecyclerViewAdapter;
-    private List<FriendModel> friendList;
     private RecyclerView friendRecyclerView;
+    private String currentUser;
+
+    private ArrayList<String> friendList = new ArrayList<>();
+
+    private edu
+            .northeastern
+            .coinnect
+            .databinding
+            .ActivityFriendsBinding binding;
 
 
-    private void setupRecyclerView(ActivityFriendsBinding binding) {
-        this.friendRecyclerView = binding.friendsRecyclerView;
-        this.friendRecyclerView.setHasFixedSize(true);
-        this.friendRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        this.friendRecyclerView.setAdapter(this.friendRecyclerViewAdapter);
+    private void setupRecyclerView(ActivityFriendsBinding binding, ArrayList<String> listOfFriends) {
 
+        friendRecyclerViewAdapter = new FriendRecyclerViewAdapter(listOfFriends);
+        friendRecyclerView = binding.friendsRecyclerView;
+        friendRecyclerView.setHasFixedSize(true);
+        friendRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        friendRecyclerView.setAdapter(friendRecyclerViewAdapter);
+        friendRecyclerViewAdapter.notifyDataSetChanged();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        edu
-            .northeastern
-            .coinnect
-            .databinding
-            .ActivityFriendsBinding binding = ActivityFriendsBinding.inflate(getLayoutInflater());
+        binding = ActivityFriendsBinding.inflate(getLayoutInflater());
 
         View view = binding.getRoot();
         setContentView(view);
+        currentUser = getIntent().getStringExtra("USER_NAME");
 
-        this.friendList = new ArrayList<FriendModel>();
-        FriendModel friend1 = new FriendModel("Dean");
-        FriendModel friend2 = new FriendModel("Prajwal");
-        FriendModel friend3 = new FriendModel("Jon");
-        FriendModel friend4 = new FriendModel("Omkar");
-        FriendModel friend5 = new FriendModel("Peter");
-        friendList.add(friend1);
-        friendList.add(friend2);
-        friendList.add(friend3);
-        friendList.add(friend4);
-        friendList.add(friend5);
+        friendList = loadFriendList(currentUser, friendList -> {
+            setupRecyclerView(binding, friendList);
+        });
 
 
-        this.friendRecyclerViewAdapter = new FriendRecyclerViewAdapter(friendList);
-        this.setupRecyclerView(binding);
 
         BottomNavigationView navView = binding.bottomNavFriends;
         navView.setSelectedItemId(R.id.friends);
@@ -76,15 +77,21 @@ public class FriendsActivity extends AppCompatActivity {
     protected void menuBarActions(BottomNavigationView navView) {
         navView.setOnItemSelectedListener(item ->  {
             if(item.getItemId() == R.id.homeActivity) {
-                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                intent.putExtra("USER_NAME", currentUser);
+                startActivity(intent);
                 overridePendingTransition(0,0);
 
             } else if(item.getItemId() == R.id.friends) {
                 return true;
             } else if (item.getItemId() == R.id.transactionActivity) {
-                startActivity(new Intent(getApplicationContext(), TransactionsActivity.class));
+                Intent intent = new Intent(getApplicationContext(), TransactionsActivity.class);
+                intent.putExtra("USER_NAME", currentUser);
+                startActivity(intent);
                 overridePendingTransition(0,0);
             } else {
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                intent.putExtra("USER_NAME", currentUser);
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
@@ -123,4 +130,34 @@ public class FriendsActivity extends AppCompatActivity {
         }
 
     }
+
+    private ArrayList<String> loadFriendList(String currUser, FriendListCallback callback) {
+
+        ArrayList<String> getList = new ArrayList<>();
+
+        firebaseDBHandler
+                .getDbInstance()
+                .getReference()
+                .child("USERS/" + currUser)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    } else {
+                        HashMap<String, Object> value = (HashMap<String, Object>) task.getResult().getValue();
+                        if (value.containsKey("friends")) {
+                            ArrayList<String> friends = (ArrayList<String>) value.get("friends");
+
+                            // Remove "[" and "]" characters from each friend and add to getList
+                            // ** this is so clunky but all I could figure out to get rid of brackets **
+                            for (String friend : friends) {
+                                getList.add(friend.replaceAll("[\\[\\]]", ""));
+                            }
+                        }
+                        callback.onFriendListLoaded(getList);
+                    }
+                });
+        return getList;
+    }
+
 }

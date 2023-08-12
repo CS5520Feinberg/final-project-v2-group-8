@@ -56,6 +56,9 @@ public class HomeActivity extends AppCompatActivity {
   private TextView greeting;
   private TextView budget;
   private TextView date;
+  private String userName;
+  private String userBudget;
+  private String dateExtra;
 
   @SuppressLint({"SetTextI18n", "ResourceAsColor"})
   @Override
@@ -72,9 +75,9 @@ public class HomeActivity extends AppCompatActivity {
 
 
     // getting username, budget, date to display greeting
-    String userName = getIntent().getStringExtra("USER_NAME");
-    String userBudget = getIntent().getStringExtra("BUDGET");
-    String dateExtra = getIntent().getStringExtra("DATE");
+    userName = getIntent().getStringExtra("USER_NAME");
+    userBudget = getIntent().getStringExtra("BUDGET");
+    dateExtra = getIntent().getStringExtra("DATE");
     greeting = findViewById(R.id.greeting);
     budget = findViewById(R.id.set_budget);
     date = findViewById(R.id.today_date);
@@ -107,16 +110,23 @@ public class HomeActivity extends AppCompatActivity {
   protected void menuBarActions(BottomNavigationView navView) {
     navView.setOnItemSelectedListener(item ->  {
       if(item.getItemId() == R.id.friends) {
-        startActivity(new Intent(getApplicationContext(), FriendsActivity.class));
+        Intent intent = new Intent(getApplicationContext(), FriendsActivity.class);
+        System.out.println(userName);
+        intent.putExtra("USER_NAME", userName);
+        startActivity(intent);
         overridePendingTransition(0,0);
       } else if (item.getItemId() == R.id.homeActivity) {
         return true;
       } else if (item.getItemId() == R.id.transactionActivity) {
-        startActivity(new Intent(getApplicationContext(), TransactionsActivity.class));
+        Intent intent = new Intent(getApplicationContext(), TransactionsActivity.class);
+        intent.putExtra("USER_NAME", userName);
+        startActivity(intent);
         overridePendingTransition(0, 0);
         return true;
       } else {
-        startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+        Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+        intent.putExtra("USER_NAME", userName);
+        startActivity(intent);
         overridePendingTransition(0, 0);
         return true;
       }
