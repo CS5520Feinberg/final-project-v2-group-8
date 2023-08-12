@@ -8,24 +8,23 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import edu.northeastern.coinnect.R;
 
 public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendViewHolder> {
 
-    private Context parentContext;
-    private List<FriendModel> friendCardList;
+    private final ArrayList<String> friendCardList;
 
-    public FriendRecyclerViewAdapter(List<FriendModel> friendCardList) {
+    public FriendRecyclerViewAdapter(ArrayList<String> friendCardList) {
         this.friendCardList = friendCardList;
     }
 
     @NonNull
     @Override
     public FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        this.parentContext = parent.getContext();
-        View view = LayoutInflater.from(this.parentContext)
+        Context parentContext = parent.getContext();
+        View view = LayoutInflater.from(parentContext)
                 .inflate(R.layout.card_friend, parent, false);
 
         return new FriendViewHolder(view);
@@ -33,10 +32,8 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendViewHo
 
     @Override
     public void onBindViewHolder(@NonNull FriendViewHolder holder, int position) {
-        FriendModel friend = friendCardList.get(position);
-        String username = friend.getUsername();
-
-        holder.setUsername(username);
+        String friend = friendCardList.get(position);
+        holder.setUsername(friend);
     }
 
     @Override
@@ -44,7 +41,7 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendViewHo
         return this.friendCardList.size();
     }
 
-    public void addCard(FriendModel newFriend) {
+    public void addCard(String newFriend) {
         friendCardList.add(newFriend);
         notifyItemInserted(friendCardList.size() - 1);
     }
