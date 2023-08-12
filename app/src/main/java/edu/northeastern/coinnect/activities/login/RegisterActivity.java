@@ -8,14 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -24,15 +18,12 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
 import edu.northeastern.coinnect.R;
-import edu.northeastern.coinnect.activities.home.HomeActivity;
 import edu.northeastern.coinnect.activities.welcome.WelcomeActivity;
-import edu.northeastern.coinnect.models.AbstractUserModel;
-import edu.northeastern.coinnect.models.UserModel;
+import edu.northeastern.coinnect.models.userModels.User.UserModel;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.repositories.UsersRepository;
 

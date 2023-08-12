@@ -20,16 +20,12 @@ import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.welcome.WelcomeActivity;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
-import edu.northeastern.coinnect.models.UserModel;
+import edu.northeastern.coinnect.models.userModels.User.UserModel;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.repositories.UsersRepository;
 

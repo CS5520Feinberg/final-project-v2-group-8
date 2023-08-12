@@ -25,4 +25,7 @@
     <string name="monthly_budget">Monthly budget</string>
     <string name="sign_in_with_username">Sign in with username</string>
     <string name="log_in">Log in</string>
+    <string name="friends_list">Friends list</string>
+    <string name="user_s_avatar">user\'s avatar</string>
+    <string name="friend_username">Username</string>
 </resources>
