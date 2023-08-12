@@ -9,7 +9,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
 import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
@@ -57,27 +64,20 @@ public class AddTransactionActivity extends AppCompatActivity {
             month = cldr.get(Calendar.MONTH);
             year = cldr.get(Calendar.YEAR);
             // date picker dialog
-            DatePickerDialog picker =
-                new DatePickerDialog(
-                    AddTransactionActivity.this,
+            DatePickerDialog picker = new DatePickerDialog(AddTransactionActivity.this,
                     (view, year1, monthOfYear, dayOfMonth) -> {
                       transactionDateTextView.setText(
                           dayOfMonth + "/" + (monthOfYear + 1) + "/" + year1);
-                    },
-                    year,
-                    month,
-                    day);
+                    }, year, month, day);
             picker.show();
           }
         });
 
     addTransactionBtn.setOnClickListener(
         v -> {
-          //            transactionsRepository.addTransaction();
           String amount = transactionAmountTextView.getText().toString().trim();
           String desc = transactionDescTextView.getText().toString().trim();
           addTransactionProgressbar.setVisibility(View.VISIBLE);
-          //            transaction = new TransactionEntity(123456, desc,
           transactionsRepository.addTransaction(
               handler,
               this,
@@ -86,7 +86,13 @@ public class AddTransactionActivity extends AppCompatActivity {
               month,
               day,
               Double.parseDouble(amount),
-              desc);
+              desc).addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+              @Override
+              public void onComplete(@NonNull Task<DataSnapshot> task) {
+                  Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                  startActivity(intent);
+              }
+          });
         });
 
     cancelTransactionBtn.setOnClickListener(

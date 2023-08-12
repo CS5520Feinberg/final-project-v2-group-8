@@ -1,5 +1,6 @@
 package edu.northeastern.coinnect.models.persistence;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class FirebaseDBHandler {
 
@@ -209,33 +209,31 @@ public class FirebaseDBHandler {
 
   // <editor-fold desc="Transactions">
 
-  private int getNewTransactionId() {
+  private Task<DataSnapshot> getNewTransactionId() {
     // NOTE: We are not splitting this up because we need to ensure this happens in one transaction
     // with the Database, ensuring the transactionIds are always unique when set.
     this.validate_currentUserIsSet();
 
     DatabaseReference userTransactionIdCounterReference =
-        dbInstance
-            .getReference()
-            .child(USERS_BUCKET_NAME)
-            .child(this.getCurrentUserName())
-            .child(TRANSACTION_ID_COUNTER);
-
-    AtomicLong result = new AtomicLong();
+            dbInstance
+                    .getReference()
+                    .child(USERS_BUCKET_NAME)
+                    .child(this.getCurrentUserName())
+                    .child(TRANSACTION_ID_COUNTER);
+    Task<DataSnapshot> getValueTask = null;
     try {
-      Task<DataSnapshot> getValueTask = userTransactionIdCounterReference.get();
-      getValueTask.addOnSuccessListener(
-          res -> {
-            result.set((Long) res.getValue());
-          });
+      getValueTask = userTransactionIdCounterReference.get();
+      return getValueTask.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        @Override
+        public void onSuccess(DataSnapshot dataSnapshot) {
+          Long result = (Long) dataSnapshot.getValue();
+          userTransactionIdCounterReference.setValue(result + 1);
+        }
+      });
     } catch (NullPointerException e) {
       userTransactionIdCounterReference.setValue(1);
-      return 0;
+      return null;
     }
-
-    userTransactionIdCounterReference.setValue(result.get() + 1);
-
-    return (int) result.get();
   }
 
   private int getNewGroupTransactionId() {
@@ -356,16 +354,21 @@ public class FirebaseDBHandler {
         .setValue(groupTransactionEntity);
   }
 
-  public Task<Void> addTransaction(
+  public Task<DataSnapshot> addTransaction(
       Integer year, Integer month, Integer dayOfMonth, Double amount, String description) {
     this.validate_currentUserIsSet();
-
-    Integer transactionId = this.getNewTransactionId();
-    TransactionEntity transactionEntityObj =
-        new TransactionEntity(transactionId, year, month, dayOfMonth, description, amount);
-
-    return this.addTransactionEntityToDatabase(
-        year, month, dayOfMonth, transactionId, transactionEntityObj);
+    // Need to wait to get the transaction counter from the DB before proceeding
+    Task<DataSnapshot> transactionId = this.getNewTransactionId();
+    return transactionId.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+      @Override
+      public void onSuccess(DataSnapshot dataSnapshot) {
+        Long id = (Long) dataSnapshot.getValue();
+        TransactionEntity transactionEntityObj =
+                new TransactionEntity(id.intValue(), year, month, dayOfMonth, description, amount);
+        addTransactionEntityToDatabase(
+                year, month, dayOfMonth, id.intValue(), transactionEntityObj);
+      }
+    });
   }
 
   public void addGroupTransaction(
@@ -381,51 +384,56 @@ public class FirebaseDBHandler {
 
     // Create group transaction at global level with currentUser as "creator"
     Integer groupTransactionId = this.getNewGroupTransactionId();
-    Integer transactionId = this.getNewTransactionId();
-
+    Task<DataSnapshot> transactionId = this.getNewTransactionId();
     List<GroupTransactionShareEntity> shareEntities = new ArrayList<>();
     Map<String, PendingTransactionEntity> pendingTransactionEntitiesMap = new HashMap<>();
 
-    for (Entry<String, Double> share : userShares.entrySet()) {
-      String userName = share.getKey();
-      Double amountOwed = share.getValue();
-      if (userName.equals(this.getCurrentUserName())) {
-        shareEntities.add(
-            new GroupTransactionShareEntity(userName, amountOwed, amountOwed, transactionId));
-      } else {
-        Double amountPaid = new Double(0);
-        shareEntities.add(new GroupTransactionShareEntity(userName, amountOwed, amountPaid, null));
-        pendingTransactionEntitiesMap.put(
-            userName,
-            new PendingTransactionEntity(
-                groupTransactionId,
-                totalAmount,
-                amountOwed,
-                amountPaid,
-                this.getCurrentUserName()));
+    transactionId.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+      @Override
+      public void onSuccess(DataSnapshot dataSnapshot) {
+        Long id = (Long) dataSnapshot.getValue();
+        for (Entry<String, Double> share : userShares.entrySet()) {
+          String userName = share.getKey();
+          Double amountOwed = share.getValue();
+          if (userName.equals(getCurrentUserName())) {
+            shareEntities.add(
+                    new GroupTransactionShareEntity(userName, amountOwed, amountOwed, id.intValue()));
+          } else {
+            Double amountPaid = new Double(0);
+            shareEntities.add(new GroupTransactionShareEntity(userName, amountOwed, amountPaid, null));
+            pendingTransactionEntitiesMap.put(
+                    userName,
+                    new PendingTransactionEntity(
+                            groupTransactionId,
+                            totalAmount,
+                            amountOwed,
+                            amountPaid,
+                            getCurrentUserName()));
+          }
+        }
+
+        GroupTransactionEntity groupTransactionEntity =
+                new GroupTransactionEntity(
+                        groupTransactionId, totalAmount, getCurrentUserName(), shareEntities);
+
+        addGroupTransactionEntityToDatabase(groupTransactionId, groupTransactionEntity)
+                .getResult();
+
+        // Create transaction for currentUser
+        TransactionEntity transactionEntityObj =
+                new TransactionEntity(
+                        id.intValue(), year, month, dayOfMonth, description, totalAmount, groupTransactionId);
+
+        addTransactionEntityToDatabase(
+                        year, month, dayOfMonth, id.intValue(), transactionEntityObj)
+                .getResult();
+
+        // Create pending transactions for all other users
+        for (Entry<String, PendingTransactionEntity> entry : pendingTransactionEntitiesMap.entrySet()) {
+          addPendingTransactionEntityToDatabase(entry.getKey(), entry.getValue());
+        }
       }
-    }
-
-    GroupTransactionEntity groupTransactionEntity =
-        new GroupTransactionEntity(
-            groupTransactionId, totalAmount, this.getCurrentUserName(), shareEntities);
-
-    this.addGroupTransactionEntityToDatabase(groupTransactionId, groupTransactionEntity)
-        .getResult();
-
-    // Create transaction for currentUser
-    TransactionEntity transactionEntityObj =
-        new TransactionEntity(
-            transactionId, year, month, dayOfMonth, description, totalAmount, groupTransactionId);
-
-    this.addTransactionEntityToDatabase(
-            year, month, dayOfMonth, transactionId, transactionEntityObj)
-        .getResult();
-
-    // Create pending transactions for all other users
-    for (Entry<String, PendingTransactionEntity> entry : pendingTransactionEntitiesMap.entrySet()) {
-      this.addPendingTransactionEntityToDatabase(entry.getKey(), entry.getValue());
-    }
+    });
   }
 
   public void convertTransactionToGroupTransaction(
@@ -539,13 +547,20 @@ public class FirebaseDBHandler {
           .setValue(transactionEntity);
     } else {
       // create transaction for current user
-      Integer transactionId = this.getNewTransactionId();
-      transactionEntity =
-          new TransactionEntity(
-              transactionId, year, month, dayOfMonth, description, amountPaid, groupTransactionId);
+      Task<DataSnapshot> transactionId = this.getNewTransactionId();
+      transactionId.addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        @Override
+        public void onSuccess(DataSnapshot dataSnapshot) {
+          Long id = (Long) dataSnapshot.getValue();
+          TransactionEntity transactionEntity =
+                  new TransactionEntity(
+                          id.intValue(), year, month, dayOfMonth, description, amountPaid, groupTransactionId);
 
-      this.addTransactionEntityToDatabase(year, month, dayOfMonth, transactionId, transactionEntity)
-          .getResult();
+          addTransactionEntityToDatabase(year, month, dayOfMonth, id.intValue(), transactionEntity)
+                  .getResult();
+        }
+      });
+
     }
 
     // remove from pending transaction if amountPaid == amountOwed
