@@ -11,7 +11,6 @@ import com.google.firebase.database.DataSnapshot;
 import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.models.transactionModels.DayTransactionsModel;
-import edu.northeastern.coinnect.models.transactionModels.MonthTransactionsModel;
 
 public class TransactionsRepository {
   private static final String TAG = "_TransactionsRepository";
@@ -57,13 +56,20 @@ public class TransactionsRepository {
             });
   }
 
+  public void getRecentTransactionsList(
+      Handler handler,
+      TransactionsRecyclerViewAdapter adapter,
+      ProgressBar progressBar) {
+    firebaseDbHandler.getRecentTransactions(handler, adapter, progressBar);
+  }
+
   public void getTransactionsForMonthList(
       Handler handler,
       TransactionsRecyclerViewAdapter adapter,
       ProgressBar progressBar,
       Integer year,
       Integer month) {
-    firebaseDbHandler.getTransactionForMonth(handler, adapter, progressBar, year, month);
+    firebaseDbHandler.getTransactionsForMonth(handler, adapter, progressBar, year, month);
   }
 
   public void getTransactionsForDayOfMonthList(

@@ -24,6 +24,7 @@ import edu.northeastern.coinnect.models.transactionModels.PendingTransactionMode
 import edu.northeastern.coinnect.models.transactionModels.TransactionModel;
 import edu.northeastern.coinnect.models.userModels.User.AbstractUserModel;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -649,13 +650,58 @@ public class FirebaseDBHandler {
         .setValue(groupTransactionEntity);
   }
 
-  public void getTransactionForMonth(
+  public void getRecentTransactions(
+      Handler handler, TransactionsRecyclerViewAdapter adapter, ProgressBar progressBar) {
+    this.validate_currentUserIsSet();
+    DatabaseReference transactionsDatabaseReference = this.getUserTransactionsDatabaseReference();
+
+    Calendar todayCalendar = Calendar.getInstance();
+
+    DatabaseReference todayTransactionsDR =
+        transactionsDatabaseReference
+            .child(Integer.toString(todayCalendar.get(Calendar.YEAR)))
+            .child(Integer.toString(todayCalendar.get(Calendar.MONTH)))
+            .child(Integer.toString(todayCalendar.get(Calendar.DAY_OF_MONTH)));
+
+    todayTransactionsDR
+        .get()
+        .addOnCompleteListener(
+            task -> {
+              if (!task.isSuccessful()) {
+                Log.e("firebase", "Error getting data", task.getException());
+              } else {
+                List<AbstractTransactionModel> transactionModels = new ArrayList<>();
+
+                DataSnapshot dayDataSnapshot = task.getResult();
+
+                for (DataSnapshot transactionSnapshot : dayDataSnapshot.getChildren()) {
+                  TransactionEntity entity = transactionSnapshot.getValue(TransactionEntity.class);
+                  Integer dayOfMonth = entity.getDayOfMonth();
+                  Integer month = entity.getMonth();
+                  Integer year = entity.getYear();
+                  transactionModels.add(new TransactionModel(entity, year, month, dayOfMonth));
+                }
+
+                DayTransactionsModel dayTransactionsModel =
+                    new DayTransactionsModel(todayCalendar.get(Calendar.DAY_OF_MONTH), transactionModels);
+
+                Log.i(TAG, String.format("Transactions being added to the Recycler View"));
+                handler.post(
+                    () -> {
+                      adapter.setupListForDayOfMonth(dayTransactionsModel);
+                      progressBar.setVisibility(View.INVISIBLE);
+                    });
+              }
+            });
+  }
+
+  public void getTransactionsForMonth(
       Handler handler,
       TransactionsRecyclerViewAdapter adapter,
       ProgressBar progressBar,
       Integer year,
       Integer month) {
-    this.validate_currentUserIsSet();
+
     DatabaseReference monthTransactionsDatabaseReference =
         this.getUserTransactionsDatabaseReference().child(year.toString()).child(month.toString());
 

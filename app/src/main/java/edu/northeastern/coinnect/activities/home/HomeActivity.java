@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,11 +15,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
+import edu.northeastern.coinnect.activities.transactions.TransactionCardClickListener;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
+import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.activities.transactions.addTransaction.AddTransactionActivity;
 import edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
+import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
 import edu.northeastern.coinnect.repositories.UsersRepository;
 import java.time.LocalDate;
@@ -32,18 +36,37 @@ public class HomeActivity extends AppCompatActivity {
   private static final FirebaseDBHandler firebaseDBHandler = FirebaseDBHandler.getInstance();
   private static final UsersRepository userRepository = UsersRepository.getInstance();
 
-  private RecyclerView transactionRecyclerView;
+  private RecyclerView recentTransactionsRV;
 
-  private RecentTransactionAdapter recentTransactionAdapter;
+  private TransactionsRecyclerViewAdapter recentTransactionsRVA;
 
-  private TransactionsRepository transactionsRepository;
+  private final TransactionsRepository transactionsRepository = TransactionsRepository.getInstance();
 
-  private ProgressBar homeScreenProgressBar;
-  private TextView greeting;
-  private TextView budget;
-  private TextView date;
-  private String userName;
+  private ProgressBar progressBar;
+  private TextView greetingTextView;
+  private TextView budgetTextView;
+  private TextView dateTextView;
+  private String currentUserName;
   private String userBudget;
+
+  private void setupRecyclerView(ActivityHomeScreenBinding binding) {
+    this.recentTransactionsRV = binding.rvRecentTransactions;
+
+    this.recentTransactionsRV.setHasFixedSize(true);
+    this.recentTransactionsRV.setLayoutManager(new LinearLayoutManager(this));
+  }
+
+  private void setupRecyclerViewListenerAndAdapter() {
+    // set up a listener for transaction card click -> Edit Transaction
+//    TransactionCardClickListener transactionCardClickListener =
+//        () -> {
+//          Intent intent = new Intent(HomeActivity.this, AddTransactionActivity.class);
+//          startActivity(intent);
+//        };
+
+//    this.transactionsRVA.setCardClickListener(transactionCardClickListener);
+    this.recentTransactionsRV.setAdapter(this.recentTransactionsRVA);
+  }
 
   @SuppressLint({"SetTextI18n", "ResourceAsColor"})
   @Override
@@ -67,33 +90,31 @@ public class HomeActivity extends AppCompatActivity {
     int dayOfMonth = localDate.getDayOfMonth();
     String datePass = String.join(" ", month, String.valueOf(dayOfMonth));
 
-    userName = userRepository.getCurrentUserName();
+    currentUserName = userRepository.getCurrentUserName();
     userBudget = userRepository.getMonthlyBudget();
-    greeting = findViewById(R.id.tv_greeting);
-    budget = findViewById(R.id.set_budget);
-    date = findViewById(R.id.tv_today_date);
+    greetingTextView = findViewById(R.id.tv_greeting);
+    budgetTextView = findViewById(R.id.set_budget);
+    dateTextView = findViewById(R.id.tv_today_date);
 
-    if (userName != null) {
-      greeting.setText("Hello " + userName);
-      budget.setText("$" + userBudget);
-      date.setText(datePass);
+    if (currentUserName != null) {
+      greetingTextView.setText("Hello " + currentUserName);
+      budgetTextView.setText("$" + userBudget);
+      dateTextView.setText(datePass);
     } else {
-      greeting.setText("Free Pass");
-      budget.setText("$2500");
-      date.setText(datePass);
+      greetingTextView.setText("Free Pass");
+      budgetTextView.setText("$2500");
+      dateTextView.setText(datePass);
     }
 
     BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
     menuBarActions(navView);
-    homeScreenProgressBar = findViewById(R.id.homeScreenProgressBar);
-    List<TransactionEntity> transactionEntityList = new ArrayList<>();
+    progressBar = findViewById(R.id.homeScreenProgressBar);
+    List<AbstractTransactionModel> transactionsList = new ArrayList<>();
 
-    //    this.setupToolbar(binding);
     this.setupRecyclerView(binding);
 
-    this.recentTransactionAdapter = new RecentTransactionAdapter(transactionEntityList);
-    transactionsRepository = TransactionsRepository.getInstance();
-    //    homeScreenProgressBar.setVisibility(View.VISIBLE);
+    this.recentTransactionsRVA = new TransactionsRecyclerViewAdapter(transactionsList);
+    this.setupRecyclerViewListenerAndAdapter();
   }
 
   protected void menuBarActions(BottomNavigationView navView) {
@@ -101,7 +122,7 @@ public class HomeActivity extends AppCompatActivity {
         item -> {
           if (item.getItemId() == R.id.friends) {
             Intent intent = new Intent(getApplicationContext(), FriendsActivity.class);
-            System.out.println(userName);
+            System.out.println(currentUserName);
             startActivity(intent);
             overridePendingTransition(0, 0);
           } else if (item.getItemId() == R.id.homeActivity) {
@@ -121,9 +142,18 @@ public class HomeActivity extends AppCompatActivity {
         });
   }
 
-  private void setupRecyclerView(ActivityHomeScreenBinding binding) {
-    this.transactionRecyclerView = binding.rvRecentTransactions;
-    this.transactionRecyclerView.setHasFixedSize(true);
-    this.transactionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    runOnUiThread(() -> progressBar.setVisibility(View.VISIBLE));
+
+    this.transactionsRepository.getRecentTransactionsList(
+        this.handler, this.recentTransactionsRVA, this.progressBar);
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
   }
 }

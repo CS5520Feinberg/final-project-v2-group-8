@@ -1,35 +1,22 @@
 package edu.northeastern.coinnect.activities.transactions;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract.Data;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.transactions.addTransaction.AddTransactionActivity;
 import edu.northeastern.coinnect.databinding.ActivityTransactionsBinding;
-import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModel;
-import edu.northeastern.coinnect.models.transactionModels.MonthTransactionsModel;
-import edu.northeastern.coinnect.models.transactionModels.TransactionModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
-import edu.northeastern.coinnect.repositories.UsersRepository;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -46,7 +33,6 @@ public class TransactionsActivity extends AppCompatActivity {
   private Integer year;
   private Integer month;
 
-  private final UsersRepository usersRepository = UsersRepository.getInstance();
   private final TransactionsRepository transactionsRepository =
       TransactionsRepository.getInstance();
 
@@ -57,7 +43,6 @@ public class TransactionsActivity extends AppCompatActivity {
   }
 
   private void setupRecyclerView(ActivityTransactionsBinding binding) {
-    // setting this as fixed for now, but if we need to adapt this later we can.
     this.transactionsRV = binding.rvTransactions;
 
     this.transactionsRV.setHasFixedSize(true);
@@ -65,81 +50,15 @@ public class TransactionsActivity extends AppCompatActivity {
   }
 
   private void setupRecyclerViewListenerAndAdapter() {
-    // set up a listener for transaction card click
-    TransactionCardClickListener transactionCardClickListener =
-        () -> {
-          Intent intent = new Intent(TransactionsActivity.this, AddTransactionActivity.class);
-          startActivity(intent);
-        };
-
-    this.transactionsRVA.setCardClickListener(transactionCardClickListener);
+    // set up a listener for transaction card click -> Edit Transaction
+//    TransactionCardClickListener transactionCardClickListener =
+//        () -> {
+//          Intent intent = new Intent(TransactionsActivity.this, AddTransactionActivity.class);
+//          startActivity(intent);
+//        };
+//
+//    this.transactionsRVA.setCardClickListener(transactionCardClickListener);
     this.transactionsRV.setAdapter(this.transactionsRVA);
-  }
-
-  private ChildEventListener getMonthTransactionChildEventListener(Context activityContext) {
-    return new ChildEventListener() {
-
-      private Integer year = TransactionsActivity.this.year;
-      private Integer month = TransactionsActivity.this.month;
-      @Override
-      public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-//        TransactionEntity transactionEntity = snapshot.getValue(TransactionEntity.class);
-//
-//        int year = 2023;
-//        int month = 1;
-//        int dayOfMonth = 1;
-//
-//        TransactionsActivity.this.transactionsRVA.addCard(
-//            new TransactionModel(transactionEntity, year, month, dayOfMonth));
-      }
-
-      @Override
-      public void onChildChanged(
-          @NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-        List<AbstractTransactionModel> transactionModels = new ArrayList<>();
-
-        Iterable<DataSnapshot> daysSnapshot = snapshot.getChildren();
-        for(DataSnapshot daySnapshot : daysSnapshot) {
-          Iterable<DataSnapshot> transactionsSnapshot = daySnapshot.getChildren();
-
-          for(DataSnapshot transactionSnapshot : transactionsSnapshot) {
-            TransactionEntity transactionEntity = transactionSnapshot.getValue(TransactionEntity.class);
-
-            int transactionYear = transactionEntity.getYear();
-            int transactionMonth = transactionEntity.getMonth();
-            int transactionDayOfMonth = transactionEntity.getDayOfMonth();
-
-            transactionModels.add(
-                new TransactionModel(
-                    transactionEntity,
-                    transactionYear,
-                    transactionMonth,
-                    transactionDayOfMonth));
-          }
-        }
-
-        MonthTransactionsModel monthTransactionsModel = new MonthTransactionsModel(this.month, transactionModels);
-
-        TransactionsActivity.this.transactionsRVA.setupListForMonth(monthTransactionsModel);
-      }
-
-      @Override
-      public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-//        TransactionEntity transactionEntity = snapshot.getValue(TransactionEntity.class);
-//        TransactionsActivity.this.transactionsRVA.removeCard(transactionEntity.getTransactionId());
-      }
-
-      @Override
-      public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-        // user will never get moved
-      }
-
-      @Override
-      public void onCancelled(@NonNull DatabaseError error) {
-        Log.e(TAG, "onCancelled:" + error);
-        Toast.makeText(activityContext, "DBError: " + error, Toast.LENGTH_SHORT).show();
-      }
-    };
   }
 
   @Override
@@ -177,14 +96,11 @@ public class TransactionsActivity extends AppCompatActivity {
 
     this.transactionsRepository.getTransactionsForMonthList(
         this.handler, this.transactionsRVA, this.progressBar, this.year, this.month);
-//    this.transactionsRepository.addMonthTransactionChildEventListener(
-//        this.getMonthTransactionChildEventListener(this), this.year, this.month);
   }
 
   @Override
   protected void onPause() {
     super.onPause();
-//    this.transactionsRepository.removeMonthTransactionsChildEventListener(this.year, this.month);
   }
 
   protected void menuBarActions(BottomNavigationView navView) {
