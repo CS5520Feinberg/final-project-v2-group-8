@@ -24,6 +24,7 @@ import edu.northeastern.coinnect.repositories.UsersRepository;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -73,14 +74,17 @@ public class HomeActivity extends AppCompatActivity {
   }
 
   private void setupUserGreeting() {
+    Locale locale = this.getResources().getConfiguration().getLocales().get(0);
+
     String userBudget = userRepository.getMonthlyBudget();
     String userFirstName = userRepository.getUserFirstName();
 
     Calendar todayCalendar = Calendar.getInstance();
 
-    String month = String.valueOf(todayCalendar.get(Calendar.MONTH));
+    String month = todayCalendar.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
+
     int dayOfMonth = todayCalendar.get(Calendar.DAY_OF_MONTH);
-    String datePass = String.join(" ", month, String.valueOf(dayOfMonth));
+    String datePass = String.format(locale, "%s, %d", month, dayOfMonth);
 
     this.greetingTextView.setText(String.format("Hello %s", userFirstName));
     this.budgetTextView.setText(String.format("$%s", userBudget));
