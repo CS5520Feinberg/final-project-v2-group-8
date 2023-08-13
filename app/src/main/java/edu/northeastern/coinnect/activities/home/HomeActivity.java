@@ -15,18 +15,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
-import edu.northeastern.coinnect.activities.transactions.TransactionCardClickListener;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.activities.transactions.addTransaction.AddTransactionActivity;
 import edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
-import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
 import edu.northeastern.coinnect.repositories.UsersRepository;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -41,7 +37,8 @@ public class HomeActivity extends AppCompatActivity {
 
   private TransactionsRecyclerViewAdapter recentTransactionsRVA;
 
-  private final TransactionsRepository transactionsRepository = TransactionsRepository.getInstance();
+  private final TransactionsRepository transactionsRepository =
+      TransactionsRepository.getInstance();
 
   private ProgressBar progressBar;
 
@@ -62,13 +59,13 @@ public class HomeActivity extends AppCompatActivity {
 
   private void setupRecyclerViewListenerAndAdapter() {
     // set up a listener for transaction card click -> Edit Transaction
-//    TransactionCardClickListener transactionCardClickListener =
-//        () -> {
-//          Intent intent = new Intent(HomeActivity.this, AddTransactionActivity.class);
-//          startActivity(intent);
-//        };
+    //    TransactionCardClickListener transactionCardClickListener =
+    //        () -> {
+    //          Intent intent = new Intent(HomeActivity.this, AddTransactionActivity.class);
+    //          startActivity(intent);
+    //        };
 
-//    this.transactionsRVA.setCardClickListener(transactionCardClickListener);
+    //    this.transactionsRVA.setCardClickListener(transactionCardClickListener);
     this.recentTransactionsRV.setAdapter(this.recentTransactionsRVA);
   }
 
@@ -90,14 +87,9 @@ public class HomeActivity extends AppCompatActivity {
     int dayOfMonth = todayCalendar.get(Calendar.DAY_OF_MONTH);
     String datePass = String.join(" ", month, String.valueOf(dayOfMonth));
 
-    if (currentUserName != null) {
-      this.greetingTextView.setText(String.format("Hello %s", this.userFirstName));
-      this.budgetTextView.setText(String.format("$%s", this.userBudget));
-      this.dateTextView.setText(datePass);
-    } else {
-      this.budgetTextView.setText("$2500");
-      this.dateTextView.setText(datePass);
-    }
+    this.greetingTextView.setText(String.format("Hello %s", this.userFirstName));
+    this.budgetTextView.setText(String.format("$%s", this.userBudget));
+    this.dateTextView.setText(datePass);
   }
 
   @SuppressLint({"SetTextI18n", "ResourceAsColor"})
