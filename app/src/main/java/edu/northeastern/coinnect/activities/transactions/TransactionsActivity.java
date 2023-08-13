@@ -28,6 +28,7 @@ public class TransactionsActivity extends AppCompatActivity {
   private RecyclerView transactionsRV;
   private TransactionsRecyclerViewAdapter transactionsRVA;
   private ProgressBar progressBar;
+  private BottomNavigationView bottomNavigationView;
 
   private Integer year;
   private Integer month;
@@ -50,13 +51,13 @@ public class TransactionsActivity extends AppCompatActivity {
 
   private void setupRecyclerViewListenerAndAdapter() {
     // set up a listener for transaction card click -> Edit Transaction
-//    TransactionCardClickListener transactionCardClickListener =
-//        () -> {
-//          Intent intent = new Intent(TransactionsActivity.this, AddTransactionActivity.class);
-//          startActivity(intent);
-//        };
-//
-//    this.transactionsRVA.setCardClickListener(transactionCardClickListener);
+    //    TransactionCardClickListener transactionCardClickListener =
+    //        () -> {
+    //          Intent intent = new Intent(TransactionsActivity.this, AddTransactionActivity.class);
+    //          startActivity(intent);
+    //        };
+    //
+    //    this.transactionsRVA.setCardClickListener(transactionCardClickListener);
     this.transactionsRV.setAdapter(this.transactionsRVA);
   }
 
@@ -64,20 +65,17 @@ public class TransactionsActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    edu.northeastern.coinnect.databinding.ActivityTransactionsBinding binding =
-        ActivityTransactionsBinding.inflate(getLayoutInflater());
+    ActivityTransactionsBinding binding = ActivityTransactionsBinding.inflate(getLayoutInflater());
     View view = binding.getRoot();
     setContentView(view);
 
-    setContentView(view);
-
+    this.bottomNavigationView = findViewById(R.id.bottomNavigationViewTransactions);
     progressBar = findViewById(R.id.pb_transactions);
-    BottomNavigationView navView = findViewById(R.id.bottomNavigationViewTransactions);
 
     this.setupDateForSwitcher();
 
-    navView.setSelectedItemId(R.id.transactionActivity);
-    this.setupNavBarActions(navView);
+    this.bottomNavigationView.setSelectedItemId(R.id.transactionActivity);
+    this.setupNavBarActions(this.bottomNavigationView);
 
     List<AbstractTransactionModel> transactionModelsList = new ArrayList<>();
 

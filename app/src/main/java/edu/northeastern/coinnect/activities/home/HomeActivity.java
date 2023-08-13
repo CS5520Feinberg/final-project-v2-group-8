@@ -43,7 +43,7 @@ public class HomeActivity extends AppCompatActivity {
   private TextView greetingTextView;
   private TextView budgetTextView;
   private TextView dateTextView;
-  private String currentUserName;
+  private BottomNavigationView bottomNavigationView;
 
   private void setupRecyclerView(ActivityHomeScreenBinding binding) {
     this.recentTransactionsRV = binding.rvRecentTransactions;
@@ -90,28 +90,27 @@ public class HomeActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding binding =
-        ActivityHomeScreenBinding.inflate(getLayoutInflater());
-    setContentView(R.layout.activity_home_screen);
+    ActivityHomeScreenBinding binding = ActivityHomeScreenBinding.inflate(getLayoutInflater());
+    View view = binding.getRoot();
+    setContentView(view);
 
     this.addTransactionFAB = findViewById(R.id.fab_addTransactionButton);
     this.greetingTextView = findViewById(R.id.tv_greeting);
     this.budgetTextView = findViewById(R.id.set_budget);
     this.dateTextView = findViewById(R.id.tv_today_date);
-    BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
+    this.bottomNavigationView = findViewById(R.id.bottom_nav_home);
     this.progressBar = findViewById(R.id.homeScreenProgressBar);
-
-    this.currentUserName = userRepository.getCurrentUserName();
 
     this.setupAddTransactionFAB();
     this.setupUserGreeting();
 
-    this.setupNavBarActions(navView);
-    List<AbstractTransactionModel> transactionsList = new ArrayList<>();
+    this.bottomNavigationView.setSelectedItemId(R.id.homeActivity);
+    this.setupNavBarActions(this.bottomNavigationView);
+    List<AbstractTransactionModel> transactionModelsList = new ArrayList<>();
 
     this.setupRecyclerView(binding);
 
-    this.recentTransactionsRVA = new TransactionsRecyclerViewAdapter(transactionsList);
+    this.recentTransactionsRVA = new TransactionsRecyclerViewAdapter(transactionModelsList);
     this.setupRecyclerViewListenerAndAdapter();
   }
 
