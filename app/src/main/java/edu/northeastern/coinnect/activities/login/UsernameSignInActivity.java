@@ -107,10 +107,9 @@ public class UsernameSignInActivity extends AppCompatActivity {
                   try {
                     if (comparePasswords(password, usersHashedPassword)) {
                       firebaseDBHandler.setCurrentUserName(username);
+                      usersRepository.setMonthlyBudget(value.get("monthlyBudget").toString());
 
                       Intent intent = new Intent(getApplicationContext(), WelcomeActivity.class);
-                      intent.putExtra("USER_NAME", username);
-                      intent.putExtra("BUDGET", value.get("monthlyBudget").toString());
                       startActivity(intent);
                       finish();
                     } else {

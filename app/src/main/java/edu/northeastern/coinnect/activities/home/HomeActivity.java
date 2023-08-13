@@ -1,17 +1,27 @@
 package edu.northeastern.coinnect.activities.home;
 
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.northeastern.coinnect.R;
+
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
@@ -21,13 +31,12 @@ import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
 import edu.northeastern.coinnect.repositories.UsersRepository;
-import java.util.ArrayList;
-import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
   private final Handler handler = new Handler();
-  private static final FirebaseDBHandler firebaseDBHandler = FirebaseDBHandler.getInstance();
+  private final static FirebaseDBHandler firebaseDBHandler = FirebaseDBHandler.getInstance();
+  private final static UsersRepository userRepository = UsersRepository.getInstance();
 
   private RecyclerView transactionRecyclerView;
 
@@ -41,8 +50,6 @@ public class HomeActivity extends AppCompatActivity {
   private TextView date;
   private String userName;
   private String userBudget;
-  private String dateExtra;
-  private final UsersRepository usersRepository = UsersRepository.getInstance();
 
   @SuppressLint({"SetTextI18n", "ResourceAsColor"})
   @Override
@@ -51,19 +58,23 @@ public class HomeActivity extends AppCompatActivity {
     edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding binding =
         ActivityHomeScreenBinding.inflate(getLayoutInflater());
     setContentView(R.layout.activity_home_screen);
-    FloatingActionButton addTransaction =
-        (FloatingActionButton) findViewById(R.id.addTransactionButton);
+
+    FloatingActionButton addTransaction = (FloatingActionButton) findViewById(R.id.addTransactionButton);
+
     addTransaction.setOnClickListener(
         view -> {
           Intent intent = new Intent(getApplicationContext(), AddTransactionActivity.class);
           startActivity(intent);
         });
 
-    // getting username, budget, date to display greeting
-    userName =   this.usersRepository.getCurrentUserName();
-
-    userBudget = getIntent().getStringExtra("BUDGET");
-    dateExtra = getIntent().getStringExtra("DATE");
+    ZoneId zone = ZoneId.of("America/New_York");
+    LocalDate localDate = LocalDate.now(zone);
+    String month = String.valueOf(localDate.getMonth());
+    int dayOfMonth = localDate.getDayOfMonth();
+    String datePass = String.join(" ", month, String.valueOf(dayOfMonth));
+    
+    userName = userRepository.getCurrentUserName();
+    userBudget = userRepository.getMonthlyBudget();
     greeting = findViewById(R.id.greeting);
     budget = findViewById(R.id.set_budget);
     date = findViewById(R.id.today_date);
@@ -71,11 +82,11 @@ public class HomeActivity extends AppCompatActivity {
     if (userName != null) {
       greeting.setText("Hello " + userName);
       budget.setText("$" + userBudget);
-      date.setText(dateExtra);
+      date.setText(datePass);
     } else {
       greeting.setText("Free Pass");
       budget.setText("$2500");
-      date.setText(dateExtra);
+      date.setText(datePass);
     }
 
     BottomNavigationView navView = findViewById(R.id.bottom_nav_home);

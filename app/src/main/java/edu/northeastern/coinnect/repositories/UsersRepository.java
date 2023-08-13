@@ -17,6 +17,9 @@ public class UsersRepository {
 
   private static UsersRepository INSTANCE;
 
+  private String monthlyBudget;
+  private String currentUserName;
+
   private UsersRepository() {
   }
 
@@ -34,6 +37,18 @@ public class UsersRepository {
 
   public String getCurrentUserName() {
     return this.getFirebaseDbHandler().getCurrentUserName();
+  }
+
+  public void setCurrentUserName(String username) {
+    this.currentUserName = username;
+  }
+
+  public String getMonthlyBudget() {
+    return monthlyBudget;
+  }
+
+  public void setMonthlyBudget(String amount) {
+    this.monthlyBudget = amount;
   }
 
   // TODO: use this method to register user
