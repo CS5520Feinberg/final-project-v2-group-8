@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.models.userModels.Friends.FriendRecyclerView;
+package edu.northeastern.coinnect.activities.friends.FriendRecyclerView;
 
 import edu.northeastern.coinnect.models.userModels.Friends.AbstractFriendModel;
 

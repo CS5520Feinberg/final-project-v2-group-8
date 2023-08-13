@@ -1,4 +1,4 @@
-package edu.northeastern.coinnect.models.userModels.Friends.FriendRecyclerView;
+package edu.northeastern.coinnect.activities.friends.FriendRecyclerView;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,27 +8,30 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import edu.northeastern.coinnect.R;
 
 public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendViewHolder> {
 
-    private final ArrayList<String> friendCardList;
+    private Context context;
 
-    public FriendRecyclerViewAdapter(ArrayList<String> friendCardList) {
-        this.friendCardList = friendCardList;
-    }
+    private List<String> friendCardList;
 
     @NonNull
     @Override
     public FriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context parentContext = parent.getContext();
-        View view = LayoutInflater.from(parentContext)
-                .inflate(R.layout.card_friend, parent, false);
+        this.context = parent.getContext();
+        View view = LayoutInflater
+                        .from(this.context)
+                        .inflate(R.layout.card_friend, parent, false);
 
         return new FriendViewHolder(view);
     }
+    public FriendRecyclerViewAdapter(List<String> friendCardList) {
+        this.friendCardList = friendCardList;
+    }
+
 
     @Override
     public void onBindViewHolder(@NonNull FriendViewHolder holder, int position) {
