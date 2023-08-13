@@ -60,10 +60,10 @@ public class FriendsActivity extends AppCompatActivity {
 
     BottomNavigationView navView = binding.bottomNavFriends;
     navView.setSelectedItemId(R.id.friendsActivity);
-    menuBarActions(navView);
+    this.setupNavBarActions(navView);
   }
 
-  protected void menuBarActions(BottomNavigationView navView) {
+  protected void setupNavBarActions(BottomNavigationView navView) {
     navView.setOnItemSelectedListener(
         item -> {
           if (item.getItemId() == R.id.homeActivity) {
