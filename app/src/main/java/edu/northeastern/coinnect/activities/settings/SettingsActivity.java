@@ -24,10 +24,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
     navView.setSelectedItemId(R.id.settingsActivity);
-    menuBarActions(navView);
+    this.setupNavBarActions(navView);
   }
 
-  protected void menuBarActions(BottomNavigationView navView) {
+  protected void setupNavBarActions(BottomNavigationView navView) {
     navView.setOnItemSelectedListener(
         item -> {
           if (item.getItemId() == R.id.settingsActivity) {

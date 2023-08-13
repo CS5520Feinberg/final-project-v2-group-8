@@ -13,7 +13,6 @@ import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
-import edu.northeastern.coinnect.activities.transactions.addTransaction.AddTransactionActivity;
 import edu.northeastern.coinnect.databinding.ActivityTransactionsBinding;
 import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
@@ -78,7 +77,7 @@ public class TransactionsActivity extends AppCompatActivity {
     this.setupDateForSwitcher();
 
     navView.setSelectedItemId(R.id.transactionActivity);
-    menuBarActions(navView);
+    this.setupNavBarActions(navView);
 
     List<AbstractTransactionModel> transactionModelsList = new ArrayList<>();
 
@@ -103,7 +102,7 @@ public class TransactionsActivity extends AppCompatActivity {
     super.onPause();
   }
 
-  protected void menuBarActions(BottomNavigationView navView) {
+  protected void setupNavBarActions(BottomNavigationView navView) {
     navView.setOnItemSelectedListener(
         item -> {
           if (item.getItemId() == R.id.homeActivity) {
