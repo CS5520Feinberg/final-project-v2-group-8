@@ -81,7 +81,7 @@ public class AddTransactionActivity extends AppCompatActivity {
               this,
               addTransactionProgressbar,
               year,
-              month+1,
+              month,
               day,
               Double.parseDouble(amount),
               desc).addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
