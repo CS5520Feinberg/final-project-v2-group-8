@@ -33,6 +33,10 @@ public class PendingTransactionModel {
     return amountPaid;
   }
 
+  public Double getNetAmountOwed() {
+    return this.amountOwed - amountPaid;
+  }
+
   public String getCreatorUser() {
     return creatorUser;
   }

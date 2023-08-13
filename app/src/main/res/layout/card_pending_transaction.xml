@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/card_pending_transaction"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_marginTop="8dp"
+  android:layout_marginBottom="8dp"
+  android:layout_marginStart="16dp"
+  android:layout_marginEnd="16dp"
+  app:cardBackgroundColor="#FFF2B2"
+  app:cardCornerRadius="8dp"
+  app:cardElevation="10dp">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/cl_basicDetails"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/cl_moreDetails">
+
+      <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_expandPendingTransaction"
+        android:layout_width="32sp"
+        android:layout_height="40sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        android:minWidth="0dp"
+
+        android:backgroundTint="@color/white"
+
+        app:icon="@drawable/baseline_keyboard_arrow_right_24"
+        app:iconTint="@color/black"
+        app:iconSize="28dip"
+        app:iconPadding="0dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp" />
+
+      <TextView
+        android:id="@+id/tv_CreatorUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+
+        app:layout_constraintStart_toEndOf="@id/btn_expandPendingTransaction"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:text="Aaron" />
+
+      <TextView
+        android:id="@+id/tv_netAmountOwed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="$30" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/cl_moreDetails"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/cl_basicDetails"
+      app:layout_constraintBottom_toBottomOf="parent"
+      android:paddingTop="8dp"
+      >
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <TextView
+          android:id="@+id/tv_amountPaid"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:fontFamily="sans-serif-medium"
+          android:textColor="@color/black"
+          android:textSize="22sp"
+          app:layout_constraintBottom_toTopOf="@id/tv_amountPaidLabel"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:text="$10" />
+
+        <TextView
+          android:id="@+id/tv_amountPaidLabel"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:textColor="@color/black"
+          android:textSize="12sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/tv_amountPaid"
+          tools:text="Amount Paid" />
+
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <TextView
+          android:id="@+id/tv_amountOwed"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:fontFamily="sans-serif-medium"
+          android:textColor="@color/black"
+          android:textSize="22sp"
+          app:layout_constraintBottom_toTopOf="@id/tv_amountOwedLabel"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:text="$40" />
+
+        <TextView
+          android:id="@+id/tv_amountOwedLabel"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:textColor="@color/black"
+          android:textSize="12sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/tv_amountOwed"
+          tools:text="Amount Owed" />
+
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <TextView
+          android:id="@+id/tv_amountTotal"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:fontFamily="sans-serif-medium"
+          android:textColor="@color/black"
+          android:textSize="22sp"
+          app:layout_constraintBottom_toTopOf="@id/tv_amountTotalLabel"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:text="$200" />
+
+        <TextView
+          android:id="@+id/tv_amountTotalLabel"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+
+          android:textColor="@color/black"
+          android:textSize="12sp"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintTop_toBottomOf="@+id/tv_amountTotal"
+          android:text="Total Amount" />
+
+      </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

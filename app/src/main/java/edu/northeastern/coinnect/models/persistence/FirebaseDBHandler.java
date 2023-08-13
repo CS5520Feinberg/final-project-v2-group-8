@@ -10,6 +10,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import edu.northeastern.coinnect.activities.pending.PendingTransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.models.persistence.entities.GroupTransactionEntity;
 import edu.northeastern.coinnect.models.persistence.entities.GroupTransactionShareEntity;
@@ -95,19 +96,21 @@ public class FirebaseDBHandler {
 
   private void validate_usersAreFriends(Set<String> userNames) {
     this.validate_currentUserIsSet();
-    this.getCurrentUserFriends().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-      @Override
-      public void onSuccess(DataSnapshot dataSnapshot) {
-        List<String> allFriendsUserNames = (List<String>) dataSnapshot.getValue();
+    this.getCurrentUserFriends()
+        .addOnSuccessListener(
+            new OnSuccessListener<DataSnapshot>() {
+              @Override
+              public void onSuccess(DataSnapshot dataSnapshot) {
+                List<String> allFriendsUserNames = (List<String>) dataSnapshot.getValue();
 
-        for (String userName : userNames) {
-          if (!allFriendsUserNames.contains(userName)) {
-            throw new UnsupportedOperationException(
-                    String.format("User %s is not a friend or doesn't exist!", userName));
-          }
-        }
-      }
-    });
+                for (String userName : userNames) {
+                  if (!allFriendsUserNames.contains(userName)) {
+                    throw new UnsupportedOperationException(
+                        String.format("User %s is not a friend or doesn't exist!", userName));
+                  }
+                }
+              }
+            });
   }
 
   private void validate_isRegularTransaction(TransactionEntity transactionEntity) {
@@ -690,7 +693,8 @@ public class FirebaseDBHandler {
                 }
 
                 DayTransactionsModel dayTransactionsModel =
-                    new DayTransactionsModel(todayCalendar.get(Calendar.DAY_OF_MONTH), transactionModels);
+                    new DayTransactionsModel(
+                        todayCalendar.get(Calendar.DAY_OF_MONTH), transactionModels);
 
                 Log.i(TAG, String.format("Transactions being added to the Recycler View"));
                 handler.post(
@@ -763,21 +767,37 @@ public class FirebaseDBHandler {
     return new DayTransactionsModel(dayOfMonth, transactionModels);
   }
 
-  public List<PendingTransactionModel> getPendingTransactions() {
+  public void getPendingTransactions(
+      Handler handler, PendingTransactionsRecyclerViewAdapter adapter, ProgressBar progressBar) {
     this.validate_currentUserIsSet();
     DatabaseReference pendingTransactionsDR =
         this.getUserPendingTransactionsDatabaseReference(this.getCurrentUserName());
 
-    List<PendingTransactionModel> pendingTransactionModels = new ArrayList<>();
+    pendingTransactionsDR
+        .get()
+        .addOnCompleteListener(
+            task -> {
+              if (!task.isSuccessful()) {
+                Log.e("firebase", "Error getting data", task.getException());
+              } else {
+                List<PendingTransactionModel> pendingTransactionModels = new ArrayList<>();
 
-    for (DataSnapshot pendingTransactionSnapshot :
-        pendingTransactionsDR.get().getResult().getChildren()) {
-      PendingTransactionEntity entity =
-          pendingTransactionSnapshot.getValue(PendingTransactionEntity.class);
-      pendingTransactionModels.add(new PendingTransactionModel(entity));
-    }
+                DataSnapshot dataSnapshot = task.getResult();
 
-    return pendingTransactionModels;
+                for (DataSnapshot pendingTransactionSnapshot : dataSnapshot.getChildren()) {
+                  PendingTransactionEntity entity =
+                      pendingTransactionSnapshot.getValue(PendingTransactionEntity.class);
+                  pendingTransactionModels.add(new PendingTransactionModel(entity));
+                }
+
+                Log.i(TAG, String.format("Transactions being added to the Recycler View"));
+                handler.post(
+                    () -> {
+                      adapter.setupList(pendingTransactionModels);
+                      progressBar.setVisibility(View.INVISIBLE);
+                    });
+              }
+            });
   }
 
   public void addGroupTransactionChildEventListener(

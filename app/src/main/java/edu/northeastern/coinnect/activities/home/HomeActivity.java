@@ -14,6 +14,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
+import edu.northeastern.coinnect.activities.pending.PendingTransactionsActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
@@ -90,7 +91,10 @@ public class HomeActivity extends AppCompatActivity {
   }
 
   private void setupPendingTransactions() {
-
+    this.pendingTransactionsButton.setOnClickListener(view -> {
+      Intent intent = new Intent(this, PendingTransactionsActivity.class);
+      startActivity(intent);
+    });
   }
 
   @Override

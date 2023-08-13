@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
+import edu.northeastern.coinnect.activities.pending.PendingTransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.models.transactionModels.DayTransactionsModel;
@@ -61,6 +62,13 @@ public class TransactionsRepository {
       TransactionsRecyclerViewAdapter adapter,
       ProgressBar progressBar) {
     firebaseDbHandler.getRecentTransactions(handler, adapter, progressBar);
+  }
+
+  public void getPendingTransactionsList(
+      Handler handler,
+      PendingTransactionsRecyclerViewAdapter adapter,
+      ProgressBar progressBar) {
+    firebaseDbHandler.getPendingTransactions(handler, adapter, progressBar);
   }
 
   public void getTransactionsForMonthList(

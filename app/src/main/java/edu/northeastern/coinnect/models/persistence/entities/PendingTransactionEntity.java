@@ -7,6 +7,8 @@ public class PendingTransactionEntity {
   public Double amountPaid;
   public String creatorUser;
 
+  public PendingTransactionEntity() {}
+
   public PendingTransactionEntity(Integer groupTransactionId, Double totalAmount, Double amountOwed, Double amountPaid, String creatorUser) {
     this.groupTransactionId = groupTransactionId;
     this.totalAmount = totalAmount;
