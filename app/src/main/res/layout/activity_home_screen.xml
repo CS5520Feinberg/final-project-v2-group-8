@@ -145,7 +145,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
 
-      tools:text="Hello Omkar" />
+      tools:text="Hello User" />
 
     <com.google.android.material.button.MaterialButton
       android:id="@+id/btn_pendingTransactions"
@@ -156,9 +156,8 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent"
 
-
-
       android:backgroundTint="@color/white"
+      app:rippleColor="@color/accentGreen"
 
       app:icon="@drawable/baseline_pending_actions_24"
       app:iconTint="@color/black"
