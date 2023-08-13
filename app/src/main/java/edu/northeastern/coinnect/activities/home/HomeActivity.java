@@ -1,27 +1,17 @@
 package edu.northeastern.coinnect.activities.home;
 
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.northeastern.coinnect.R;
-
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
@@ -31,12 +21,16 @@ import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
 import edu.northeastern.coinnect.repositories.UsersRepository;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
   private final Handler handler = new Handler();
-  private final static FirebaseDBHandler firebaseDBHandler = FirebaseDBHandler.getInstance();
-  private final static UsersRepository userRepository = UsersRepository.getInstance();
+  private static final FirebaseDBHandler firebaseDBHandler = FirebaseDBHandler.getInstance();
+  private static final UsersRepository userRepository = UsersRepository.getInstance();
 
   private RecyclerView transactionRecyclerView;
 
@@ -59,7 +53,7 @@ public class HomeActivity extends AppCompatActivity {
         ActivityHomeScreenBinding.inflate(getLayoutInflater());
     setContentView(R.layout.activity_home_screen);
 
-    FloatingActionButton addTransaction = (FloatingActionButton) findViewById(R.id.addTransactionButton);
+    FloatingActionButton addTransaction = findViewById(R.id.fab_addTransactionButton);
 
     addTransaction.setOnClickListener(
         view -> {
@@ -72,12 +66,12 @@ public class HomeActivity extends AppCompatActivity {
     String month = String.valueOf(localDate.getMonth());
     int dayOfMonth = localDate.getDayOfMonth();
     String datePass = String.join(" ", month, String.valueOf(dayOfMonth));
-    
+
     userName = userRepository.getCurrentUserName();
     userBudget = userRepository.getMonthlyBudget();
-    greeting = findViewById(R.id.greeting);
+    greeting = findViewById(R.id.tv_greeting);
     budget = findViewById(R.id.set_budget);
-    date = findViewById(R.id.today_date);
+    date = findViewById(R.id.tv_today_date);
 
     if (userName != null) {
       greeting.setText("Hello " + userName);
@@ -128,7 +122,7 @@ public class HomeActivity extends AppCompatActivity {
   }
 
   private void setupRecyclerView(ActivityHomeScreenBinding binding) {
-    this.transactionRecyclerView = binding.transactionRecyclerView;
+    this.transactionRecyclerView = binding.rvRecentTransactions;
     this.transactionRecyclerView.setHasFixedSize(true);
     this.transactionRecyclerView.setLayoutManager(new LinearLayoutManager(this));
   }
