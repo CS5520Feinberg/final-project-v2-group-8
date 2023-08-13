@@ -64,6 +64,9 @@ public class AddTransactionActivity extends AppCompatActivity {
             // date picker dialog
             DatePickerDialog picker = new DatePickerDialog(AddTransactionActivity.this,
                     (view, year1, monthOfYear, dayOfMonth) -> {
+                        day = dayOfMonth;
+                        month = monthOfYear;
+                        year = year1;
                       transactionDateTextView.setText(
                           dayOfMonth + "/" + (monthOfYear + 1) + "/" + year1);
                     }, year, month, day);
