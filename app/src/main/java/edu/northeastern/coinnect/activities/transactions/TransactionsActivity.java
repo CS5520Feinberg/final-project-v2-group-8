@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
@@ -16,9 +18,11 @@ import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.databinding.ActivityTransactionsBinding;
 import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
+import edu.northeastern.coinnect.utils.CalendarUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 public class TransactionsActivity extends AppCompatActivity {
   private static final String TAG = "_TransactionsActivity";
@@ -27,6 +31,9 @@ public class TransactionsActivity extends AppCompatActivity {
 
   private RecyclerView transactionsRV;
   private TransactionsRecyclerViewAdapter transactionsRVA;
+  private MaterialButton previousMonthButton;
+  private MaterialButton nextMonthButton;
+  private TextView currentMonthTextView;
   private ProgressBar progressBar;
   private BottomNavigationView bottomNavigationView;
 
@@ -61,6 +68,42 @@ public class TransactionsActivity extends AppCompatActivity {
     this.transactionsRV.setAdapter(this.transactionsRVA);
   }
 
+  private void fetchTransactionsForSetMonth() {
+    runOnUiThread(() -> progressBar.setVisibility(View.VISIBLE));
+
+    this.transactionsRepository.getTransactionsForMonthList(
+        this.handler, this.transactionsRVA, this.progressBar, this.year, this.month);
+  }
+
+  private void switchDate_setMonthLabel() {
+    Locale locale = this.getResources().getConfiguration().getLocales().get(0);
+    String dateString = CalendarUtils.getMonthFormattedDate(this.year, this.month, locale);
+
+    this.currentMonthTextView.setText(dateString);
+  }
+
+  private void switchDate_NextMonth() {
+    this.month++;
+    if (this.month > 11) {
+      this.year++;
+      this.month = 0;
+    }
+
+    this.switchDate_setMonthLabel();
+    this.fetchTransactionsForSetMonth();
+  }
+
+  private void switchDate_PreviousMonth() {
+    this.month--;
+    if (this.month < 0) {
+      this.year--;
+      this.month = 11;
+    }
+
+    this.switchDate_setMonthLabel();
+    this.fetchTransactionsForSetMonth();
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -70,6 +113,9 @@ public class TransactionsActivity extends AppCompatActivity {
     setContentView(view);
 
     this.bottomNavigationView = findViewById(R.id.bottomNavigationViewTransactions);
+    this.previousMonthButton = findViewById(R.id.btn_previousMonth);
+    this.nextMonthButton = findViewById(R.id.btn_nextMonth);
+    this.currentMonthTextView = findViewById(R.id.tv_currentMonth);
     progressBar = findViewById(R.id.pb_transactions);
 
     this.setupDateForSwitcher();
@@ -83,16 +129,20 @@ public class TransactionsActivity extends AppCompatActivity {
 
     this.transactionsRVA = new TransactionsRecyclerViewAdapter(transactionModelsList);
     this.setupRecyclerViewListenerAndAdapter();
+
+    this.previousMonthButton.setOnClickListener(
+        v -> TransactionsActivity.this.switchDate_PreviousMonth());
+
+    this.nextMonthButton.setOnClickListener(
+        v -> TransactionsActivity.this.switchDate_NextMonth());
   }
 
   @Override
   protected void onResume() {
     super.onResume();
 
-    runOnUiThread(() -> progressBar.setVisibility(View.VISIBLE));
-
-    this.transactionsRepository.getTransactionsForMonthList(
-        this.handler, this.transactionsRVA, this.progressBar, this.year, this.month);
+    this.switchDate_setMonthLabel();
+    this.fetchTransactionsForSetMonth();
   }
 
   @Override

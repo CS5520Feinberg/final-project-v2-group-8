@@ -21,6 +21,7 @@ import edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding;
 import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
 import edu.northeastern.coinnect.repositories.UsersRepository;
+import edu.northeastern.coinnect.utils.CalendarUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -79,16 +80,11 @@ public class HomeActivity extends AppCompatActivity {
     String userBudget = userRepository.getMonthlyBudget();
     String userFirstName = userRepository.getUserFirstName();
 
-    Calendar todayCalendar = Calendar.getInstance();
-
-    String month = todayCalendar.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
-
-    int dayOfMonth = todayCalendar.get(Calendar.DAY_OF_MONTH);
-    String datePass = String.format(locale, "%s, %d", month, dayOfMonth);
+    String dateString = CalendarUtils.getDayFormattedDate(Calendar.getInstance(), locale);
 
     this.greetingTextView.setText(String.format("Hello %s", userFirstName));
     this.budgetTextView.setText(String.format("$%s", userBudget));
-    this.dateTextView.setText(datePass);
+    this.dateTextView.setText(dateString);
   }
 
   @Override
