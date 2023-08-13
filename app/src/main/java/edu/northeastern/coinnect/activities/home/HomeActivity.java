@@ -1,6 +1,5 @@
 package edu.northeastern.coinnect.activities.home;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +18,6 @@ import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.activities.transactions.addTransaction.AddTransactionActivity;
 import edu.northeastern.coinnect.databinding.ActivityHomeScreenBinding;
-import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
 import edu.northeastern.coinnect.repositories.UsersRepository;
@@ -30,7 +28,6 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity {
 
   private final Handler handler = new Handler();
-  private static final FirebaseDBHandler firebaseDBHandler = FirebaseDBHandler.getInstance();
   private static final UsersRepository userRepository = UsersRepository.getInstance();
 
   private RecyclerView recentTransactionsRV;
@@ -47,8 +44,6 @@ public class HomeActivity extends AppCompatActivity {
   private TextView budgetTextView;
   private TextView dateTextView;
   private String currentUserName;
-  private String userBudget;
-  private String userFirstName;
 
   private void setupRecyclerView(ActivityHomeScreenBinding binding) {
     this.recentTransactionsRV = binding.rvRecentTransactions;
@@ -78,8 +73,8 @@ public class HomeActivity extends AppCompatActivity {
   }
 
   private void setupUserGreeting() {
-    this.userBudget = userRepository.getMonthlyBudget();
-    this.userFirstName = userRepository.getUserFirstName();
+    String userBudget = userRepository.getMonthlyBudget();
+    String userFirstName = userRepository.getUserFirstName();
 
     Calendar todayCalendar = Calendar.getInstance();
 
@@ -87,12 +82,11 @@ public class HomeActivity extends AppCompatActivity {
     int dayOfMonth = todayCalendar.get(Calendar.DAY_OF_MONTH);
     String datePass = String.join(" ", month, String.valueOf(dayOfMonth));
 
-    this.greetingTextView.setText(String.format("Hello %s", this.userFirstName));
-    this.budgetTextView.setText(String.format("$%s", this.userBudget));
+    this.greetingTextView.setText(String.format("Hello %s", userFirstName));
+    this.budgetTextView.setText(String.format("$%s", userBudget));
     this.dateTextView.setText(datePass);
   }
 
-  @SuppressLint({"SetTextI18n", "ResourceAsColor"})
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -101,19 +95,18 @@ public class HomeActivity extends AppCompatActivity {
     setContentView(R.layout.activity_home_screen);
 
     this.addTransactionFAB = findViewById(R.id.fab_addTransactionButton);
-    greetingTextView = findViewById(R.id.tv_greeting);
-    budgetTextView = findViewById(R.id.set_budget);
-    dateTextView = findViewById(R.id.tv_today_date);
+    this.greetingTextView = findViewById(R.id.tv_greeting);
+    this.budgetTextView = findViewById(R.id.set_budget);
+    this.dateTextView = findViewById(R.id.tv_today_date);
+    BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
+    this.progressBar = findViewById(R.id.homeScreenProgressBar);
+
+    this.currentUserName = userRepository.getCurrentUserName();
 
     this.setupAddTransactionFAB();
-
-    currentUserName = userRepository.getCurrentUserName();
-
     this.setupUserGreeting();
 
-    BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
-    menuBarActions(navView);
-    progressBar = findViewById(R.id.homeScreenProgressBar);
+    this.setupNavBarActions(navView);
     List<AbstractTransactionModel> transactionsList = new ArrayList<>();
 
     this.setupRecyclerView(binding);
@@ -122,23 +115,22 @@ public class HomeActivity extends AppCompatActivity {
     this.setupRecyclerViewListenerAndAdapter();
   }
 
-  protected void menuBarActions(BottomNavigationView navView) {
+  protected void setupNavBarActions(BottomNavigationView navView) {
     navView.setOnItemSelectedListener(
         item -> {
-          if (item.getItemId() == R.id.friends) {
-            Intent intent = new Intent(getApplicationContext(), FriendsActivity.class);
-            System.out.println(currentUserName);
+          if (item.getItemId() == R.id.friendsActivity) {
+            Intent intent = new Intent(this, FriendsActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
           } else if (item.getItemId() == R.id.homeActivity) {
             return true;
           } else if (item.getItemId() == R.id.transactionActivity) {
-            Intent intent = new Intent(getApplicationContext(), TransactionsActivity.class);
+            Intent intent = new Intent(this, TransactionsActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
             return true;
-          } else {
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+          } else if (item.getItemId() == R.id.settingsActivity) {
+            Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
             return true;

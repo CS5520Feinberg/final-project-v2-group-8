@@ -73,10 +73,10 @@ public class TransactionsActivity extends AppCompatActivity {
     setContentView(view);
 
     progressBar = findViewById(R.id.pb_transactions);
+    BottomNavigationView navView = findViewById(R.id.bottomNavigationViewTransactions);
 
     this.setupDateForSwitcher();
 
-    BottomNavigationView navView = findViewById(R.id.bottomNavigationViewTransactions);
     navView.setSelectedItemId(R.id.transactionActivity);
     menuBarActions(navView);
 
@@ -110,14 +110,14 @@ public class TransactionsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
-          } else if (item.getItemId() == R.id.friends) {
+          } else if (item.getItemId() == R.id.friendsActivity) {
             Intent intent = new Intent(this, FriendsActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
           } else if (item.getItemId() == R.id.transactionActivity) {
             item.setChecked(true);
             return true;
-          } else {
+          } else if (item.getItemId() == R.id.settingsActivity) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);

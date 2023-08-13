@@ -56,13 +56,10 @@ public class FriendsActivity extends AppCompatActivity {
     setContentView(view);
     currentUser = this.usersRepository.getCurrentUserName();
 
-    friendList =
-        loadFriendList(
-            currentUser,
-            friendList -> setupRecyclerView(binding, friendList));
+    friendList = loadFriendList(currentUser, friendList -> setupRecyclerView(binding, friendList));
 
     BottomNavigationView navView = binding.bottomNavFriends;
-    navView.setSelectedItemId(R.id.friends);
+    navView.setSelectedItemId(R.id.friendsActivity);
     menuBarActions(navView);
   }
 
@@ -70,19 +67,19 @@ public class FriendsActivity extends AppCompatActivity {
     navView.setOnItemSelectedListener(
         item -> {
           if (item.getItemId() == R.id.homeActivity) {
-            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+            Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
 
-          } else if (item.getItemId() == R.id.friends) {
+          } else if (item.getItemId() == R.id.friendsActivity) {
             return true;
           } else if (item.getItemId() == R.id.transactionActivity) {
-            Intent intent = new Intent(getApplicationContext(), TransactionsActivity.class);
+            Intent intent = new Intent(this, TransactionsActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
           } else {
-            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
-            startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
             overridePendingTransition(0, 0);
             return true;
           }

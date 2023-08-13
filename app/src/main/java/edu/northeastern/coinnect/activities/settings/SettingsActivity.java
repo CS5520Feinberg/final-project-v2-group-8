@@ -23,27 +23,27 @@ public class SettingsActivity extends AppCompatActivity {
     currentUser = this.usersRepository.getCurrentUserName();
 
     BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
-    navView.setSelectedItemId(R.id.settings);
+    navView.setSelectedItemId(R.id.settingsActivity);
     menuBarActions(navView);
   }
 
   protected void menuBarActions(BottomNavigationView navView) {
     navView.setOnItemSelectedListener(
         item -> {
-          if (item.getItemId() == R.id.friends) {
-            Intent intent = new Intent(getApplicationContext(), FriendsActivity.class);
+          if (item.getItemId() == R.id.settingsActivity) {
+            Intent intent = new Intent(this, FriendsActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
 
-          } else if (item.getItemId() == R.id.settings) {
+          } else if (item.getItemId() == R.id.settingsActivity) {
             item.setChecked(true);
             return true;
           } else if (item.getItemId() == R.id.transactionActivity) {
-            Intent intent = new Intent(getApplicationContext(), TransactionsActivity.class);
+            Intent intent = new Intent(this, TransactionsActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
           } else {
-            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+            Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
             return true;
