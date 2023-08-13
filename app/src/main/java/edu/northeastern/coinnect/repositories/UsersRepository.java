@@ -19,6 +19,8 @@ public class UsersRepository {
 
   private String monthlyBudget;
   private String currentUserName;
+  private String userFirstName;
+  private String userLastName;
 
   private UsersRepository() {
   }
@@ -49,6 +51,22 @@ public class UsersRepository {
 
   public void setMonthlyBudget(String amount) {
     this.monthlyBudget = amount;
+  }
+
+  public void setUserFirstName(String firstName) {
+    this.userFirstName = firstName;
+  }
+
+  public void setUserLastName(String lastName) {
+    this.userLastName = lastName;
+  }
+
+  public String getUserFirstName() {
+    return this.userFirstName;
+  }
+
+  public String getUserLastName() {
+    return this.userLastName;
   }
 
   // TODO: use this method to register user

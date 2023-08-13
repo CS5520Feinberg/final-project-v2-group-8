@@ -28,6 +28,7 @@ import edu.northeastern.coinnect.repositories.UsersRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
@@ -43,11 +44,14 @@ public class HomeActivity extends AppCompatActivity {
   private final TransactionsRepository transactionsRepository = TransactionsRepository.getInstance();
 
   private ProgressBar progressBar;
+
+  private FloatingActionButton addTransactionFAB;
   private TextView greetingTextView;
   private TextView budgetTextView;
   private TextView dateTextView;
   private String currentUserName;
   private String userBudget;
+  private String userFirstName;
 
   private void setupRecyclerView(ActivityHomeScreenBinding binding) {
     this.recentTransactionsRV = binding.rvRecentTransactions;
@@ -68,6 +72,35 @@ public class HomeActivity extends AppCompatActivity {
     this.recentTransactionsRV.setAdapter(this.recentTransactionsRVA);
   }
 
+  private void setupAddTransactionFAB() {
+    this.addTransactionFAB.setOnClickListener(
+        view -> {
+          Intent intent = new Intent(getApplicationContext(), AddTransactionActivity.class);
+          startActivity(intent);
+        });
+  }
+
+  private void setupUserGreeting() {
+    this.userBudget = userRepository.getMonthlyBudget();
+    this.userFirstName = userRepository.getUserFirstName();
+
+    Calendar todayCalendar = Calendar.getInstance();
+
+    String month = String.valueOf(todayCalendar.get(Calendar.MONTH));
+    int dayOfMonth = todayCalendar.get(Calendar.DAY_OF_MONTH);
+    String datePass = String.join(" ", month, String.valueOf(dayOfMonth));
+
+    if (currentUserName != null) {
+      this.greetingTextView.setText(String.format("Hello %s", this.userFirstName));
+      this.budgetTextView.setText(String.format("$%s", this.userBudget));
+      this.dateTextView.setText(datePass);
+    } else {
+      this.greetingTextView.setText("Free Pass");
+      this.budgetTextView.setText("$2500");
+      this.dateTextView.setText(datePass);
+    }
+  }
+
   @SuppressLint({"SetTextI18n", "ResourceAsColor"})
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -76,35 +109,16 @@ public class HomeActivity extends AppCompatActivity {
         ActivityHomeScreenBinding.inflate(getLayoutInflater());
     setContentView(R.layout.activity_home_screen);
 
-    FloatingActionButton addTransaction = findViewById(R.id.fab_addTransactionButton);
-
-    addTransaction.setOnClickListener(
-        view -> {
-          Intent intent = new Intent(getApplicationContext(), AddTransactionActivity.class);
-          startActivity(intent);
-        });
-
-    ZoneId zone = ZoneId.of("America/New_York");
-    LocalDate localDate = LocalDate.now(zone);
-    String month = String.valueOf(localDate.getMonth());
-    int dayOfMonth = localDate.getDayOfMonth();
-    String datePass = String.join(" ", month, String.valueOf(dayOfMonth));
-
-    currentUserName = userRepository.getCurrentUserName();
-    userBudget = userRepository.getMonthlyBudget();
+    this.addTransactionFAB = findViewById(R.id.fab_addTransactionButton);
     greetingTextView = findViewById(R.id.tv_greeting);
     budgetTextView = findViewById(R.id.set_budget);
     dateTextView = findViewById(R.id.tv_today_date);
 
-    if (currentUserName != null) {
-      greetingTextView.setText("Hello " + currentUserName);
-      budgetTextView.setText("$" + userBudget);
-      dateTextView.setText(datePass);
-    } else {
-      greetingTextView.setText("Free Pass");
-      budgetTextView.setText("$2500");
-      dateTextView.setText(datePass);
-    }
+    this.setupAddTransactionFAB();
+
+    currentUserName = userRepository.getCurrentUserName();
+
+    this.setupUserGreeting();
 
     BottomNavigationView navView = findViewById(R.id.bottom_nav_home);
     menuBarActions(navView);
