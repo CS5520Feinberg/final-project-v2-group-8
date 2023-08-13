@@ -135,16 +135,34 @@
 
     <TextView
       android:id="@+id/tv_greeting"
-      android:layout_width="0dp"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
 
 
       android:text="Greeting text"
       android:textSize="32sp"
-      app:layout_constraintEnd_toEndOf="parent"
+
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
 
       tools:text="Hello Omkar" />
+
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/btn_pendingTransactions"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:minWidth="0dp"
+
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent"
+
+
+
+      android:backgroundTint="@color/white"
+
+      app:icon="@drawable/baseline_pending_actions_24"
+      app:iconTint="@color/black"
+      app:iconSize="28dip"
+      app:iconPadding="0dp" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

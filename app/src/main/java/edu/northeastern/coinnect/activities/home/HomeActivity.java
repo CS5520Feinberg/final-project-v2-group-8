@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
@@ -45,6 +46,7 @@ public class HomeActivity extends AppCompatActivity {
   private TextView greetingTextView;
   private TextView budgetTextView;
   private TextView dateTextView;
+  private MaterialButton pendingTransactionsButton;
   private BottomNavigationView bottomNavigationView;
 
   private void setupRecyclerView(ActivityHomeScreenBinding binding) {
@@ -87,6 +89,10 @@ public class HomeActivity extends AppCompatActivity {
     this.dateTextView.setText(dateString);
   }
 
+  private void setupPendingTransactions() {
+
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -98,12 +104,14 @@ public class HomeActivity extends AppCompatActivity {
     this.greetingTextView = findViewById(R.id.tv_greeting);
     this.budgetTextView = findViewById(R.id.set_budget);
     this.dateTextView = findViewById(R.id.tv_today_date);
+    this.pendingTransactionsButton = findViewById(R.id.btn_pendingTransactions);
     this.bottomNavigationView = findViewById(R.id.bottom_nav_home);
     this.progressBar = findViewById(R.id.homeScreenProgressBar);
     userRepository.getUserFriendsList();
 
     this.setupAddTransactionFAB();
     this.setupUserGreeting();
+    this.setupPendingTransactions();
 
     this.bottomNavigationView.setSelectedItemId(R.id.homeActivity);
     this.setupNavBarActions(this.bottomNavigationView);
