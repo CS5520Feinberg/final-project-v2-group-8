@@ -27,19 +27,6 @@
 
     />
 
-  <Button
-      android:id="@+id/signInButton"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="16dp"
-      android:drawableLeft="@drawable/icon_google_g"
-      android:layout_gravity="center"
-      android:layout_marginHorizontal="16dp"
-      android:text="@string/sign_in_with_google"
-      android:textColor="@color/white"
-      android:backgroundTint="@color/black"
-      android:textSize="20sp"
-      tools:ignore="RtlHardcoded" />
 <Button
       android:id="@+id/signInUsernameButton"
       android:backgroundTint="@color/black"
