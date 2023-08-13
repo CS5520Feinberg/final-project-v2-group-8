@@ -100,6 +100,7 @@ public class HomeActivity extends AppCompatActivity {
     this.dateTextView = findViewById(R.id.tv_today_date);
     this.bottomNavigationView = findViewById(R.id.bottom_nav_home);
     this.progressBar = findViewById(R.id.homeScreenProgressBar);
+    userRepository.getUserFriendsList();
 
     this.setupAddTransactionFAB();
     this.setupUserGreeting();
