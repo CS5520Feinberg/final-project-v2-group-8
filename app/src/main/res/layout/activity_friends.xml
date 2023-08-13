@@ -35,7 +35,6 @@
         android:id="@+id/bottom_nav_friends"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:itemTextColor="@color/darkgray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -43,6 +42,7 @@
         app:menu="@menu/bottom_nav"
         app:itemIconSize="36dp"
         app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
+        app:itemIconTint="@color/bottom_nav_color"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

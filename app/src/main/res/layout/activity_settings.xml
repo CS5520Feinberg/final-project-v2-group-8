@@ -30,5 +30,6 @@
         app:menu="@menu/bottom_nav"
         app:itemIconSize="36dp"
         app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
+        app:itemIconTint="@color/bottom_nav_color"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

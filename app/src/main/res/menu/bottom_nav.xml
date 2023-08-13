@@ -4,24 +4,25 @@
 
     >
     <item
-        android:title="@string/home"
         android:id="@+id/homeActivity"
         android:icon="@drawable/baseline_home_24"
-        />
+        android:iconTint="@color/black"
+        android:title="@string/home" />
     <item
-        android:title="@string/transactions"
         android:id="@+id/transactionActivity"
         android:icon="@drawable/transaction"
-        />
+        android:iconTint="@color/black"
+        android:title="@string/transactions" />
     <item
-        android:title="@string/friends"
         android:id="@+id/friends"
         android:icon="@drawable/friends_24"
+        android:iconTint="@color/black"
 
-        />
+        android:title="@string/friends" />
     <item
-        android:title="@string/settings"
         android:id="@+id/settings"
-        android:icon="@drawable/baseline_settings_24"/>
+        android:icon="@drawable/baseline_settings_24"
+        android:iconTint="@color/black"
+        android:title="@string/settings" />
 
 </menu>
