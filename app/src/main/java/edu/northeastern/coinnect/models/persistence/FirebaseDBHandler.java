@@ -95,14 +95,19 @@ public class FirebaseDBHandler {
 
   private void validate_usersAreFriends(Set<String> userNames) {
     this.validate_currentUserIsSet();
-    List<String> allFriendsUserNames = this.getCurrentUserFriends();
+    this.getCurrentUserFriends().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+      @Override
+      public void onSuccess(DataSnapshot dataSnapshot) {
+        List<String> allFriendsUserNames = (List<String>) dataSnapshot.getValue();
 
-    for (String userName : userNames) {
-      if (!allFriendsUserNames.contains(userName)) {
-        throw new UnsupportedOperationException(
-            String.format("User %s is not a friend or doesn't exist!", userName));
+        for (String userName : userNames) {
+          if (!allFriendsUserNames.contains(userName)) {
+            throw new UnsupportedOperationException(
+                    String.format("User %s is not a friend or doesn't exist!", userName));
+          }
+        }
       }
-    }
+    });
   }
 
   private void validate_isRegularTransaction(TransactionEntity transactionEntity) {
@@ -196,15 +201,17 @@ public class FirebaseDBHandler {
     this.getCurrentUserFriendsDatabaseReference().addChildEventListener(childEventListener);
   }
 
-  public List<String> getCurrentUserFriends() {
+  public Task<DataSnapshot> getCurrentUserFriends() {
     List<String> friends = new ArrayList<>();
 
     DatabaseReference friendsReference = this.getCurrentUserFriendsDatabaseReference();
-    for (DataSnapshot child : friendsReference.get().getResult().getChildren()) {
-      friends.add(child.getKey());
+    Task<DataSnapshot> getValueTask = null;
+    try {
+      getValueTask = friendsReference.get();
+      return getValueTask;
+    } catch (NullPointerException e) {
+      return null;
     }
-
-    return friends;
   }
 
   public void addFriend(String friendUserName) {

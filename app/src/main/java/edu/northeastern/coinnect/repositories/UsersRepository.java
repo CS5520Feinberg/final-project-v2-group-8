@@ -6,10 +6,14 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+
 import edu.northeastern.coinnect.models.userModels.User.AbstractUserModel;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.activities.welcome.WelcomeActivity;
 import java.util.HashMap;
+import java.util.List;
 
 public class UsersRepository {
   private static final String TAG = "_UsersRepository";
@@ -21,6 +25,8 @@ public class UsersRepository {
   private String currentUserName;
   private String userFirstName;
   private String userLastName;
+
+  private List<String> currentUserFriendsList;
 
   private UsersRepository() {
   }
@@ -68,6 +74,12 @@ public class UsersRepository {
   public String getUserLastName() {
     return this.userLastName;
   }
+
+  public List<String> getCurrentUserFriends() {
+    return this.currentUserFriendsList;
+  }
+
+  public void setCurrentUserFriendsList(List<String> list) { this.currentUserFriendsList = list; }
 
   // TODO: use this method to register user
   public void registerUser(Handler handler, Context activityContext, AbstractUserModel user, String username) {
@@ -136,5 +148,14 @@ public class UsersRepository {
             }
           }
         });
+  }
+
+  public void getUserFriendsList() {
+      firebaseDbHandler.getCurrentUserFriends().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        @Override
+        public void onSuccess(DataSnapshot dataSnapshot) {
+          currentUserFriendsList = (List<String>) dataSnapshot.getValue();
+        }
+      });
   }
 }
