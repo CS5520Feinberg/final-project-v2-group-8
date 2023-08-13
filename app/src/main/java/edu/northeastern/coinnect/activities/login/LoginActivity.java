@@ -76,14 +76,6 @@ public class LoginActivity extends AppCompatActivity {
       startActivity(intent);
     });
 
-    // TODO remove this when complete
-    freepassBtn = findViewById(R.id.freePassBtn);
-
-    freepassBtn.setOnClickListener(v -> {
-      Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-      startActivity(intent);
-    });
-
     signUpRequest =
             BeginSignInRequest.builder()
                     .setGoogleIdTokenRequestOptions(
