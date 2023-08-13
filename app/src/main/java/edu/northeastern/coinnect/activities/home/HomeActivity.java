@@ -95,7 +95,6 @@ public class HomeActivity extends AppCompatActivity {
       this.budgetTextView.setText(String.format("$%s", this.userBudget));
       this.dateTextView.setText(datePass);
     } else {
-      this.greetingTextView.setText("Free Pass");
       this.budgetTextView.setText("$2500");
       this.dateTextView.setText(datePass);
     }
