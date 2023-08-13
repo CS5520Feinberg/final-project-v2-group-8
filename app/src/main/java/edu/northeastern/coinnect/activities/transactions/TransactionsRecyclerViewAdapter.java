@@ -8,19 +8,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModel;
+import edu.northeastern.coinnect.models.transactionModels.DayTransactionsModel;
+import edu.northeastern.coinnect.models.transactionModels.MonthTransactionsModel;
 import edu.northeastern.coinnect.utils.CalendarUtils;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<TransactionViewHolder> {
+public class TransactionsRecyclerViewAdapter extends RecyclerView.Adapter<TransactionViewHolder> {
   private Context context;
   private List<AbstractTransactionModel> transactionModelsList;
   private TransactionCardClickListener listener;
-
-  public TransactionRecyclerViewAdapter(List<AbstractTransactionModel> transactionModelsList) {
-    this.transactionModelsList = transactionModelsList;
-  }
 
   @NonNull
   @Override
@@ -30,6 +29,10 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<Transac
     View view = LayoutInflater.from(this.context).inflate(R.layout.card_transaction, parent, false);
 
     return new TransactionViewHolder(view);
+  }
+
+  public TransactionsRecyclerViewAdapter(List<AbstractTransactionModel> transactionModelsList) {
+    this.transactionModelsList = transactionModelsList;
   }
 
   @Override
@@ -42,7 +45,7 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<Transac
         transactionModelsList.get(position).getMonth(),
         transactionModelsList.get(position).getDayOfMonth());
 
-    holder.getTransactionDate().setText(transactionModelsList.get(position).getDayOfMonth());
+    holder.getTransactionDate().setText(transactionModelsList.get(position).getDayOfMonth().toString());
     holder.getTransactionDay().setText(CalendarUtils.getDayOfWeek(calendar, locale));
     holder
         .getTransactionAmount()
@@ -67,14 +70,44 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<Transac
     return this.transactionModelsList.size();
   }
 
-  private void removeItem(int position) {
-    this.transactionModelsList.remove(position);
-    notifyItemRemoved(position);
+  public void removeCard(Integer transactionId) {
+    int pos = -1;
+
+    for (int i = 0; i < this.transactionModelsList.size(); i++) {
+      if (this.transactionModelsList.get(i).getId().equals(transactionId)) {
+        pos = i;
+        break;
+      }
+    }
+
+    if (pos != -1) {
+      this.transactionModelsList.remove(pos);
+      notifyItemRemoved(pos);
+    }
   }
 
   public void addCard(AbstractTransactionModel newCard) {
     this.transactionModelsList.add(newCard);
     notifyItemInserted(this.transactionModelsList.size() - 1);
+  }
+
+  public void setupListForMonth(MonthTransactionsModel monthTransactions) {
+    this.transactionModelsList = new ArrayList<>();
+
+    List<DayTransactionsModel> dayTransactions = monthTransactions.getDayTransactionsModels();
+    for (DayTransactionsModel day : dayTransactions) {
+      this.transactionModelsList.addAll(day.getTransactionsList());
+    }
+
+    notifyDataSetChanged();
+  }
+
+  public void setupListForDayOfMonth(DayTransactionsModel dayTransactions) {
+    this.transactionModelsList = new ArrayList<>();
+
+    this.transactionModelsList.addAll(dayTransactions.getTransactionsList());
+
+    notifyDataSetChanged();
   }
 
   public void setCardClickListener(TransactionCardClickListener listener) {

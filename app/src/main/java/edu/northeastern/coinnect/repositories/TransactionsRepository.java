@@ -5,20 +5,21 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
-
+import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import edu.northeastern.coinnect.models.transactionModels.DayTransactionsModel;
+import edu.northeastern.coinnect.models.transactionModels.MonthTransactionsModel;
 
 public class TransactionsRepository {
   private static final String TAG = "_TransactionsRepository";
   private static final FirebaseDBHandler firebaseDbHandler = FirebaseDBHandler.getInstance();
 
   private static TransactionsRepository INSTANCE;
+
+  private static ChildEventListener transactionsChildEventListener;
 
   private TransactionsRepository() {}
 
@@ -58,79 +59,55 @@ public class TransactionsRepository {
 
   public void getTransactionsForMonthList(
       Handler handler,
-      Context activityContext,
+      TransactionsRecyclerViewAdapter adapter,
       ProgressBar progressBar,
       Integer year,
       Integer month) {
-    firebaseDbHandler
-        .getDbInstance()
-        .getReference()
-        .child(FirebaseDBHandler.USERS_BUCKET_NAME)
-        .child(firebaseDbHandler.getCurrentUserName())
-        .child(FirebaseDBHandler.TRANSACTIONS_BUCKET_NAME)
-        .child(year.toString())
-        .child(month.toString())
-        .get()
-        .addOnCompleteListener(
-            task -> {
-              if (!task.isSuccessful()) {
-                Log.e("firebase", "Error getting data", task.getException());
-              } else {
-                List<String> transactionsList = new ArrayList<>();
-                HashMap value = (HashMap) task.getResult().getValue();
-
-                for (Object key : value.keySet()) {
-                  transactionsList.add(key.toString());
-                }
-
-                Log.i(TAG, String.format("Transactions being added to the Recycler View"));
-                handler.post(
-                    () -> {
-                      // TODO: use TransactionRecyclerViewAdapter
-                      // adapter.setupList(transactionsList);
-                      progressBar.setVisibility(View.INVISIBLE);
-                    });
-              }
-            });
+    firebaseDbHandler.getTransactionForMonth(handler, adapter, progressBar, year, month);
   }
 
   public void getTransactionsForDayOfMonthList(
       Handler handler,
-      Context activityContext,
+      TransactionsRecyclerViewAdapter adapter,
       ProgressBar progressBar,
       Integer year,
       Integer month,
       Integer dayOfMonth) {
-    firebaseDbHandler
-        .getDbInstance()
-        .getReference()
-        .child(FirebaseDBHandler.USERS_BUCKET_NAME)
-        .child(firebaseDbHandler.getCurrentUserName())
-        .child(FirebaseDBHandler.TRANSACTIONS_BUCKET_NAME)
-        .child(year.toString())
-        .child(month.toString())
-        .child(dayOfMonth.toString())
-        .get()
-        .addOnCompleteListener(
-            task -> {
-              if (!task.isSuccessful()) {
-                Log.e("firebase", "Error getting data", task.getException());
-              } else {
-                List<String> transactionsList = new ArrayList<>();
-                HashMap value = (HashMap) task.getResult().getValue();
+    DayTransactionsModel dayTransactionsModel =
+        firebaseDbHandler.getTransactionForDay(year, month, dayOfMonth);
 
-                for (Object key : value.keySet()) {
-                  transactionsList.add(key.toString());
-                }
+    Log.i(TAG, String.format("Transactions being added to the Recycler View"));
+    handler.post(
+        () -> {
+          adapter.setupListForDayOfMonth(dayTransactionsModel);
+          progressBar.setVisibility(View.INVISIBLE);
+        });
+  }
 
-                Log.i(TAG, String.format("Transactions being added to the Recycler View"));
-                handler.post(
-                    () -> {
-                      // TODO: use TransactionRecyclerViewAdapter
-                      // adapter.setupList(transactionsList);
-                      progressBar.setVisibility(View.INVISIBLE);
-                    });
-              }
-            });
+  public void addMonthTransactionChildEventListener(
+      ChildEventListener childEventListener, Integer year, Integer month) {
+    transactionsChildEventListener = childEventListener;
+
+    firebaseDbHandler.addMonthTransactionChildEventListener(
+        transactionsChildEventListener, year, month);
+  }
+
+  public void removeMonthTransactionsChildEventListener(Integer year, Integer month) {
+    firebaseDbHandler.removeMonthTransactionChildEventListener(
+        transactionsChildEventListener, year, month);
+  }
+
+  public void addDayTransactionChildEventListener(
+      ChildEventListener childEventListener, Integer year, Integer month, Integer dayOfMonth) {
+    transactionsChildEventListener = childEventListener;
+
+    firebaseDbHandler.addDayTransactionChildEventListener(
+        transactionsChildEventListener, year, month, dayOfMonth);
+  }
+
+  public void removeDayTransactionsChildEventListener(
+      Integer year, Integer month, Integer dayOfMonth) {
+    firebaseDbHandler.removeDayTransactionChildEventListener(
+        transactionsChildEventListener, year, month, dayOfMonth);
   }
 }

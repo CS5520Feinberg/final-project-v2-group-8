@@ -12,6 +12,10 @@ public class TransactionEntity {
   // this can be null as it is an object
   public Integer groupTransactionId;
 
+  public TransactionEntity() {
+
+  }
+
   /**
    * Creates a regular transaction.
    *
@@ -27,6 +31,9 @@ public class TransactionEntity {
       String description,
       Double amount) {
     this.transactionId = transactionId;
+    this.year = year;
+    this.month = month;
+    this.dayOfMonth = dayOfMonth;
     this.description = description;
     this.amount = amount;
     this.isGroupTransaction = false;
@@ -56,6 +63,18 @@ public class TransactionEntity {
 
   public int getTransactionId() {
     return this.transactionId;
+  }
+
+  public Integer getYear() {
+    return this.year;
+  }
+
+  public Integer getMonth() {
+    return this.month;
+  }
+
+  public Integer getDayOfMonth() {
+    return this.dayOfMonth;
   }
 
   public String getDescription() {

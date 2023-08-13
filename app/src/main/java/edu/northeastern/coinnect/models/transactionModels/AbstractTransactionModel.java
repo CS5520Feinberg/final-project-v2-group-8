@@ -23,7 +23,7 @@ public abstract class AbstractTransactionModel {
     this.dayOfMonth = dayOfMonth;
   }
 
-  public int getId() {
+  public Integer getId() {
     return this.id;
   }
 
@@ -35,15 +35,15 @@ public abstract class AbstractTransactionModel {
     return this.amount;
   }
 
-  public int getYear() {
+  public Integer getYear() {
     return this.year;
   }
 
-  public int getMonth() {
+  public Integer getMonth() {
     return this.month;
   }
 
-  public int getDayOfMonth() {
+  public Integer getDayOfMonth() {
     return this.dayOfMonth;
   }
 
