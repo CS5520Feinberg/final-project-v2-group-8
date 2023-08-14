@@ -14,6 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 
 import edu.northeastern.coinnect.R;
+import edu.northeastern.coinnect.activities.friends.AddFriend.AddFriend;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
 import edu.northeastern.coinnect.activities.transactions.TransactionsActivity;
@@ -43,6 +44,10 @@ public class FriendsActivity extends AppCompatActivity {
     binding = ActivityFriendsBinding.inflate(getLayoutInflater());
     FloatingActionButton addFriendFAB = binding.floatingActionButtonAddFriend;
 
+    addFriendFAB.setOnClickListener(v -> {
+      Intent intent = new Intent(getApplicationContext(), AddFriend.class);
+      startActivity(intent);
+    });
     View view = binding.getRoot();
     setContentView(view);
     setupRecyclerView();

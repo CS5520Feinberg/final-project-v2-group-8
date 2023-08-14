@@ -7,13 +7,19 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 
 import edu.northeastern.coinnect.models.userModels.User.AbstractUserModel;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.activities.welcome.WelcomeActivity;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class UsersRepository {
   private static final String TAG = "_UsersRepository";
@@ -50,6 +56,8 @@ public class UsersRepository {
   public void setCurrentUserName(String username) {
     this.currentUserName = username;
   }
+
+  public CompletableFuture<Boolean> isUser(String searchUser) {return this.getFirebaseDbHandler().isUser(searchUser);}
 
   public String getMonthlyBudget() {
     return monthlyBudget;
@@ -120,37 +128,96 @@ public class UsersRepository {
   }
 
   // TODO: use this method to login user
-  public void loginUser(Handler handler, Context activityContext, String userName) {
+  public void loginUser(Handler handler, Context activityContext, String userName, String password) {
 
-    firebaseDbHandler.getDbInstance().getReference().child(FirebaseDBHandler.USERS_BUCKET_NAME).get()
-        .addOnCompleteListener(task -> {
-          if (!task.isSuccessful()) {
-            Log.e(TAG, "Error getting data", task.getException());
-          } else {
-            HashMap value = (HashMap) task.getResult().getValue();
-            boolean flag = true;
-            for (Object key : value.keySet()) {
-              if (key.toString().equals(userName)) {
-                flag = false;
-              }
-            }
+    Task<DataSnapshot> firebaseCall =
+            firebaseDbHandler
+                    .getDbInstance()
+                    .getReference()
+                    .child(FirebaseDBHandler.USERS_BUCKET_NAME)
+                    .child(userName)
+                    .get();
 
-            if (!flag) {
-              Log.i(TAG, String.format("User %s being logged in", userName));
+    if (firebaseCall == null) {
+      handler.post(
+              () ->
+                  Toast
+                    .makeText(activityContext, "Incorrect login information!", Toast.LENGTH_SHORT)
+                    .show());
+    } else {
 
-              firebaseDbHandler.setCurrentUserName(userName);
-              handler.post(() -> {
-                Intent intent = new Intent(activityContext, WelcomeActivity.class);
-                activityContext.startActivity(intent);
+      firebaseCall.addOnCompleteListener(
+              task -> {
+                Object resultValue = task.getResult().getValue();
+
+                if (!task.isSuccessful()) {
+                  Log.e("firebase", "Error getting data", task.getException());
+                } else {
+                  HashMap value = (HashMap) task.getResult().getValue();
+                  boolean flag = true;
+
+                  for (Object key : value.keySet()) {
+                    if (key.toString().equals("password")) {
+                      flag = false;
+                      String usersHashedPassword = String.valueOf(value.get("password"));
+                      try {
+                        if (comparePasswords(password, usersHashedPassword)) {
+                          firebaseDbHandler.setCurrentUserName(userName);
+                          this.setCurrentUserName(value.get("username").toString());
+                          this.setMonthlyBudget(value.get("monthlyBudget").toString());
+                          this.setUserFirstName(value.get("firstName").toString());
+                          this.setUserLastName(value.get("lastName").toString());
+
+                          Intent intent = new Intent(activityContext, WelcomeActivity.class);
+                          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                          activityContext.startActivity(intent);
+
+                        } else {
+                          handler.post(
+                                  () ->
+                                      Toast.makeText(
+                                                      activityContext,
+                                                      "Incorrect login information!",
+                                                      Toast.LENGTH_SHORT)
+                                            .show());
+                        }
+                      } catch (Exception e) {
+                        throw new RuntimeException(e);
+                      }
+                    }
+                  }
+                }
               });
-            } else {
-              Log.i(TAG, String.format("User %s does not exist", userName));
-              handler.post(() -> Toast.makeText(activityContext,
-                  "User does not exist, please register. ", Toast.LENGTH_SHORT).show());
-            }
-          }
-        });
+    }
   }
+
+  public boolean comparePasswords(String attemptedPassword, String realPassword)
+    throws UnsupportedEncodingException, NoSuchAlgorithmException {
+      if (encryptPass(attemptedPassword).equals(realPassword)) {
+        return true;
+      } else return false;
+    }
+
+  private static String encryptPass(String password)
+          throws NoSuchAlgorithmException, UnsupportedEncodingException {
+
+    StringBuffer hexStr = new StringBuffer();
+
+    MessageDigest digest = MessageDigest.getInstance("SHA-256");
+    byte[] hash = digest.digest(password.getBytes("UTF-8"));
+
+    // goes through the byte array and hashes each character.
+    for (byte b : hash) {
+      String hex = Integer.toHexString(0xff & b);
+      if (hex.length() == 1) {
+        hexStr.append('0');
+      }
+      hexStr.append(hex);
+    }
+    return hexStr.toString();
+  }
+
+
 
   public void getUserFriendsList() {
       firebaseDbHandler.getCurrentUserFriends().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
