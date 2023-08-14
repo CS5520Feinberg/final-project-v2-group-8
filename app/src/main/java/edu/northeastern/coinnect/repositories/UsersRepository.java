@@ -79,7 +79,9 @@ public class UsersRepository {
     return this.currentUserFriendsList;
   }
 
-  public void setCurrentUserFriendsList(List<String> list) { this.currentUserFriendsList = list; }
+  public void setCurrentUserFriendsList(List<String> list) {
+    this.currentUserFriendsList = list;
+  }
 
   // TODO: use this method to register user
   public void registerUser(Handler handler, Context activityContext, AbstractUserModel user, String username) {
@@ -154,7 +156,7 @@ public class UsersRepository {
       firebaseDbHandler.getCurrentUserFriends().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
         @Override
         public void onSuccess(DataSnapshot dataSnapshot) {
-          currentUserFriendsList = (List<String>) dataSnapshot.getValue();
+          setCurrentUserFriendsList((List<String>) dataSnapshot.getValue());
         }
       });
   }
