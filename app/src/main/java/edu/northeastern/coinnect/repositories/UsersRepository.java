@@ -1,5 +1,7 @@
 package edu.northeastern.coinnect.repositories;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
@@ -91,43 +93,51 @@ public class UsersRepository {
     this.currentUserFriendsList = list;
   }
 
-  // TODO: use this method to register user
-  public void registerUser(Handler handler, Context activityContext, AbstractUserModel user, String username) {
-    firebaseDbHandler.getDbInstance().getReference().child(FirebaseDBHandler.USERS_BUCKET_NAME).get()
-            .addOnCompleteListener(task -> {
-              if (!task.isSuccessful()) {
-                Log.e("firebase", "Error getting data", task.getException());
-              } else {
-                HashMap value = (HashMap) task.getResult().getValue();
-                boolean flag = true;
-                for (Object key : value.keySet()) {
-                  if (key.toString().equals(username)) {
-                    flag = false;
-                  }
-                }
+  public void registerUser(Handler handler, Context activityContext, AbstractUserModel user) {
+    firebaseDbHandler.setCurrentUserName(user.getUsername());
+    this.setCurrentUserName(user.getUsername());
+    this.setMonthlyBudget(String.valueOf(user.getMonthlyBudget()));
+    this.setUserFirstName(user.getFirstName());
+    this.setUserLastName(user.getLastName());
 
-                if (flag) {
-                  Log.i(TAG, String.format("User %s being added to database", username));
-                  firebaseDbHandler.addUser(user);
+    firebaseDbHandler
+            .getDbInstance()
+            .getReference()
+            .child(FirebaseDBHandler.USERS_BUCKET_NAME)
+            .get()
+            .addOnCompleteListener(
+                    task -> {
+                      if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                      } else {
+                        HashMap value = (HashMap) task.getResult().getValue();
+                        boolean flag = true;
 
-                  Log.i(TAG, String.format("User %s being logged in", username));
+                        for (Object key : value.keySet()) {
+                          if (key.toString().equals(user.getUsername())) {
+                            flag = false;
+                          }
+                        }
 
-                  firebaseDbHandler.setCurrentUserName(username);
-                  handler.post(() -> {
-                    Intent intent = new Intent(activityContext, WelcomeActivity.class);
-                    activityContext.startActivity(intent);
-                  });
-                } else {
-                  Log.i(TAG, String.format("User %s already exists", username));
-                  handler.post(
-                          () -> Toast.makeText(activityContext, "User already exists! ",
-                                  Toast.LENGTH_SHORT).show());
-                }
-              }
-            });
+                        if (flag) {
+                          try {
+                            this. encryptPass(user.getPassword());
+                          } catch (Exception e) {
+                            Log.i(TAG, "Error encrypting password: " + e);
+                          }
+                          firebaseDbHandler.addUser(user);
+
+                          Intent intent = new Intent(activityContext, WelcomeActivity.class);
+                          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                          activityContext.startActivity(intent);
+
+                        } else {
+                          handler.post(() -> Toast.makeText(activityContext, "User already exists! ", Toast.LENGTH_SHORT).show());
+                        }
+                      }
+                    });
   }
 
-  // TODO: use this method to login user
   public void loginUser(Handler handler, Context activityContext, String userName, String password) {
 
     Task<DataSnapshot> firebaseCall =

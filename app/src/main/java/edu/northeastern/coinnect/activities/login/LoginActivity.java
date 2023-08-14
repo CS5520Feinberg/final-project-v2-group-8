@@ -28,17 +28,8 @@ import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
-  // setting up OAUTH2 authentication for 1-tap sign in.
-  SignInClient oneTapClient;
-
-  private Handler handler = new Handler();
-  private UsersRepository usersRepository = UsersRepository.getInstance();
-  private FirebaseDBHandler firebaseDBHandler = usersRepository.getFirebaseDbHandler();
-  BeginSignInRequest signUpRequest;
-  Button signInButton;
   Button registerButton;
   Button usernameSignInButton;
-  private int defaultMonthlyBudget = 2000;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -63,46 +54,4 @@ public class LoginActivity extends AppCompatActivity {
 
   }
 
-  public void registerUser(
-      Handler handler, Context activityContext, UserModel user, String username) {
-    firebaseDBHandler
-        .getDbInstance()
-        .getReference()
-        .child(FirebaseDBHandler.USERS_BUCKET_NAME)
-        .get()
-        .addOnCompleteListener(
-            task -> {
-              Object resultValue = task.getResult().getValue();
-
-              if (!task.isSuccessful()) {
-                Log.e("firebase", "Error getting data", task.getException());
-              } else {
-                HashMap value = (HashMap) task.getResult().getValue();
-                boolean flag = true;
-
-                for (Object key : value.keySet()) {
-                  if (key.toString().equals(username)) {
-                    flag = false;
-                  }
-                }
-
-                if (flag) {
-                  Log.i(TAG, String.format("User %s being added to database", username));
-                  firebaseDBHandler.addUser(user);
-
-                  Log.i(TAG, String.format("User %s being logged in", username));
-
-                  firebaseDBHandler.setCurrentUserName(username);
-
-                } else {
-                  Log.i(TAG, String.format("User %s already exists", username));
-                  handler.post(
-                      () ->
-                          Toast.makeText(
-                                  activityContext, "User already exists! ", Toast.LENGTH_SHORT)
-                              .show());
-                }
-              }
-            });
-  }
 }
