@@ -4,12 +4,18 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+
+import androidx.annotation.NonNull;
+
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import edu.northeastern.coinnect.activities.pending.PendingTransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.models.persistence.entities.GroupTransactionEntity;
@@ -31,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class FirebaseDBHandler {
 
@@ -183,10 +190,50 @@ public class FirebaseDBHandler {
         .setValue(userEntity);
   }
 
+
   // </editor-fold>
 
   // <editor-fold desc="Friends">
 
+  /**
+   *  isUser -- calls the DB async and returns a response -- TRUE if the username is found, false
+   *  otherwise
+   * @param userName -- string -- the name of the user to search in the DB.
+   * @return -- a boolean value on complete.
+   */
+  public CompletableFuture<Boolean> isUser(String userName) {
+    // handles the async call to the DB.
+    CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+    // query the DB to see if we get a match for an entered username. If so, return true.
+    getUserDatabaseReference().child(userName).addListenerForSingleValueEvent(new ValueEventListener() {
+      @Override
+      public void onDataChange(@NonNull DataSnapshot snapshot) {
+        if (snapshot.exists()) {
+          Log.d("USER", "User found");
+          future.complete(true);
+        } else {
+          Log.d("USER", "User NOT found");
+          future.complete(false);
+        }
+      }
+
+      @Override
+      public void onCancelled(@NonNull DatabaseError error) {
+        throw error.toException();
+      }
+    });
+    return future;
+  }
+
+  /**
+   * getUserDatabaseReference -- returns a database reference to the User's collection.
+   */
+  private DatabaseReference getUserDatabaseReference() {
+    return dbInstance
+            .getReference()
+            .child(USERS_BUCKET_NAME);
+  }
   private DatabaseReference getUserFriendsDatabaseReference(String userName) {
     return dbInstance
         .getReference()

@@ -42,7 +42,12 @@ public class SettingsActivity extends AppCompatActivity {
             Intent intent = new Intent(this, TransactionsActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
-          } else {
+          } else if (item.getItemId() == R.id.friendsActivity) {
+              Intent intent = new Intent(this, FriendsActivity.class);
+              startActivity(intent);
+              overridePendingTransition(0, 0);
+          }
+          else {
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);

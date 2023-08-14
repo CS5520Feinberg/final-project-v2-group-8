@@ -14,6 +14,7 @@ import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.activities.welcome.WelcomeActivity;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class UsersRepository {
   private static final String TAG = "_UsersRepository";
@@ -50,6 +51,8 @@ public class UsersRepository {
   public void setCurrentUserName(String username) {
     this.currentUserName = username;
   }
+
+  public CompletableFuture<Boolean> isUser(String searchUser) {return this.getFirebaseDbHandler().isUser(searchUser);}
 
   public String getMonthlyBudget() {
     return monthlyBudget;
