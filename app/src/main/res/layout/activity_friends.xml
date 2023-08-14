@@ -45,4 +45,16 @@
         app:itemIconTint="@color/bottom_nav_color"
         />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_add_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:backgroundTint="@color/accentGreen"
+        android:elevation="10dp"
+        android:layout_margin="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav_friends"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/outline_person_add_24" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
