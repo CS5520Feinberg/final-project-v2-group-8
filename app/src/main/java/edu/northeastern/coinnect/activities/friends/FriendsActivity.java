@@ -2,17 +2,15 @@ package edu.northeastern.coinnect.activities.friends;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 
 import edu.northeastern.coinnect.R;
@@ -24,19 +22,15 @@ import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.activities.friends.FriendRecyclerView.FriendRecyclerViewAdapter;
 import edu.northeastern.coinnect.repositories.UsersRepository;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class FriendsActivity extends AppCompatActivity {
 
-  private final Handler handler = new Handler();
   private static final FirebaseDBHandler firebaseDBHandler = FirebaseDBHandler.getInstance();
 
-  private FriendRecyclerViewAdapter friendRecyclerViewAdapter;
   private RecyclerView friendRecyclerView;
   private final UsersRepository usersRepository = UsersRepository.getInstance();
-  private String currentUser;
 
   private edu.northeastern.coinnect.databinding.ActivityFriendsBinding binding;
 
@@ -44,20 +38,21 @@ public class FriendsActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    currentUser = this.usersRepository.getCurrentUserName();
+    String currentUser = this.usersRepository.getCurrentUserName();
     firebaseDBHandler.setCurrentUserName(currentUser);
     binding = ActivityFriendsBinding.inflate(getLayoutInflater());
+    FloatingActionButton addFriendFAB = binding.floatingActionButtonAddFriend;
 
     View view = binding.getRoot();
     setContentView(view);
-    setupRecyclerView(binding);
+    setupRecyclerView();
 
     BottomNavigationView navView = binding.bottomNavFriends;
     navView.setSelectedItemId(R.id.friendsActivity);
     this.setupNavBarActions(navView);
   }
 
-  private void setupRecyclerView(ActivityFriendsBinding binding) {
+  private void setupRecyclerView() {
 
     List<String> friendList = new ArrayList<>();
 
@@ -70,7 +65,7 @@ public class FriendsActivity extends AppCompatActivity {
             });
 
 
-    friendRecyclerViewAdapter = new FriendRecyclerViewAdapter(usersRepository.getCurrentUserFriends()); // TODO
+    FriendRecyclerViewAdapter friendRecyclerViewAdapter = new FriendRecyclerViewAdapter(usersRepository.getCurrentUserFriends()); // TODO
     friendRecyclerView = binding.friendsRecyclerView;
     friendRecyclerView.setHasFixedSize(true);
     friendRecyclerView.setLayoutManager(new LinearLayoutManager(this));

@@ -44,10 +44,4 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendViewHo
         return this.friendCardList.size();
     }
 
-    public void addCard(String newFriend) {
-        friendCardList.add(newFriend);
-        notifyItemInserted(friendCardList.size() - 1);
-    }
-
-
 }
