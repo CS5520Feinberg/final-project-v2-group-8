@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_transaction"
+    android:id="@+id/shareCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
@@ -16,7 +16,7 @@
         android:padding="4dp">
 
         <EditText
-            android:id="@+id/editTextText4"
+            android:id="@+id/userNameForShare"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
@@ -27,7 +27,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editTextText3"
+            android:id="@+id/amuntForShare"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
@@ -37,7 +37,7 @@
             android:inputType="text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextText4" />
+            app:layout_constraintTop_toBottomOf="@+id/userNameForShare" />
 
         <ImageButton
             android:id="@+id/removeShareBtn"
@@ -49,7 +49,7 @@
             android:contentDescription="remove"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_delete_24"
+            app:srcCompat="@android:drawable/ic_menu_delete"
             app:tint="@color/actualBlack" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
