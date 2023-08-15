@@ -5,9 +5,11 @@
     android:id="@+id/shareCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="10dp">
+    android:layout_marginStart="4dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginBottom="4dp"
+    app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_transactionDate"
@@ -20,9 +22,11 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
             android:ems="10"
             android:hint="User Name"
             android:inputType="text"
+            app:layout_constraintEnd_toStartOf="@+id/removeShareBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,10 +36,12 @@
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:ems="10"
             android:hint="Amount"
             android:inputType="text"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/removeShareBtn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/userNameForShare" />
 
@@ -43,13 +49,13 @@
             android:id="@+id/removeShareBtn"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="8dp"
             android:backgroundTint="@color/accentGreen"
             android:contentDescription="remove"
+            android:src="@drawable/baseline_delete_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_delete"
             app:tint="@color/actualBlack" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
