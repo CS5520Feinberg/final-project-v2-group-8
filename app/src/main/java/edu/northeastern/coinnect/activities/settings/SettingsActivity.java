@@ -4,8 +4,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -50,10 +53,15 @@ public class SettingsActivity extends AppCompatActivity {
     final EditText input = new EditText(this);
     input.setInputType(inputType);
     input.setHint(hint);
-
+    FrameLayout container = new FrameLayout(SettingsActivity.this);
+    FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    params.leftMargin = 56;
+    params.rightMargin = 56;
+    input.setLayoutParams(params);
+    container.addView(input);
     builder
         .setTitle(title)
-        .setView(input)
+        .setView(container)
         .setPositiveButton(
             "Confirm",
             new DialogInterface.OnClickListener() {
@@ -68,7 +76,11 @@ public class SettingsActivity extends AppCompatActivity {
 
                 } else {
                   String value = input.getText().toString();
-                  usersRepository.setMonthlyBudget(value);
+                    try {
+                        usersRepository.setNewMonthlyBudget(value);
+                    } catch (Exception e) {
+                        System.out.println("error: " + e);
+                    }
                 }
               }
             })

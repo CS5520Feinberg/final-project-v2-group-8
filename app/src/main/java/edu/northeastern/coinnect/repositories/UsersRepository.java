@@ -230,6 +230,11 @@ public class UsersRepository {
 
   }
 
+  public void setNewMonthlyBudget(String budget) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    setMonthlyBudget(budget);
+    firebaseDbHandler.setNewMonthlyBudget(Integer.parseInt(budget));
+  }
+
   public void fetchUserFriendsList() {
       firebaseDbHandler.getCurrentUserFriends(friendsList -> {
         setCurrentUserFriendsList(friendsList);
