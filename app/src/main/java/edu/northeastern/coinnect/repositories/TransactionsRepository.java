@@ -6,14 +6,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 
 import edu.northeastern.coinnect.activities.pending.PendingTransactionsRecyclerViewAdapter;
 
-import java.util.List;
 import java.util.Map;
 
 import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
@@ -63,8 +61,10 @@ public class TransactionsRepository {
             String description,
             boolean isGroupTransaction,
             Map<String, Double> userShares) {
-        return getFirebaseDbHandler()
-                .addTransaction(year, month, dayOfMonth, amount, description)
+
+        if(isGroupTransaction) {
+            return getFirebaseDbHandler()
+                .addGroupTransaction(year, month, dayOfMonth, amount, description, userShares)
                 .addOnSuccessListener(dataSnapshot -> {
                     progressBar.setVisibility(View.INVISIBLE);
                     Integer id = 0;
@@ -72,12 +72,18 @@ public class TransactionsRepository {
                         id = dataSnapshot.getValue(Integer.class);
                     }
                     if (isGroupTransaction) {
-                        addGroupTransaction(year, month, dayOfMonth, id.intValue(), userShares);
+                        TransactionsRepository.this.convertTransactionToGroupTransaction(year, month, dayOfMonth, id.intValue(), userShares);
                     }
                 });
+        }
+        else {
+            return getFirebaseDbHandler()
+                .addTransaction(year, month, dayOfMonth, amount, description)
+                .addOnSuccessListener(dataSnapshot -> progressBar.setVisibility(View.INVISIBLE));
+        }
     }
 
-    public void addGroupTransaction(Integer year, Integer month, Integer dayOfMonth, Integer transactionId, Map<String, Double> userShares) {
+    public void convertTransactionToGroupTransaction(Integer year, Integer month, Integer dayOfMonth, Integer transactionId, Map<String, Double> userShares) {
         getFirebaseDbHandler()
                 .convertTransactionToGroupTransaction(year, month, dayOfMonth, transactionId, userShares);
     }
