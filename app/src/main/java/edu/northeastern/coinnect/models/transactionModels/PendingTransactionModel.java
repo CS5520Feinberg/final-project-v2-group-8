@@ -7,6 +7,7 @@ public class PendingTransactionModel {
   private final Double totalAmount;
   private final Double amountOwed;
   private final Double amountPaid;
+  private final String description;
   private final String creatorUser;
 
   public PendingTransactionModel(PendingTransactionEntity entity) {
@@ -14,6 +15,7 @@ public class PendingTransactionModel {
     this.totalAmount = entity.getTotalAmount();
     this.amountOwed = entity.getAmountOwed();
     this.amountPaid = entity.getAmountPaid();
+    this.description = entity.getDescription();
     this.creatorUser = entity.getCreatorUser();
   }
 
@@ -35,6 +37,10 @@ public class PendingTransactionModel {
 
   public Double getNetAmountOwed() {
     return this.amountOwed - amountPaid;
+  }
+
+  public String getDescription() {
+    return description;
   }
 
   public String getCreatorUser() {

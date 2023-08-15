@@ -12,9 +12,7 @@ public class TransactionEntity {
   // this can be null as it is an object
   public Integer groupTransactionId;
 
-  public TransactionEntity() {
-
-  }
+  public TransactionEntity() {}
 
   /**
    * Creates a regular transaction.

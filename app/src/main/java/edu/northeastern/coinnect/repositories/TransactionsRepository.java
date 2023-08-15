@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.ProgressBar;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import edu.northeastern.coinnect.activities.pending.PendingTransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
@@ -17,9 +16,6 @@ public class TransactionsRepository {
   private static final FirebaseDBHandler firebaseDbHandler = FirebaseDBHandler.getInstance();
 
   private static TransactionsRepository INSTANCE;
-
-  private String latestTransactionId;
-  private static ChildEventListener transactionsChildEventListener;
 
   private TransactionsRepository() {}
 
@@ -33,14 +29,6 @@ public class TransactionsRepository {
 
   public FirebaseDBHandler getFirebaseDbHandler() {
     return firebaseDbHandler;
-  }
-
-  public void setLatestTransactionId(String id) {
-    this.latestTransactionId = id;
-  }
-
-  public String getLatestTransactionId() {
-    return this.latestTransactionId;
   }
 
   public Task<DataSnapshot> addTransaction(
@@ -76,6 +64,10 @@ public class TransactionsRepository {
         .convertTransactionToGroupTransaction(year, month, dayOfMonth, transactionId, userShares);
   }
 
+  public Task<DataSnapshot> updateGroupTransactionPaid(Integer groupTransactionId) {
+    return getFirebaseDbHandler().updateGroupTransactionPaid(groupTransactionId);
+  }
+
   public void getRecentTransactionsList(
       Handler handler, TransactionsRecyclerViewAdapter adapter, ProgressBar progressBar) {
     firebaseDbHandler.getRecentTransactions(handler, adapter, progressBar);
@@ -93,32 +85,5 @@ public class TransactionsRepository {
       Integer year,
       Integer month) {
     firebaseDbHandler.getTransactionsForMonth(handler, adapter, progressBar, year, month);
-  }
-
-  public void addMonthTransactionChildEventListener(
-      ChildEventListener childEventListener, Integer year, Integer month) {
-    transactionsChildEventListener = childEventListener;
-
-    firebaseDbHandler.addMonthTransactionChildEventListener(
-        transactionsChildEventListener, year, month);
-  }
-
-  public void removeMonthTransactionsChildEventListener(Integer year, Integer month) {
-    firebaseDbHandler.removeMonthTransactionChildEventListener(
-        transactionsChildEventListener, year, month);
-  }
-
-  public void addDayTransactionChildEventListener(
-      ChildEventListener childEventListener, Integer year, Integer month, Integer dayOfMonth) {
-    transactionsChildEventListener = childEventListener;
-
-    firebaseDbHandler.addDayTransactionChildEventListener(
-        transactionsChildEventListener, year, month, dayOfMonth);
-  }
-
-  public void removeDayTransactionsChildEventListener(
-      Integer year, Integer month, Integer dayOfMonth) {
-    firebaseDbHandler.removeDayTransactionChildEventListener(
-        transactionsChildEventListener, year, month, dayOfMonth);
   }
 }

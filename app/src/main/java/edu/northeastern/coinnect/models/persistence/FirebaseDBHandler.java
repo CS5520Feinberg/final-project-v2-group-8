@@ -19,6 +19,7 @@ import edu.northeastern.coinnect.models.persistence.entities.GroupTransactionEnt
 import edu.northeastern.coinnect.models.persistence.entities.GroupTransactionEntityCallback;
 import edu.northeastern.coinnect.models.persistence.entities.GroupTransactionShareEntity;
 import edu.northeastern.coinnect.models.persistence.entities.PendingTransactionEntity;
+import edu.northeastern.coinnect.models.persistence.entities.PendingTransactionEntityCallback;
 import edu.northeastern.coinnect.models.persistence.entities.TransactionEntity;
 import edu.northeastern.coinnect.models.persistence.entities.TransactionEntityCallback;
 import edu.northeastern.coinnect.models.persistence.entities.TransactionIdCallback;
@@ -421,6 +422,21 @@ public class FirebaseDBHandler {
             });
   }
 
+  private Task<DataSnapshot> getPendingTransactionEntity(
+      Integer groupTransactionId,
+      PendingTransactionEntityCallback pendingTransactionEntityCallback) {
+
+    return this.getUserPendingTransactionsDatabaseReference(this.getCurrentUserName())
+        .child(groupTransactionId.toString())
+        .get()
+        .addOnSuccessListener(
+            dataSnapshot -> {
+              PendingTransactionEntity entity =
+                  dataSnapshot.getValue(PendingTransactionEntity.class);
+              pendingTransactionEntityCallback.onCallback(entity);
+            });
+  }
+
   private Task<Void> addTransactionEntityToDatabase(
       Integer year,
       Integer month,
@@ -545,6 +561,7 @@ public class FirebaseDBHandler {
                             totalAmount,
                             amountOwed,
                             amountPaid,
+                            description,
                             getCurrentUserName()));
                   }
                 }
@@ -626,6 +643,7 @@ public class FirebaseDBHandler {
                             transactionEntity.getAmount(),
                             amountOwed,
                             amountPaid,
+                            transactionEntity.getDescription(),
                             this.getCurrentUserName()));
                   }
                 }
@@ -658,76 +676,75 @@ public class FirebaseDBHandler {
         });
   }
 
-  public void updateGroupTransactionPaid(
-      Integer year,
-      Integer month,
-      Integer dayOfMonth,
-      Integer groupTransactionId,
-      String description,
-      Double amountPaid) {
+  public Task<DataSnapshot> updateGroupTransactionPaid(Integer groupTransactionId) {
     this.validate_currentUserIsSet();
-    this.validate_amountPaid(amountPaid);
 
-    this.getGroupTransactionEntity(
+    return this.getPendingTransactionEntity(
         groupTransactionId,
-        groupTransactionEntity -> {
-          // validate whether the current user is a part of this group transaction
-          GroupTransactionShareEntity currentUserShareEntity = null;
-          for (GroupTransactionShareEntity shareEntity : groupTransactionEntity.getShares()) {
-            if (shareEntity.getUsername().equals(this.getCurrentUserName())) {
-              currentUserShareEntity = shareEntity;
-              break;
-            }
-          }
+        pendingTransactionEntity -> {
+          this.getGroupTransactionEntity(
+              groupTransactionId,
+              groupTransactionEntity -> {
+                // validate whether the current user is a part of this group transaction
+                GroupTransactionShareEntity currentUserShareEntity = null;
+                for (GroupTransactionShareEntity shareEntity : groupTransactionEntity.getShares()) {
+                  if (shareEntity.getUsername().equals(this.getCurrentUserName())) {
+                    currentUserShareEntity = shareEntity;
+                    break;
+                  }
+                }
 
-          if (currentUserShareEntity == null) {
-            throw new IllegalArgumentException(
-                "Current user is not a part of this group transaction!");
-          }
+                if (currentUserShareEntity == null) {
+                  throw new IllegalArgumentException(
+                      "Current user is not a part of this group transaction!");
+                }
 
-          this.validate_sharesPaidAmountRespectsOwedAmount(currentUserShareEntity, amountPaid);
+                if (currentUserShareEntity
+                    .getAmountPaid()
+                    .equals(currentUserShareEntity.getAmountOwed())) {
+                  throw new IllegalArgumentException("Amount has already been paid!");
+                }
 
-          if (currentUserShareEntity.getUserTransactionId() != null) {
-            // update existing transaction instead of creating new one if this is an update
+                Double amountPaid = pendingTransactionEntity.getAmountOwed();
+                String description = pendingTransactionEntity.getDescription();
 
-            getTransactionEntity(
-                year,
-                month,
-                dayOfMonth,
-                currentUserShareEntity.getUserTransactionId(),
-                transactionEntity -> {
-                  transactionEntity.setAmount(amountPaid);
+                // create transaction for current user
+                this.getNewTransactionId(
+                    id -> {
+                      Calendar todayCalendar = Calendar.getInstance();
 
-                  this.getUserTransactionsDatabaseReference()
-                      .child(year.toString())
-                      .child(month.toString())
-                      .child(dayOfMonth.toString())
-                      .child(Integer.toString(transactionEntity.getTransactionId()))
-                      .setValue(transactionEntity);
-                });
-          } else {
-            // create transaction for current user
-            this.getNewTransactionId(
-                id -> {
-                  TransactionEntity transactionEntity =
-                      new TransactionEntity(
-                          id, year, month, dayOfMonth, description, amountPaid, groupTransactionId);
+                      Integer year = todayCalendar.get(Calendar.YEAR);
+                      Integer month = todayCalendar.get(Calendar.MONTH);
+                      Integer dayOfMonth = todayCalendar.get(Calendar.DAY_OF_MONTH);
 
-                  addTransactionEntityToDatabase(year, month, dayOfMonth, id, transactionEntity);
-                });
-          }
+                      TransactionEntity transactionEntity =
+                          new TransactionEntity(
+                              id,
+                              year,
+                              month,
+                              dayOfMonth,
+                              description,
+                              amountPaid,
+                              groupTransactionId);
 
-          // remove from pending transaction if amountPaid == amountOwed
-          if (currentUserShareEntity.getAmountOwed().equals(amountPaid)) {
-            this.getUserPendingTransactionsDatabaseReference(this.getCurrentUserName())
-                .child(groupTransactionId.toString())
-                .removeValue();
-          }
-          // update group transaction
-          currentUserShareEntity.setAmountPaid(amountPaid);
-          this.getGroupTransactionsDatabaseReference()
-              .child(groupTransactionId.toString())
-              .setValue(groupTransactionEntity);
+                      FirebaseDBHandler.this.addTransactionEntityToDatabase(
+                          year, month, dayOfMonth, id, transactionEntity);
+                    });
+
+                // remove from pending transaction if amountPaid == amountOwed
+                if (currentUserShareEntity.getAmountOwed().equals(amountPaid)) {
+                  FirebaseDBHandler.this
+                      .getUserPendingTransactionsDatabaseReference(this.getCurrentUserName())
+                      .child(groupTransactionId.toString())
+                      .removeValue();
+                }
+                // update group transaction
+                currentUserShareEntity.setAmountPaid(amountPaid);
+                FirebaseDBHandler.this
+                    .getGroupTransactionsDatabaseReference()
+                    .child(groupTransactionId.toString())
+                    .setValue(groupTransactionEntity);
+              });
         });
   }
 

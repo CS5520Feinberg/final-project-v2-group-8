@@ -8,6 +8,8 @@ public class GroupTransactionEntity {
   public String creatorUserName;
   public List<GroupTransactionShareEntity> shares;
 
+  public GroupTransactionEntity() {}
+
   public GroupTransactionEntity(
       int groupTransactionId,
       Double totalAmount,

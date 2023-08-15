@@ -54,15 +54,15 @@ public class TransactionsRecyclerViewAdapter extends RecyclerView.Adapter<Transa
         .getTransactionDescription()
         .setText(transactionModelsList.get(position).getDescription());
 
-    holder
-        .getView()
-        .setOnClickListener(
-            v -> {
-              int currentPosition = holder.getAdapterPosition();
-              if (currentPosition != RecyclerView.NO_POSITION) {
-                listener.onOpenTransactionClick();
-              }
-            });
+//    holder
+//        .getView()
+//        .setOnClickListener(
+//            v -> {
+//              int currentPosition = holder.getAdapterPosition();
+//              if (currentPosition != RecyclerView.NO_POSITION) {
+//                listener.onOpenTransactionClick();
+//              }
+//            });
   }
 
   @Override

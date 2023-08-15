@@ -7,6 +7,8 @@ public class GroupTransactionShareEntity {
   public Double amountPaid;
   public Integer userTransactionId;
 
+  public GroupTransactionShareEntity() {}
+
   public GroupTransactionShareEntity(
       String username, Double amountOwed, Double amountPaid, Integer userTransactionId) {
     this.username = username;

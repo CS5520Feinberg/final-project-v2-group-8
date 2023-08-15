@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.models.transactionModels.PendingTransactionModel;
+import edu.northeastern.coinnect.repositories.TransactionsRepository;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,8 @@ public class PendingTransactionsRecyclerViewAdapter
     extends RecyclerView.Adapter<PendingTransactionViewHolder> {
   private Context context;
   private List<PendingTransactionModel> pendingTransactionModelList;
+  private TransactionsRepository transactionsRepository;
+  private PendingTransactionsRefreshListener refreshListener;
 
   @NonNull
   @Override
@@ -28,8 +31,12 @@ public class PendingTransactionsRecyclerViewAdapter
   }
 
   public PendingTransactionsRecyclerViewAdapter(
-      List<PendingTransactionModel> pendingTransactionModelList) {
+      List<PendingTransactionModel> pendingTransactionModelList,
+      TransactionsRepository transactionsRepository,
+      PendingTransactionsRefreshListener refreshListener) {
     this.pendingTransactionModelList = pendingTransactionModelList;
+    this.transactionsRepository = transactionsRepository;
+    this.refreshListener = refreshListener;
   }
 
   @Override
@@ -49,17 +56,17 @@ public class PendingTransactionsRecyclerViewAdapter
     holder
         .getTotalAmountTextView()
         .setText(pendingTransactionModelList.get(position).getTotalAmount().toString());
-
-    // TODO: add expanding/collapsing logic
-    //    holder
-    //        .getMoreDetailsButton()
-    //        .setOnClickListener(
-    //            v -> {
-    //              int currentPosition = holder.getAdapterPosition();
-    //              if (currentPosition != RecyclerView.NO_POSITION) {
-    //                listener.onOpenTransactionClick();
-    //              }
-    //            });
+    holder
+        .getMarkPaidButton()
+        .setOnClickListener(
+            v ->
+                this.transactionsRepository
+                    .updateGroupTransactionPaid(
+                        pendingTransactionModelList.get(position).getGroupTransactionId())
+                    .addOnCompleteListener(
+                        task ->
+                            PendingTransactionsRecyclerViewAdapter.this.refreshListener
+                                .endActivity()));
   }
 
   @Override

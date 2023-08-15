@@ -26,26 +26,7 @@
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintBottom_toTopOf="@id/cl_moreDetails">
 
-      <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_expandPendingTransaction"
-        android:layout_width="32sp"
-        android:layout_height="40sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
 
-        android:minWidth="0dp"
-
-        android:backgroundTint="@color/white"
-
-        app:icon="@drawable/baseline_keyboard_arrow_right_24"
-        app:iconTint="@color/black"
-        app:iconSize="28dip"
-        app:iconPadding="0dp"
-        android:paddingLeft="2dp"
-        android:paddingRight="2dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp" />
 
       <TextView
         android:id="@+id/tv_CreatorUserName"
@@ -57,7 +38,7 @@
         android:textColor="@color/black"
         android:textSize="24sp"
 
-        app:layout_constraintStart_toEndOf="@id/btn_expandPendingTransaction"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:text="Aaron" />
@@ -85,7 +66,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@id/cl_basicDetails"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintBottom_toBottomOf="@id/btn_markPaid"
       android:paddingTop="8dp"
       >
 
@@ -201,6 +182,30 @@
       </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.button.MaterialButton
+      android:id="@+id/btn_markPaid"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/cl_moreDetails"
+      app:layout_constraintBottom_toBottomOf="parent"
+
+      android:layout_marginTop="8dp"
+      android:minWidth="0dp"
+
+      android:backgroundTint="@color/white"
+
+      app:icon="@drawable/baseline_attach_money_24"
+      android:text="Complete Pending Transaction"
+      android:textColor="@color/black"
+      app:iconTint="@color/black"
+      app:iconSize="28dip"
+      app:iconPadding="0dp"
+      android:paddingTop="2dp"
+      android:paddingBottom="2dp" />
+
   </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

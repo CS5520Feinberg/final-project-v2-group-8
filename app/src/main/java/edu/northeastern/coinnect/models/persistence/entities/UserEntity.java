@@ -7,6 +7,8 @@ public class UserEntity {
   public String password;
   public int monthlyBudget;
 
+  public UserEntity() {}
+
   public UserEntity(String username,
                     String firstName,
                     String lastName,

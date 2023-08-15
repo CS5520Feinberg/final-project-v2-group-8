@@ -15,7 +15,7 @@ import edu.northeastern.coinnect.repositories.UsersRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PendingTransactionsActivity extends AppCompatActivity {
+public class PendingTransactionsActivity extends AppCompatActivity implements PendingTransactionsRefreshListener {
 
   private final Handler handler = new Handler();
 
@@ -53,18 +53,27 @@ public class PendingTransactionsActivity extends AppCompatActivity {
     List<PendingTransactionModel> pendingTransactionModelsList = new ArrayList<>();
     this.setupRecyclerView(binding);
     this.pendingTransactionsRVA =
-        new PendingTransactionsRecyclerViewAdapter(pendingTransactionModelsList);
+        new PendingTransactionsRecyclerViewAdapter(pendingTransactionModelsList, this.transactionsRepository, this);
     this.setupRecyclerViewListenerAndAdapter();
+  }
+
+  @Override
+  public void refreshPendingTransactionsList() {
+    runOnUiThread(() -> progressBar.setVisibility(View.VISIBLE));
+
+    this.transactionsRepository.getPendingTransactionsList(
+        this.handler, this.pendingTransactionsRVA, this.progressBar);
+  }
+
+  @Override
+  public void endActivity() {
+    this.finish();
   }
 
   @Override
   protected void onResume() {
     super.onResume();
-
-    runOnUiThread(() -> progressBar.setVisibility(View.VISIBLE));
-
-    this.transactionsRepository.getPendingTransactionsList(
-        this.handler, this.pendingTransactionsRVA, this.progressBar);
+    this.refreshPendingTransactionsList();
   }
 
   @Override
