@@ -64,6 +64,7 @@
       android:paddingStart="8dp"
       android:paddingEnd="8dp"
       android:orientation="horizontal"
+
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toStartOf="@id/tv_transactionAmount"
       app:layout_constraintStart_toEndOf="@id/cl_transactionDate"
@@ -90,7 +91,9 @@
         android:id="@+id/tv_transactionDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:gravity="center"
+        android:layout_weight="1"
+        app:layout_constraintHorizontal_bias="0.5"
         android:ellipsize="end"
         android:maxLines="1"
         android:fontFamily="sans-serif-light"
@@ -98,9 +101,10 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/img_group_icon"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Dinner went on for too long" />
+
+        tools:text="Dinner" />
     </LinearLayout>
     <TextView
       android:id="@+id/tv_transactionAmount"
