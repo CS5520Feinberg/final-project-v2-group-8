@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.northeastern.coinnect.R;
-import edu.northeastern.coinnect.databinding.ActivityViewGroupTransactionBinding;
 import edu.northeastern.coinnect.models.transactionModels.GroupTransactionModel;
 import edu.northeastern.coinnect.models.transactionModels.GroupTransactionShareModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
@@ -79,9 +78,7 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
         });
   }
 
-  private void setupRecyclerView(ActivityViewGroupTransactionBinding binding) {
-    this.transactionSharesRV = binding.rvTransactionShares;
-
+  private void setupRecyclerView() {
     this.transactionSharesRV.setHasFixedSize(true);
     this.transactionSharesRV.setLayoutManager(new LinearLayoutManager(this));
   }
@@ -93,13 +90,12 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    ActivityViewGroupTransactionBinding binding =
-        ActivityViewGroupTransactionBinding.inflate(getLayoutInflater());
     setContentView(R.layout.activity_view_group_transaction);
 
     this.dateTV = findViewById(R.id.tv_gt_date);
     this.amountTV = findViewById(R.id.tv_gt_amount);
     this.descriptionTV = findViewById(R.id.tv_gt_description);
+    this.transactionSharesRV = findViewById(R.id.rv_transaction_shares);
     this.progressBar = findViewById(R.id.transactionsDetailsProgressBar);
 
     Intent intent = getIntent();
@@ -113,7 +109,7 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
 
     Log.d(TAG, "Group Transactions RV setup started");
 
-    this.setupRecyclerView(binding);
+    this.setupRecyclerView();
     this.transactionSharesRVA =
         new TransactionSharesRecyclerViewAdapter(groupTransactionShareModelList);
     this.setupRecyclerViewListenerAndAdapter();
