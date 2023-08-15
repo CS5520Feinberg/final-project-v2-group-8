@@ -63,15 +63,20 @@ public class TransactionsRecyclerViewAdapter extends RecyclerView.Adapter<Transa
       holder.getGroupIcon().setVisibility(View.VISIBLE);
     }
 
-    //    holder
-    //        .getView()
-    //        .setOnClickListener(
-    //            v -> {
-    //              int currentPosition = holder.getAdapterPosition();
-    //              if (currentPosition != RecyclerView.NO_POSITION) {
-    //                listener.onOpenTransactionClick();
-    //              }
-    //            });
+    holder
+        .getView()
+        .setOnClickListener(
+            v -> {
+              int currentPosition = holder.getAdapterPosition();
+              if (currentPosition != RecyclerView.NO_POSITION) {
+                listener.onOpenTransactionClick(
+                    transactionModelsList.get(currentPosition).getYear(),
+                    transactionModelsList.get(currentPosition).getMonth(),
+                    transactionModelsList.get(currentPosition).getDayOfMonth(),
+                    transactionModelsList.get(currentPosition).getId(),
+                    transactionModelsList.get(currentPosition).getIsGroupTransaction());
+              }
+            });
   }
 
   @Override
