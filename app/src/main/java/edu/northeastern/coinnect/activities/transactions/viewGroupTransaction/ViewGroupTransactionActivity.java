@@ -5,11 +5,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.databinding.ActivityViewGroupTransactionBinding;
 import edu.northeastern.coinnect.models.transactionModels.GroupTransactionModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
+import edu.northeastern.coinnect.utils.CalendarUtils;
+import edu.northeastern.coinnect.utils.TransactionUtils;
+import java.util.Locale;
 
 public class ViewGroupTransactionActivity extends AppCompatActivity {
 
@@ -19,6 +23,10 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
   private Integer month;
   private Integer dayOfMonth;
   private Integer transactionId;
+
+  private TextView dateTV;
+  private TextView amountTV;
+  private TextView descriptionTV;
 
   private ProgressBar progressBar;
 
@@ -39,7 +47,18 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
 
           handler.post(
               () -> {
-                // TODO: set the fields
+                Locale locale = this.getResources().getConfiguration().getLocales().get(0);
+
+                this.dateTV.setText(
+                    CalendarUtils.getDayFormattedDate(
+                        groupTransactionModel.getYear(),
+                        groupTransactionModel.getMonth(),
+                        groupTransactionModel.getDayOfMonth(),
+                        locale));
+                this.amountTV.setText(
+                    TransactionUtils.formatWithCurrency(locale, groupTransactionModel.getAmount()));
+                this.descriptionTV.setText(groupTransactionModel.getDescription());
+
                 progressBar.setVisibility(View.INVISIBLE);
               });
         });
@@ -51,6 +70,11 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
     ActivityViewGroupTransactionBinding binding =
         ActivityViewGroupTransactionBinding.inflate(getLayoutInflater());
     setContentView(R.layout.activity_view_group_transaction);
+
+    this.dateTV = findViewById(R.id.tv_gt_date);
+    this.amountTV = findViewById(R.id.tv_gt_amount);
+    this.descriptionTV = findViewById(R.id.tv_gt_description);
+    progressBar = findViewById(R.id.transactionsDetailsProgressBar);
 
     Intent intent = getIntent();
 
