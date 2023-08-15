@@ -156,7 +156,7 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 
     public void addNewFriendToShareLayout() {
-        View addView = layoutInflater.inflate(R.layout.group_transaction_share, null);
+        View addView = layoutInflater.inflate(R.layout.group_transaction_share, layoutOfUserShares, false);
         layoutOfUserShares.addView(addView);
         ImageButton removeShareBtn = addView.findViewById(R.id.removeShareBtn);
         removeShareBtn.setOnClickListener(new View.OnClickListener() {
