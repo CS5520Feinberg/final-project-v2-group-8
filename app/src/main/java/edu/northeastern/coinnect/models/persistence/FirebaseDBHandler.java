@@ -554,28 +554,31 @@ public class FirebaseDBHandler {
                         groupTransactionId, totalAmount, getCurrentUserName(), shareEntities);
 
                 addGroupTransactionEntityToDatabase(groupTransactionId, groupTransactionEntity)
-                    .getResult();
+                    .addOnCompleteListener(
+                        groupTransactionTask -> {
+                          // Create transaction for currentUser
+                          TransactionEntity transactionEntityObj =
+                              new TransactionEntity(
+                                  transactionId,
+                                  year,
+                                  month,
+                                  dayOfMonth,
+                                  description,
+                                  totalAmount,
+                                  groupTransactionId);
 
-                // Create transaction for currentUser
-                TransactionEntity transactionEntityObj =
-                    new TransactionEntity(
-                        transactionId.intValue(),
-                        year,
-                        month,
-                        dayOfMonth,
-                        description,
-                        totalAmount,
-                        groupTransactionId);
-
-                addTransactionEntityToDatabase(
-                        year, month, dayOfMonth, transactionId.intValue(), transactionEntityObj)
-                    .getResult();
-
-                // Create pending transactions for all other users
-                for (Entry<String, PendingTransactionEntity> entry :
-                    pendingTransactionEntitiesMap.entrySet()) {
-                  addPendingTransactionEntityToDatabase(entry.getKey(), entry.getValue());
-                }
+                          addTransactionEntityToDatabase(
+                                  year, month, dayOfMonth, transactionId, transactionEntityObj)
+                              .addOnSuccessListener(
+                                  transactionTask -> {
+                                    // Create pending transactions for all other users
+                                    for (Entry<String, PendingTransactionEntity> entry :
+                                        pendingTransactionEntitiesMap.entrySet()) {
+                                      addPendingTransactionEntityToDatabase(
+                                          entry.getKey(), entry.getValue());
+                                    }
+                                  });
+                        });
               });
         });
   }
@@ -671,7 +674,7 @@ public class FirebaseDBHandler {
           // validate whether the current user is a part of this group transaction
           GroupTransactionShareEntity currentUserShareEntity = null;
           for (GroupTransactionShareEntity shareEntity : groupTransactionEntity.getShares()) {
-            if (shareEntity.getUsername() == this.getCurrentUserName()) {
+            if (shareEntity.getUsername().equals(this.getCurrentUserName())) {
               currentUserShareEntity = shareEntity;
               break;
             }
@@ -708,17 +711,9 @@ public class FirebaseDBHandler {
                 id -> {
                   TransactionEntity transactionEntity =
                       new TransactionEntity(
-                          id.intValue(),
-                          year,
-                          month,
-                          dayOfMonth,
-                          description,
-                          amountPaid,
-                          groupTransactionId);
+                          id, year, month, dayOfMonth, description, amountPaid, groupTransactionId);
 
-                  addTransactionEntityToDatabase(
-                          year, month, dayOfMonth, id.intValue(), transactionEntity)
-                      .getResult();
+                  addTransactionEntityToDatabase(year, month, dayOfMonth, id, transactionEntity);
                 });
           }
 
@@ -821,26 +816,6 @@ public class FirebaseDBHandler {
                     });
               }
             });
-  }
-
-  public DayTransactionsModel getTransactionForDay(
-      Integer year, Integer month, Integer dayOfMonth) {
-    this.validate_currentUserIsSet();
-    DatabaseReference dayTransactionsDatabaseReference =
-        this.getUserTransactionsDatabaseReference()
-            .child(year.toString())
-            .child(month.toString())
-            .child(dayOfMonth.toString());
-
-    List<AbstractTransactionModel> transactionModels = new ArrayList<>();
-
-    for (DataSnapshot transactionSnapshot :
-        dayTransactionsDatabaseReference.get().getResult().getChildren()) {
-      TransactionEntity entity = transactionSnapshot.getValue(TransactionEntity.class);
-      transactionModels.add(new TransactionModel(entity, year, month, dayOfMonth));
-    }
-
-    return new DayTransactionsModel(dayOfMonth, transactionModels);
   }
 
   public void getPendingTransactions(
