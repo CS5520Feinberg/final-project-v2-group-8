@@ -262,12 +262,12 @@ public class FirebaseDBHandler {
             });
   }
 
-  public Task<Void> addFriend(String friendUserName) {
+  public void addFriend(String friendUserName) {
     DatabaseReference friendsReference = this.getCurrentUserFriendsDatabaseReference();
     DatabaseReference othersFriendsReference = this.getUserFriendsDatabaseReference(friendUserName);
 
-    friendsReference.child(friendUserName).push().setValue(true);
-    return othersFriendsReference.child(this.getCurrentUserName()).push().setValue(true);
+    friendsReference.child(friendUserName).setValue(friendUserName);
+    othersFriendsReference.child(currentUserName).setValue(this.getCurrentUserName());
   }
 
   // </editor-fold>

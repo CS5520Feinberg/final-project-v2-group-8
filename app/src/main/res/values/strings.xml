@@ -30,6 +30,6 @@
     <string name="user_s_avatar">user\'s avatar</string>
     <string name="friend_username">Username</string>
     <string name="add_friend_title">Add friend</string>
-    <string name="search">Search</string>
     <string name="friend_s_username">Username</string>
+    <string name="search_users">Search users</string>
 </resources>

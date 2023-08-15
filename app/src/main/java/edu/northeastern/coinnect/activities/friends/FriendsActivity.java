@@ -3,8 +3,10 @@ package edu.northeastern.coinnect.activities.friends;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,33 +25,40 @@ import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.activities.friends.FriendRecyclerView.FriendRecyclerViewAdapter;
 import edu.northeastern.coinnect.repositories.UsersRepository;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class FriendsActivity extends AppCompatActivity {
 
   private static final FirebaseDBHandler firebaseDBHandler = FirebaseDBHandler.getInstance();
+  private int ADD_FRIEND_REQUEST_CODE = 1;
 
   private RecyclerView friendRecyclerView;
   private final UsersRepository usersRepository = UsersRepository.getInstance();
+  private FriendRecyclerViewAdapter friendRecyclerViewAdapter;
 
   private edu.northeastern.coinnect.databinding.ActivityFriendsBinding binding;
-
+  private String currentUser;
+  private List<String> friendList;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    String currentUser = this.usersRepository.getCurrentUserName();
+    currentUser = this.usersRepository.getCurrentUserName();
     firebaseDBHandler.setCurrentUserName(currentUser);
     binding = ActivityFriendsBinding.inflate(getLayoutInflater());
     FloatingActionButton addFriendFAB = binding.floatingActionButtonAddFriend;
 
     addFriendFAB.setOnClickListener(v -> {
       Intent intent = new Intent(getApplicationContext(), AddFriend.class);
-      startActivity(intent);
+      startActivityForResult(intent, ADD_FRIEND_REQUEST_CODE);
+
     });
     View view = binding.getRoot();
     setContentView(view);
+    friendList = usersRepository.getCurrentUserFriends();
+    Collections.sort(friendList);
     setupRecyclerView();
 
     BottomNavigationView navView = binding.bottomNavFriends;
@@ -59,14 +68,7 @@ public class FriendsActivity extends AppCompatActivity {
 
   private void setupRecyclerView() {
 
-    List<String> friendList = new ArrayList<>();
-
-    firebaseDBHandler.getCurrentUserFriends(friendsList -> {
-      friendList.addAll(friendsList);
-      usersRepository.setCurrentUserFriendsList(friendList);
-    });
-
-    FriendRecyclerViewAdapter friendRecyclerViewAdapter = new FriendRecyclerViewAdapter(usersRepository.getCurrentUserFriends()); // TODO
+    friendRecyclerViewAdapter = new FriendRecyclerViewAdapter(friendList);
     friendRecyclerView = binding.friendsRecyclerView;
     friendRecyclerView.setHasFixedSize(true);
     friendRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -124,6 +126,19 @@ public class FriendsActivity extends AppCompatActivity {
     if (this.friendRecyclerView.getLayoutManager() != null) {
       Parcelable recyclerState = savedInstanceState.getParcelable("recyclerState");
       this.friendRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerState);
+    }
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (requestCode == ADD_FRIEND_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+
+      Log.d("CURRENT FRIENDS", String.valueOf(usersRepository.getCurrentUserFriends()));
+      String newFriend = data.getStringExtra("add_friend_data");
+      friendList.add(newFriend);
+      setupRecyclerView();
     }
   }
 }
