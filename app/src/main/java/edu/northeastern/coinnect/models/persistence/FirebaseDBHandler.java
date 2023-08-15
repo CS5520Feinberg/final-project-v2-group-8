@@ -31,6 +31,7 @@ import edu.northeastern.coinnect.models.transactionModels.GroupTransactionModel;
 import edu.northeastern.coinnect.models.transactionModels.MonthTransactionsModel;
 import edu.northeastern.coinnect.models.transactionModels.PendingTransactionModel;
 import edu.northeastern.coinnect.models.transactionModels.TransactionModel;
+import edu.northeastern.coinnect.models.transactionModels.TransactionModelCallback;
 import edu.northeastern.coinnect.models.userModels.User.AbstractUserModel;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -271,13 +272,10 @@ public class FirebaseDBHandler {
   }
 
   public DatabaseReference getUserDatabaseRef(String username) {
-    return dbInstance
-            .getReference()
-            .child(USERS_BUCKET_NAME)
-            .child(username);
+    return dbInstance.getReference().child(USERS_BUCKET_NAME).child(username);
   }
 
-  public void setNewPass(String encryptedPass){
+  public void setNewPass(String encryptedPass) {
     getUserDatabaseRef(getCurrentUserName()).child("password").setValue(encryptedPass);
   }
 

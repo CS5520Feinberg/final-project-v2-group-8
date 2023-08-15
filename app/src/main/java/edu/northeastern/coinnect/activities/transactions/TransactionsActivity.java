@@ -15,6 +15,8 @@ import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.activities.home.HomeActivity;
 import edu.northeastern.coinnect.activities.settings.SettingsActivity;
+import edu.northeastern.coinnect.activities.transactions.viewGroupTransaction.ViewGroupTransactionActivity;
+import edu.northeastern.coinnect.activities.transactions.viewTransaction.ViewTransactionActivity;
 import edu.northeastern.coinnect.databinding.ActivityTransactionsBinding;
 import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
@@ -57,14 +59,28 @@ public class TransactionsActivity extends AppCompatActivity {
   }
 
   private void setupRecyclerViewListenerAndAdapter() {
-    // set up a listener for transaction card click -> Edit Transaction
-    //    TransactionCardClickListener transactionCardClickListener =
-    //        () -> {
-    //          Intent intent = new Intent(TransactionsActivity.this, AddTransactionActivity.class);
-    //          startActivity(intent);
-    //        };
-    //
-    //    this.transactionsRVA.setCardClickListener(transactionCardClickListener);
+    //     set up a listener for transaction card click -> Edit Transaction
+    TransactionCardClickListener transactionCardClickListener =
+        (year, month, dayOfMonth, transactionId, isGroupTransaction) -> {
+          if (isGroupTransaction) {
+            Intent intent =
+                new Intent(TransactionsActivity.this, ViewGroupTransactionActivity.class);
+            intent.putExtra("TRANSACTION_YEAR", year);
+            intent.putExtra("TRANSACTION_MONTH", month);
+            intent.putExtra("TRANSACTION_DAY_OF_MONTH", dayOfMonth);
+            intent.putExtra("TRANSACTION_TRANSACTION_ID", transactionId);
+            startActivity(intent);
+          } else {
+            Intent intent = new Intent(TransactionsActivity.this, ViewTransactionActivity.class);
+            intent.putExtra("TRANSACTION_YEAR", year);
+            intent.putExtra("TRANSACTION_MONTH", month);
+            intent.putExtra("TRANSACTION_DAY_OF_MONTH", dayOfMonth);
+            intent.putExtra("TRANSACTION_TRANSACTION_ID", transactionId);
+            startActivity(intent);
+          }
+        };
+
+    this.transactionsRVA.setCardClickListener(transactionCardClickListener);
     this.transactionsRV.setAdapter(this.transactionsRVA);
   }
 
@@ -133,8 +149,7 @@ public class TransactionsActivity extends AppCompatActivity {
     this.previousMonthButton.setOnClickListener(
         v -> TransactionsActivity.this.switchDate_PreviousMonth());
 
-    this.nextMonthButton.setOnClickListener(
-        v -> TransactionsActivity.this.switchDate_NextMonth());
+    this.nextMonthButton.setOnClickListener(v -> TransactionsActivity.this.switchDate_NextMonth());
   }
 
   @Override
@@ -155,7 +170,8 @@ public class TransactionsActivity extends AppCompatActivity {
         item -> {
           Intent intent;
           if (item.getItemId() == R.id.homeActivity) {
-            intent = new Intent(this, HomeActivity.class);;
+            intent = new Intent(this, HomeActivity.class);
+            ;
           } else if (item.getItemId() == R.id.transactionActivity) {
             return true;
           } else if (item.getItemId() == R.id.friendsActivity) {

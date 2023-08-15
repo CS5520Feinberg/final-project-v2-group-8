@@ -19,6 +19,14 @@ public class CalendarUtils {
     return String.format(locale, "%s, %d", month, dayOfMonth);
   }
 
+  public static String getDayFormattedDate(Integer year, Integer month, Integer dayOfMonth, Locale locale) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(year, month, dayOfMonth);
+
+    String monthStr = calendar.getDisplayName(Calendar.MONTH, Calendar.LONG, locale);
+    return String.format(locale, "%d %s, %d", dayOfMonth, monthStr, year);
+  }
+
   public static String getMonthFormattedDate(Integer year, Integer month, Locale locale) {
     Calendar calendar = Calendar.getInstance();
     calendar.set(year, month, 1);

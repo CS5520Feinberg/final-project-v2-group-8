@@ -9,6 +9,7 @@ import com.google.firebase.database.DataSnapshot;
 import edu.northeastern.coinnect.activities.pending.PendingTransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.activities.transactions.TransactionsRecyclerViewAdapter;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
+import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModelCallback;
 import java.util.Map;
 
 public class TransactionsRepository {
@@ -29,6 +30,15 @@ public class TransactionsRepository {
 
   public FirebaseDBHandler getFirebaseDbHandler() {
     return firebaseDbHandler;
+  }
+
+  public void getTransaction(
+      Integer year,
+      Integer month,
+      Integer dayOfMonth,
+      Integer transactionId,
+      AbstractTransactionModelCallback callback) {
+    getFirebaseDbHandler().getTransaction(year, month, dayOfMonth, transactionId, callback);
   }
 
   public Task<DataSnapshot> addTransaction(

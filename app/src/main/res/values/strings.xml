@@ -31,7 +31,7 @@
     <string name="friend_username">Username</string>
     <string name="add_friend_title">Add friend</string>
     <string name="friend_s_username">Username</string>
-    <string name="search_users">Search users</string>
+    <string name="search_users">Search username</string>
     <string name="change_monthly_budget">Change Monthly Budget</string>
     <string name="change_password">Change Password</string>
 </resources>
