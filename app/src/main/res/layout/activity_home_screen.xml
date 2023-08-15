@@ -55,7 +55,7 @@
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:textSize="22sp"
-    android:text="@string/recent_transactions"
+    android:text="@string/today_transactions"
 
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
