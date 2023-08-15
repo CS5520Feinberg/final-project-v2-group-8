@@ -76,7 +76,11 @@ public class SettingsActivity extends AppCompatActivity {
 
                 } else {
                   String value = input.getText().toString();
-                  usersRepository.setMonthlyBudget(value);
+                    try {
+                        usersRepository.setNewMonthlyBudget(value);
+                    } catch (Exception e) {
+                        System.out.println("error: " + e);
+                    }
                 }
               }
             })

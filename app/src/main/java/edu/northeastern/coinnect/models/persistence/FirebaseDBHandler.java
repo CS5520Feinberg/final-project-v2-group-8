@@ -279,6 +279,10 @@ public class FirebaseDBHandler {
     getUserDatabaseRef(getCurrentUserName()).child("password").setValue(encryptedPass);
   }
 
+  public void setNewMonthlyBudget(int budget) {
+    getUserDatabaseRef(getCurrentUserName()).child("monthlyBudget").setValue(budget);
+  }
+
   // </editor-fold>
 
   // <editor-fold desc="Transactions">
