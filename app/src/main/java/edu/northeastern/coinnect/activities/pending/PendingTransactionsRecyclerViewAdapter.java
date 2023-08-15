@@ -9,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.models.transactionModels.PendingTransactionModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
+import edu.northeastern.coinnect.utils.TransactionUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class PendingTransactionsRecyclerViewAdapter
     extends RecyclerView.Adapter<PendingTransactionViewHolder> {
@@ -41,21 +43,31 @@ public class PendingTransactionsRecyclerViewAdapter
 
   @Override
   public void onBindViewHolder(@NonNull PendingTransactionViewHolder holder, int position) {
+    Locale locale = context.getResources().getConfiguration().getLocales().get(0);
+
     holder
         .getCreatorUserNameTextView()
         .setText(pendingTransactionModelList.get(position).getCreatorUser());
     holder
         .getNetAmountOwedTextView()
-        .setText(pendingTransactionModelList.get(position).getNetAmountOwed().toString());
+        .setText(
+            TransactionUtils.formatWithCurrency(
+                locale, pendingTransactionModelList.get(position).getNetAmountOwed()));
     holder
         .getAmountOwedTextView()
-        .setText(pendingTransactionModelList.get(position).getAmountOwed().toString());
+        .setText(
+            TransactionUtils.formatWithCurrency(
+                locale, pendingTransactionModelList.get(position).getAmountOwed()));
     holder
         .getAmountPaidTextView()
-        .setText(pendingTransactionModelList.get(position).getAmountPaid().toString());
+        .setText(
+            TransactionUtils.formatWithCurrency(
+                locale, pendingTransactionModelList.get(position).getAmountPaid()));
     holder
         .getTotalAmountTextView()
-        .setText(pendingTransactionModelList.get(position).getTotalAmount().toString());
+        .setText(
+            TransactionUtils.formatWithCurrency(
+                locale, pendingTransactionModelList.get(position).getTotalAmount()));
     holder
         .getMarkPaidButton()
         .setOnClickListener(

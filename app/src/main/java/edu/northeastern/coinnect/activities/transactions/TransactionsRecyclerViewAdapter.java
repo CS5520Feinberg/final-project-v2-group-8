@@ -11,6 +11,7 @@ import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionMod
 import edu.northeastern.coinnect.models.transactionModels.DayTransactionsModel;
 import edu.northeastern.coinnect.models.transactionModels.MonthTransactionsModel;
 import edu.northeastern.coinnect.utils.CalendarUtils;
+import edu.northeastern.coinnect.utils.TransactionUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -51,7 +52,9 @@ public class TransactionsRecyclerViewAdapter extends RecyclerView.Adapter<Transa
     holder.getTransactionDay().setText(CalendarUtils.getDayOfWeek(calendar, locale));
     holder
         .getTransactionAmount()
-        .setText(String.format(locale, "%1$,.2f", transactionModelsList.get(position).getAmount()));
+        .setText(
+            TransactionUtils.formatWithCurrency(
+                locale, transactionModelsList.get(position).getAmount()));
     holder
         .getTransactionDescription()
         .setText(transactionModelsList.get(position).getDescription());
