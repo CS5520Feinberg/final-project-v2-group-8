@@ -3,6 +3,7 @@ package edu.northeastern.coinnect.activities.transactions.viewGroupTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
 
   private void fetchGroupTransactionDetails() {
     runOnUiThread(() -> progressBar.setVisibility(View.VISIBLE));
+    Log.d(TAG, "fetch GT details started");
 
     this.transactionsRepository.getTransaction(
         this.year,
@@ -52,8 +54,10 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
           GroupTransactionModel groupTransactionModel =
               (GroupTransactionModel) abstractTransactionModel;
 
+          Log.d(TAG, "GT details available");
           handler.post(
               () -> {
+                Log.d(TAG, "GT Details rendering started");
                 Locale locale = this.getResources().getConfiguration().getLocales().get(0);
 
                 this.dateTV.setText(
@@ -69,6 +73,7 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
                 this.transactionSharesRVA.setupList(
                     groupTransactionModel.getGroupTransactionShares());
 
+                Log.d(TAG, "GT Details rendering complete");
                 progressBar.setVisibility(View.INVISIBLE);
               });
         });
@@ -95,8 +100,7 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
     this.dateTV = findViewById(R.id.tv_gt_date);
     this.amountTV = findViewById(R.id.tv_gt_amount);
     this.descriptionTV = findViewById(R.id.tv_gt_description);
-    this.transactionSharesRV = findViewById(R.id.rv_transaction_shares);
-    progressBar = findViewById(R.id.transactionsDetailsProgressBar);
+    this.progressBar = findViewById(R.id.transactionsDetailsProgressBar);
 
     Intent intent = getIntent();
 
@@ -106,10 +110,15 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
     this.transactionId = intent.getIntExtra("TRANSACTION_TRANSACTION_ID", 0);
 
     List<GroupTransactionShareModel> groupTransactionShareModelList = new ArrayList<>();
+
+    Log.d(TAG, "Group Transactions RV setup started");
+
     this.setupRecyclerView(binding);
     this.transactionSharesRVA =
         new TransactionSharesRecyclerViewAdapter(groupTransactionShareModelList);
     this.setupRecyclerViewListenerAndAdapter();
+
+    Log.d(TAG, "Group Transactions RV setup complete");
   }
 
   protected void onResume() {
