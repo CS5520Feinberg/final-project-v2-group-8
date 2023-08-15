@@ -31,7 +31,7 @@ public class AddFriend extends AppCompatActivity {
         usersRepository.setCurrentUserName(firebaseDBHandler.getCurrentUserName());
         setContentView(R.layout.activity_add_friend);
         searchButton = findViewById(R.id.addFriendBtn);
-        searchFriendInput = findViewById(R.id.friendEditText);
+        searchFriendInput = findViewById(R.id.usernameEditText);
 
         searchButton.setOnClickListener(v -> {
             CompletableFuture<Boolean> isUser = usersRepository.isUser(searchFriendInput.getText().toString());
