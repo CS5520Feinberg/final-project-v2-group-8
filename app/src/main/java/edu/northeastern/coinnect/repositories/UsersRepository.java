@@ -224,7 +224,11 @@ public class UsersRepository {
     return hexStr.toString();
   }
 
+  public void setNewPass(String unencryptedPass) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    String newPass = encryptPass(unencryptedPass);
+    firebaseDbHandler.setNewPass(newPass);
 
+  }
 
   public void fetchUserFriendsList() {
       firebaseDbHandler.getCurrentUserFriends(friendsList -> {

@@ -2,6 +2,7 @@ package edu.northeastern.coinnect.activities.friends.AddFriend;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.concurrent.CompletableFuture;
 
 import edu.northeastern.coinnect.R;
+import edu.northeastern.coinnect.activities.friends.FriendsActivity;
 import edu.northeastern.coinnect.models.persistence.FirebaseDBHandler;
 import edu.northeastern.coinnect.repositories.UsersRepository;
 
@@ -37,10 +39,15 @@ public class AddFriend extends AppCompatActivity {
             isUser.thenAccept(ans -> {
                 if (ans) {
                     Log.d("USER", "User found");
-                    Toast.makeText(getApplicationContext(), "User Exists", Toast.LENGTH_LONG).show();
+                    firebaseDBHandler.addFriend(searchFriendInput.getText().toString());
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("add_friend_data", searchFriendInput.getText().toString());
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
                 } else {
                     Log.d("USER", "No user found");
                     Toast.makeText(getApplicationContext(), "User does not exist", Toast.LENGTH_LONG).show();
+                    searchButton.clearFocus();
                 }
             });
         });

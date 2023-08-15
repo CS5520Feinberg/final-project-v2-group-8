@@ -6,30 +6,57 @@
     android:layout_height="match_parent"
     tools:context=".activities.home.HomeActivity">
 
-
     <TextView
-        android:id="@+id/recent_transactions"
-        android:layout_width="wrap_content"
+        android:id="@+id/settings_title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Settings"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="36sp"
+        android:padding="16dp"
+        android:text="@string/settings"
+        android:textAlignment="center"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintStart_toStartOf="parent"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/btnBudget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:padding="16dp"
+            android:backgroundTint="@color/black"
+            android:layout_marginHorizontal="16dp"
+            android:text="@string/change_monthly_budget" />
+
+        <Button
+            android:id="@+id/btnPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:backgroundTint="@color/black"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:layout_marginHorizontal="16dp"
+            android:text="@string/change_password" />
+    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_home"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
+        app:itemIconSize="36dp"
+        app:itemIconTint="@color/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav"
-        app:itemIconSize="36dp"
-        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
-        app:itemIconTint="@color/bottom_nav_color"
-        />
+        app:menu="@menu/bottom_nav" />
 </androidx.constraintlayout.widget.ConstraintLayout>
