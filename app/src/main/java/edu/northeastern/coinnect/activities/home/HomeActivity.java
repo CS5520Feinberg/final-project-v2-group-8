@@ -113,6 +113,8 @@ public class HomeActivity extends AppCompatActivity {
     this.progressBar = findViewById(R.id.homeScreenProgressBar);
     userRepository.fetchUserFriendsList();
 
+
+
     this.setupAddTransactionFAB();
     this.setupUserGreeting();
     this.setupPendingTransactions();

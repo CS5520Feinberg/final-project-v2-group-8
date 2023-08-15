@@ -198,6 +198,11 @@ public class UsersRepository {
     }
   }
 
+  public void sendFriendRequest(String requestedFriendName){
+    firebaseDbHandler
+            .sendFriendRequest(requestedFriendName);
+  }
+
   public boolean comparePasswords(String attemptedPassword, String realPassword)
     throws UnsupportedEncodingException, NoSuchAlgorithmException {
       if (encryptPass(attemptedPassword).equals(realPassword)) {
@@ -226,9 +231,17 @@ public class UsersRepository {
 
 
 
+
+  public void getUserFriendsList() {
+    setCurrentUserName(firebaseDbHandler.getCurrentUserName());
+      firebaseDbHandler
+              .getCurrentUserFriends()
+              .addOnSuccessListener(dataSnapshot -> setCurrentUserFriendsList((List<String>) dataSnapshot.getValue()));
+
   public void fetchUserFriendsList() {
       firebaseDbHandler.getCurrentUserFriends(friendsList -> {
         setCurrentUserFriendsList(friendsList);
       });
+
   }
 }
