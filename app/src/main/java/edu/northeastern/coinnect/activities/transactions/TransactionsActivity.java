@@ -153,24 +153,24 @@ public class TransactionsActivity extends AppCompatActivity {
   protected void setupNavBarActions(BottomNavigationView navView) {
     navView.setOnItemSelectedListener(
         item -> {
+          Intent intent;
           if (item.getItemId() == R.id.homeActivity) {
-            Intent intent = new Intent(this, HomeActivity.class);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-          } else if (item.getItemId() == R.id.friendsActivity) {
-            Intent intent = new Intent(this, FriendsActivity.class);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
+            intent = new Intent(this, HomeActivity.class);;
           } else if (item.getItemId() == R.id.transactionActivity) {
-            item.setChecked(true);
             return true;
+          } else if (item.getItemId() == R.id.friendsActivity) {
+            intent = new Intent(this, FriendsActivity.class);
           } else if (item.getItemId() == R.id.settingsActivity) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-            return true;
+            intent = new Intent(this, SettingsActivity.class);
+          } else {
+            return false;
           }
-          return false;
+
+          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+          startActivity(intent);
+          overridePendingTransition(0, 0);
+          finish();
+          return true;
         });
   }
 }

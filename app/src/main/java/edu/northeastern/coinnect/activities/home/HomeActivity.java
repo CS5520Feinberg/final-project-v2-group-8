@@ -91,10 +91,11 @@ public class HomeActivity extends AppCompatActivity {
   }
 
   private void setupPendingTransactions() {
-    this.pendingTransactionsButton.setOnClickListener(view -> {
-      Intent intent = new Intent(this, PendingTransactionsActivity.class);
-      startActivity(intent);
-    });
+    this.pendingTransactionsButton.setOnClickListener(
+        view -> {
+          Intent intent = new Intent(this, PendingTransactionsActivity.class);
+          startActivity(intent);
+        });
   }
 
   @Override
@@ -130,24 +131,24 @@ public class HomeActivity extends AppCompatActivity {
   protected void setupNavBarActions(BottomNavigationView navView) {
     navView.setOnItemSelectedListener(
         item -> {
-          if (item.getItemId() == R.id.friendsActivity) {
-            Intent intent = new Intent(this, FriendsActivity.class);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-          } else if (item.getItemId() == R.id.homeActivity) {
+          Intent intent;
+          if (item.getItemId() == R.id.homeActivity) {
             return true;
           } else if (item.getItemId() == R.id.transactionActivity) {
-            Intent intent = new Intent(this, TransactionsActivity.class);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-            return true;
+            intent = new Intent(this, TransactionsActivity.class);
+          } else if (item.getItemId() == R.id.friendsActivity) {
+            intent = new Intent(this, FriendsActivity.class);
           } else if (item.getItemId() == R.id.settingsActivity) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-            return true;
+            intent = new Intent(this, SettingsActivity.class);
+          } else {
+            return false;
           }
-          return false;
+
+          intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+          startActivity(intent);
+          overridePendingTransition(0, 0);
+          finish();
+          return true;
         });
   }
 
