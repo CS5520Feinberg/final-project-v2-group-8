@@ -65,17 +65,14 @@ public class TransactionsRepository {
             Map<String, Double> userShares) {
         return getFirebaseDbHandler()
                 .addTransaction(year, month, dayOfMonth, amount, description)
-                .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        Long id = Long.valueOf(0);
-                        if (dataSnapshot.getValue() != null) {
-                            id = (Long) dataSnapshot.getValue();
-                        }
-                        if (isGroupTransaction) {
-                            addGroupTransaction(year, month, dayOfMonth, id.intValue(), userShares);
-                        }
+                .addOnSuccessListener(dataSnapshot -> {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    Integer id = 0;
+                    if (dataSnapshot.getValue() != null) {
+                        id = dataSnapshot.getValue(Integer.class);
+                    }
+                    if (isGroupTransaction) {
+                        addGroupTransaction(year, month, dayOfMonth, id.intValue(), userShares);
                     }
                 });
     }

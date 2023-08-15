@@ -129,18 +129,15 @@ public class AddTransactionActivity extends AppCompatActivity {
                             desc,
                             isGroupTransactionCheckBox.isChecked(),
                             userShares
-                            ).addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DataSnapshot> task) {
-                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                            startActivity(intent);
-                        }
-                    });
+                            ).addOnCompleteListener(task -> {
+                                Intent intent = new Intent(this, HomeActivity.class);
+                                startActivity(intent);
+                            });
                 });
 
         cancelTransactionBtn.setOnClickListener(
                 v -> {
-                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                    Intent intent = new Intent(this, HomeActivity.class);
                     startActivity(intent);
                 });
 

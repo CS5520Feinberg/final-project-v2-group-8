@@ -61,14 +61,10 @@ public class FriendsActivity extends AppCompatActivity {
 
     List<String> friendList = new ArrayList<>();
 
-    firebaseDBHandler.getCurrentUserFriends()
-            .addOnSuccessListener(dataSnapshot -> {
-              for (DataSnapshot child : dataSnapshot.getChildren()) {
-                friendList.add(Objects.requireNonNull(child.getValue()).toString());
-              }
-              usersRepository.setCurrentUserFriendsList(friendList);
-            });
-
+    firebaseDBHandler.getCurrentUserFriends(friendsList -> {
+      friendList.addAll(friendsList);
+      usersRepository.setCurrentUserFriendsList(friendList);
+    });
 
     FriendRecyclerViewAdapter friendRecyclerViewAdapter = new FriendRecyclerViewAdapter(usersRepository.getCurrentUserFriends()); // TODO
     friendRecyclerView = binding.friendsRecyclerView;

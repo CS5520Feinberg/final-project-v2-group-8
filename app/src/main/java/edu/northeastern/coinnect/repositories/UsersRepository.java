@@ -1,14 +1,11 @@
 package edu.northeastern.coinnect.repositories;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 
@@ -229,13 +226,9 @@ public class UsersRepository {
 
 
 
-  public void getUserFriendsList() {
-      firebaseDbHandler.getCurrentUserFriends().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-        @Override
-        public void onSuccess(DataSnapshot dataSnapshot) {
-          setCurrentUserFriendsList((List<String>) dataSnapshot.getValue());
-        }
+  public void fetchUserFriendsList() {
+      firebaseDbHandler.getCurrentUserFriends(friendsList -> {
+        setCurrentUserFriendsList(friendsList);
       });
   }
-
 }

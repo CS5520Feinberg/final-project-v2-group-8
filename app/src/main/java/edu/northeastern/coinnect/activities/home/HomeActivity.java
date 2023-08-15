@@ -111,7 +111,7 @@ public class HomeActivity extends AppCompatActivity {
     this.pendingTransactionsButton = findViewById(R.id.btn_pendingTransactions);
     this.bottomNavigationView = findViewById(R.id.bottom_nav_home);
     this.progressBar = findViewById(R.id.homeScreenProgressBar);
-    userRepository.getUserFriendsList();
+    userRepository.fetchUserFriendsList();
 
     this.setupAddTransactionFAB();
     this.setupUserGreeting();
