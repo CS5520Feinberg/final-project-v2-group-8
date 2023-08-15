@@ -65,9 +65,17 @@ public class HomeActivity extends AppCompatActivity {
         (year, month, dayOfMonth, transactionId, isGroupTransaction) -> {
           if (isGroupTransaction) {
             Intent intent = new Intent(HomeActivity.this, ViewGroupTransactionActivity.class);
+            intent.putExtra("TRANSACTION_YEAR", year);
+            intent.putExtra("TRANSACTION_MONTH", month);
+            intent.putExtra("TRANSACTION_DAY_OF_MONTH", dayOfMonth);
+            intent.putExtra("TRANSACTION_TRANSACTION_ID", transactionId);
             startActivity(intent);
           } else {
             Intent intent = new Intent(HomeActivity.this, ViewTransactionActivity.class);
+            intent.putExtra("TRANSACTION_YEAR", year);
+            intent.putExtra("TRANSACTION_MONTH", month);
+            intent.putExtra("TRANSACTION_DAY_OF_MONTH", dayOfMonth);
+            intent.putExtra("TRANSACTION_TRANSACTION_ID", transactionId);
             startActivity(intent);
           }
         };
