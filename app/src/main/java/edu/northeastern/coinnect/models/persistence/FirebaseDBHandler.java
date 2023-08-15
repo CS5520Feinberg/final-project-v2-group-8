@@ -270,6 +270,17 @@ public class FirebaseDBHandler {
     othersFriendsReference.child(currentUserName).setValue(this.getCurrentUserName());
   }
 
+  public DatabaseReference getUserDatabaseRef(String username) {
+    return dbInstance
+            .getReference()
+            .child(USERS_BUCKET_NAME)
+            .child(username);
+  }
+
+  public void setNewPass(String encryptedPass){
+    getUserDatabaseRef(getCurrentUserName()).child("password").setValue(encryptedPass);
+  }
+
   // </editor-fold>
 
   // <editor-fold desc="Transactions">
