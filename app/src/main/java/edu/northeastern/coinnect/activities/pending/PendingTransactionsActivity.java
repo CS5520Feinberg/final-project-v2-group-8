@@ -48,7 +48,7 @@ public class PendingTransactionsActivity extends AppCompatActivity {
     setContentView(view);
 
     this.progressBar = findViewById(R.id.pendingTransactionsProgressBar);
-    userRepository.getUserFriendsList();
+    userRepository.fetchUserFriendsList();
 
     List<PendingTransactionModel> pendingTransactionModelsList = new ArrayList<>();
     this.setupRecyclerView(binding);
