@@ -41,7 +41,7 @@ public class FriendRecyclerViewAdapter extends RecyclerView.Adapter<FriendViewHo
 
     @Override
     public int getItemCount() {
-        return this.friendCardList.size();
+        return friendCardList != null ? this.friendCardList.size() : 0;
     }
 
 }

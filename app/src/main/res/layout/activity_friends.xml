@@ -10,15 +10,27 @@
         android:id="@+id/friends_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
         android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="64dp"
         android:text="@string/friends_list"
         android:textAlignment="viewStart"
         android:textSize="34sp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/friends_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/emptyStateViewFriends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_friends_found"
+        android:textSize="20sp"
+        android:visibility="gone"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/friends_title"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginHorizontal="16dp"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -29,32 +41,33 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_nav_friends"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/friends_title" />
+        app:layout_constraintTop_toBottomOf="@id/friends_title"
+        tools:listitem="@layout/card_friend" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_friends"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
+        app:itemIconSize="36dp"
+        app:itemIconTint="@color/bottom_nav_color"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav"
-        app:itemIconSize="36dp"
-        app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
-        app:itemIconTint="@color/bottom_nav_color"
-        />
+        app:menu="@menu/bottom_nav" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton_add_friend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:backgroundTint="@color/accentGreen"
-        android:elevation="10dp"
         android:layout_margin="8dp"
+        android:backgroundTint="@color/black"
+        android:clickable="true"
+        android:elevation="10dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav_friends"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/outline_person_add_24" />
+        app:srcCompat="@drawable/baseline_person_add_alt_1_24_white"
+        app:tint="@color/accentGreen" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
