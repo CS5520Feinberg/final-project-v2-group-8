@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.databinding.ActivityViewGroupTransactionBinding;
-import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModel;
 import edu.northeastern.coinnect.models.transactionModels.GroupTransactionModel;
 import edu.northeastern.coinnect.models.transactionModels.GroupTransactionShareModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
@@ -34,7 +33,7 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
   private TextView amountTV;
   private TextView descriptionTV;
   private RecyclerView transactionSharesRV;
-  private TransactionSharesRecyclerViewAdapter transactionShareRVA;
+  private TransactionSharesRecyclerViewAdapter transactionSharesRVA;
 
   private ProgressBar progressBar;
 
@@ -67,7 +66,7 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
                     TransactionUtils.formatWithCurrency(locale, groupTransactionModel.getAmount()));
                 this.descriptionTV.setText(groupTransactionModel.getDescription());
 
-                this.transactionShareRVA.setupList(
+                this.transactionSharesRVA.setupList(
                     groupTransactionModel.getGroupTransactionShares());
 
                 progressBar.setVisibility(View.INVISIBLE);
@@ -83,7 +82,7 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
   }
 
   private void setupRecyclerViewListenerAndAdapter() {
-    this.transactionSharesRV.setAdapter(this.transactionShareRVA);
+    this.transactionSharesRV.setAdapter(this.transactionSharesRVA);
   }
 
   @Override
@@ -108,7 +107,8 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
 
     List<GroupTransactionShareModel> groupTransactionShareModelList = new ArrayList<>();
     this.setupRecyclerView(binding);
-    this.transactionShareRVA = new TransactionSharesRecyclerViewAdapter(groupTransactionShareModelList);
+    this.transactionSharesRVA =
+        new TransactionSharesRecyclerViewAdapter(groupTransactionShareModelList);
     this.setupRecyclerViewListenerAndAdapter();
   }
 

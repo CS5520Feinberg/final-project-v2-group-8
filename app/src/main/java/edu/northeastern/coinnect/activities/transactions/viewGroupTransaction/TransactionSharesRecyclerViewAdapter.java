@@ -62,6 +62,6 @@ public class TransactionSharesRecyclerViewAdapter
     this.groupTransactionShareModelList = new ArrayList<>();
 
     this.groupTransactionShareModelList.addAll(groupTransactionShareModels);
-    this.notifyDataSetChanged();
+    notifyDataSetChanged();
   }
 }
