@@ -45,7 +45,9 @@ public class TransactionsRecyclerViewAdapter extends RecyclerView.Adapter<Transa
         transactionModelsList.get(position).getMonth(),
         transactionModelsList.get(position).getDayOfMonth());
 
-    holder.getTransactionDate().setText(transactionModelsList.get(position).getDayOfMonth().toString());
+    holder
+        .getTransactionDate()
+        .setText(transactionModelsList.get(position).getDayOfMonth().toString());
     holder.getTransactionDay().setText(CalendarUtils.getDayOfWeek(calendar, locale));
     holder
         .getTransactionAmount()
@@ -54,15 +56,19 @@ public class TransactionsRecyclerViewAdapter extends RecyclerView.Adapter<Transa
         .getTransactionDescription()
         .setText(transactionModelsList.get(position).getDescription());
 
-//    holder
-//        .getView()
-//        .setOnClickListener(
-//            v -> {
-//              int currentPosition = holder.getAdapterPosition();
-//              if (currentPosition != RecyclerView.NO_POSITION) {
-//                listener.onOpenTransactionClick();
-//              }
-//            });
+    if (transactionModelsList.get(position).getIsGroupTransaction()) {
+      holder.getGroupIcon().setVisibility(View.VISIBLE);
+    }
+
+    //    holder
+    //        .getView()
+    //        .setOnClickListener(
+    //            v -> {
+    //              int currentPosition = holder.getAdapterPosition();
+    //              if (currentPosition != RecyclerView.NO_POSITION) {
+    //                listener.onOpenTransactionClick();
+    //              }
+    //            });
   }
 
   @Override

@@ -21,7 +21,7 @@ public class GroupTransactionModel extends AbstractTransactionModel {
       int groupTransactionId,
       String creatorUserName,
       List<GroupTransactionShareModel> shares) {
-    super(id, description, amount, year, month, dayOfMonth);
+    super(id, description, amount, year, month, dayOfMonth, true);
     this.groupTransactionId = groupTransactionId;
     this.creatorUserName = creatorUserName;
     this.shares = shares;
@@ -39,7 +39,8 @@ public class GroupTransactionModel extends AbstractTransactionModel {
         transactionEntity.amount,
         year,
         month,
-        dayOfMonth);
+        dayOfMonth,
+         transactionEntity.isGroupTransaction);
     this.groupTransactionId = groupTransactionEntity.getGroupTransactionId();
     this.creatorUserName = groupTransactionEntity.getCreatorUserName();
     this.shares =

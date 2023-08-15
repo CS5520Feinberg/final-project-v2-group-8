@@ -13,7 +13,7 @@ public abstract class AbstractTransactionModel {
 
   boolean isGroupTransaction;
 
-  public AbstractTransactionModel(int id, String description, Double amount, int year, int month, int dayOfMonth) {
+  public AbstractTransactionModel(int id, String description, Double amount, int year, int month, int dayOfMonth, boolean isGroupTransaction) {
     this.id = id;
     this.description = description;
     this.amount = amount;
@@ -21,6 +21,8 @@ public abstract class AbstractTransactionModel {
     this.year = year;
     this.month = month;
     this.dayOfMonth = dayOfMonth;
+
+    this.isGroupTransaction = isGroupTransaction;
   }
 
   public Integer getId() {
