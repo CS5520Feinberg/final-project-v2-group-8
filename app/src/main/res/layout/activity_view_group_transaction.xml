@@ -41,8 +41,7 @@
     android:layout_height="wrap_content"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/tv_gt_transactionDetails"
-    >
+    app:layout_constraintTop_toBottomOf="@id/tv_gt_transactionDetails">
 
     <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/cl_transactionDate"
@@ -120,7 +119,7 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/cl_transactionAmount"
-      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintBottom_toTopOf="@id/cl_transaction_shares"
       android:layout_alignParentStart="true">
 
       <TextView
@@ -148,19 +147,41 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/cl_group_transaction_shares"
+      android:id="@+id/cl_transaction_shares"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingTop="16dp"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/cl_transactionDescription"
-      app:layout_constraintBottom_toBottomOf="parent"
-      android:layout_alignParentStart="true"
-      >
+      app:layout_constraintBottom_toBottomOf="parent">
+      <TextView
+        android:id="@+id/tv_transaction_shares_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Transaction shares"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:paddingTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/rv_transaction_shares" />
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_transaction_shares"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_transaction_shares_label"
+        app:layout_constraintBottom_toBottomOf="parent"
 
-      
+        android:paddingTop="8dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
 
+        tools:listitem="@layout/card_group_transaction_share" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
   </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

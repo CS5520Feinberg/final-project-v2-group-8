@@ -7,12 +7,18 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import edu.northeastern.coinnect.R;
 import edu.northeastern.coinnect.databinding.ActivityViewGroupTransactionBinding;
+import edu.northeastern.coinnect.models.transactionModels.AbstractTransactionModel;
 import edu.northeastern.coinnect.models.transactionModels.GroupTransactionModel;
+import edu.northeastern.coinnect.models.transactionModels.GroupTransactionShareModel;
 import edu.northeastern.coinnect.repositories.TransactionsRepository;
 import edu.northeastern.coinnect.utils.CalendarUtils;
 import edu.northeastern.coinnect.utils.TransactionUtils;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class ViewGroupTransactionActivity extends AppCompatActivity {
@@ -27,6 +33,8 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
   private TextView dateTV;
   private TextView amountTV;
   private TextView descriptionTV;
+  private RecyclerView transactionSharesRV;
+  private TransactionSharesRecyclerViewAdapter transactionShareRVA;
 
   private ProgressBar progressBar;
 
@@ -59,9 +67,23 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
                     TransactionUtils.formatWithCurrency(locale, groupTransactionModel.getAmount()));
                 this.descriptionTV.setText(groupTransactionModel.getDescription());
 
+                this.transactionShareRVA.setupList(
+                    groupTransactionModel.getGroupTransactionShares());
+
                 progressBar.setVisibility(View.INVISIBLE);
               });
         });
+  }
+
+  private void setupRecyclerView(ActivityViewGroupTransactionBinding binding) {
+    this.transactionSharesRV = binding.rvTransactionShares;
+
+    this.transactionSharesRV.setHasFixedSize(true);
+    this.transactionSharesRV.setLayoutManager(new LinearLayoutManager(this));
+  }
+
+  private void setupRecyclerViewListenerAndAdapter() {
+    this.transactionSharesRV.setAdapter(this.transactionShareRVA);
   }
 
   @Override
@@ -74,6 +96,7 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
     this.dateTV = findViewById(R.id.tv_gt_date);
     this.amountTV = findViewById(R.id.tv_gt_amount);
     this.descriptionTV = findViewById(R.id.tv_gt_description);
+    this.transactionSharesRV = findViewById(R.id.rv_transaction_shares);
     progressBar = findViewById(R.id.transactionsDetailsProgressBar);
 
     Intent intent = getIntent();
@@ -82,6 +105,11 @@ public class ViewGroupTransactionActivity extends AppCompatActivity {
     this.month = intent.getIntExtra("TRANSACTION_MONTH", 0);
     this.dayOfMonth = intent.getIntExtra("TRANSACTION_DAY_OF_MONTH", 0);
     this.transactionId = intent.getIntExtra("TRANSACTION_TRANSACTION_ID", 0);
+
+    List<GroupTransactionShareModel> groupTransactionShareModelList = new ArrayList<>();
+    this.setupRecyclerView(binding);
+    this.transactionShareRVA = new TransactionSharesRecyclerViewAdapter(groupTransactionShareModelList);
+    this.setupRecyclerViewListenerAndAdapter();
   }
 
   protected void onResume() {
